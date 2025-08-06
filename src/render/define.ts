@@ -1,4 +1,4 @@
-import { Container, Text } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 
 function defineRenderer(rendererName: string): Function {
     return function (constructor: any) {
@@ -17,3 +17,6 @@ export class ContainerRenderer extends Container {}
 
 @defineRenderer("TextRenderer")
 export class TextRenderer extends Text {}
+
+@defineRenderer("GraphicsRenderer")
+export class GraphicsRenderer extends Graphics {}

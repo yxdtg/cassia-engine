@@ -1,8 +1,9 @@
 import { BooleanPair, Color, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
 import type { Scene } from "cassia-engine/scene";
 import { RenderNode } from "cassia-engine/render";
-import { sceneManager } from "cassia-engine";
+import { componentManager, nodeManager, sceneManager } from "cassia-engine";
 import type { INodeOptions } from "./define";
+import type { Component, IComponentConstructor } from "cassia-engine/component";
 
 export class Node {
     private _renderNode: RenderNode;
@@ -353,6 +354,21 @@ export class Node {
     public get destroyed(): boolean {
         return this._destroyed;
     }
+    public destroy(): void {
+        if (this._destroyed) return;
+        this._destroyed = true;
+
+        for (let i = this._children.length - 1; i >= 0; i--) {
+            const child = this._children[i];
+            child.destroy();
+        }
+
+        for (let i = this._components.length - 1; i >= 0; i--) {
+            this.removeComponent(i);
+        }
+
+        nodeManager.addDestroyedNode(this);
+    }
 
     /**
      * --------------------------- parent ---------------------------
@@ -640,5 +656,66 @@ export class Node {
         } else {
             this.setScale(worldScale);
         }
+    }
+
+    /**
+     * --------------------------- component ---------------------------
+     */
+    private _components: Component[] = [];
+    public get components(): Component[] {
+        return this._components;
+    }
+
+    private _comp: any = {};
+    public get comp(): any {
+        return this._comp;
+    }
+
+    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T {
+        const component = new componentClass(this);
+        this._components.push(component);
+
+        componentManager.addComponent(component);
+
+        (this._comp as any)[component.componentName] = component;
+
+        component.onCreate();
+
+        return component as T;
+    }
+
+    public getComponent<T extends Component>(componentClass: IComponentConstructor<T>): T | null;
+    public getComponent<T extends Component>(componentName: string): T | null;
+    public getComponent<T extends Component>(componentIndex: number): T | null;
+    public getComponent<T extends Component>(
+        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+    ): T | null;
+    public getComponent<T extends Component>(
+        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+    ): T | null {
+        if (typeof componentClassOrNameOrIndex === "number")
+            return (this._components[componentClassOrNameOrIndex] as T) ?? null;
+
+        const componentName =
+            typeof componentClassOrNameOrIndex === "string"
+                ? componentClassOrNameOrIndex
+                : (componentClassOrNameOrIndex.prototype as T).componentName;
+
+        return (this._components.findLast((component) => component.componentName === componentName) as T) ?? null;
+    }
+
+    public removeComponent<T extends Component>(componentClass: IComponentConstructor<T>): void;
+    public removeComponent<T extends Component>(componentName: string): void;
+    public removeComponent<T extends Component>(componentIndex: number): void;
+    public removeComponent<T extends Component>(
+        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+    ): void;
+    public removeComponent<T extends Component>(
+        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+    ): void {
+        const component = this.getComponent(componentClassOrNameOrIndex);
+        if (!component) return;
+
+        componentManager.addDestroyedComponent(component);
     }
 }

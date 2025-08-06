@@ -1,3 +1,4 @@
+import { renderSystem } from "cassia-engine";
 import type { ISceneConstructor } from "./define";
 import type { Scene } from "./Scene";
 
@@ -10,6 +11,10 @@ export class SceneManager {
     public loadScene(sceneClass: ISceneConstructor): void {
         try {
             const scene = new sceneClass();
+
+            const renderScene = scene.renderScene;
+            renderSystem.setRenderScene(renderScene);
+
             this._scene = scene;
         } catch (e) {
             console.error(e);
