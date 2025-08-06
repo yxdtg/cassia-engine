@@ -1,0 +1,24 @@
+{
+    "name": "cassia-engine",
+    "version": "0.0.0",
+    "description": "a 2d game engine",
+    "main": "",
+    "scripts": {
+        "dev": "pnpm exec tsdown --watch"
+    },
+    "keywords": [
+        "cassia-engine",
+        "engine",
+        "game",
+        "2d",
+        "game engine",
+        "2d game engine"
+    ],
+    "author": "yxdtg",
+    "license": "MIT",
+    "packageManager": "pnpm@10.13.1",
+    "devDependencies": {
+        "tsdown": "^0.13.3",
+        "typescript": "^5.9.2"
+    }
+}
