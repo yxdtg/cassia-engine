@@ -49,8 +49,20 @@ export class Component {
      */
     public onPointerUp(event: IPointerEvent): void {}
 
+    /**
+     * defineComponent useOnGlobalPointerDown: true
+     * @param event
+     */
     public onGlobalPointerDown(event: IGlobalPointerEvent): void {}
+    /**
+     * defineComponent useOnGlobalPointerMove: true
+     * @param event
+     */
     public onGlobalPointerMove(event: IGlobalPointerEvent): void {}
+    /**
+     * defineComponent useOnGlobalPointerUp: true
+     * @param event
+     */
     public onGlobalPointerUp(event: IGlobalPointerEvent): void {}
 }
 

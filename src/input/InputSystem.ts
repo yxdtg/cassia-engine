@@ -13,6 +13,9 @@ export const NATIVE_POINTER_EVENT = {
 export type NATIVE_POINTER_EVENT = (typeof NATIVE_POINTER_EVENT)[keyof typeof NATIVE_POINTER_EVENT];
 
 export class InputSystem {
+    /**
+     * @internal
+     */
     public init(): void {
         this._initPointerEvent();
         this._initKeyboardEvent();
@@ -186,6 +189,11 @@ export class InputSystem {
         return renderSystem.worldToScreen(worldPoint);
     }
 
+    /**
+     * @internal
+     * @param event
+     * @returns
+     */
     public getEventPointByNativeEvent(event: PointerEvent): IEventPoint {
         const screenPointer = this.getScreenPointByNativeEvent(event);
         const worldPoint = this.getWorldPointByNativeEvent(event);
@@ -202,9 +210,19 @@ export class InputSystem {
         return eventPoint;
     }
 
+    /**
+     * @internal
+     * @param event
+     * @returns
+     */
     public getScreenPointByNativeEvent(event: PointerEvent): Vec2 {
         return vec2(event.clientX, event.clientY);
     }
+    /**
+     * @internal
+     * @param event
+     * @returns
+     */
     public getWorldPointByNativeEvent(event: PointerEvent): Vec2 {
         const screenPoint = this.getScreenPointByNativeEvent(event);
         return this.screenToWorld(screenPoint);

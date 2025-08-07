@@ -4,6 +4,7 @@ export const engine = new Engine();
 
 export const renderSystem = engine.renderSystem;
 export const resourceSystem = engine.resourceSystem;
+export const inputSystem = engine.inputSystem;
 
 export const sceneManager = engine.sceneManager;
 export const nodeManager = engine.nodeManager;
