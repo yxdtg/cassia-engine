@@ -1,2 +1,1 @@
-cassia-engine is a 2d game engine
-Under development
+cassia-engine is a 2D game engine in development.
