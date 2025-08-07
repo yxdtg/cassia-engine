@@ -1,7 +1,8 @@
 import { ComponentManager } from "cassia-engine/component";
+import { InputSystem } from "cassia-engine/input";
 import { NodeManager } from "cassia-engine/node";
 import { RenderSystem } from "cassia-engine/render";
-import { ResourceManager } from "cassia-engine/resource";
+import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
 
 export class Engine {
@@ -10,9 +11,14 @@ export class Engine {
         return this._renderSystem;
     }
 
-    private _resourceManager: ResourceManager;
-    public get resourceManager(): ResourceManager {
-        return this._resourceManager;
+    private _resourceSystem: ResourceSystem;
+    public get resourceSystem(): ResourceSystem {
+        return this._resourceSystem;
+    }
+
+    private _inputSystem: InputSystem;
+    public get inputSystem(): InputSystem {
+        return this._inputSystem;
     }
 
     private _sceneManager: SceneManager;
@@ -32,7 +38,9 @@ export class Engine {
 
     constructor() {
         this._renderSystem = new RenderSystem();
-        this._resourceManager = new ResourceManager();
+        this._resourceSystem = new ResourceSystem();
+        this._inputSystem = new InputSystem();
+
         this._sceneManager = new SceneManager();
         this._nodeManager = new NodeManager();
         this._componentManager = new ComponentManager();
@@ -70,6 +78,7 @@ export class Engine {
 
         try {
             await this._renderSystem.init();
+            this._inputSystem.init();
 
             this._lastTime = performance.now();
             requestAnimationFrame(this.update.bind(this));
@@ -85,6 +94,8 @@ export class Engine {
         if (!this._paused) {
             this._deltaTime = (performance.now() - this._lastTime) / 1000;
             this._lastTime = performance.now();
+
+            this._componentManager.callStartComponents();
 
             this._componentManager.callUpdateComponents(this._deltaTime);
 
@@ -104,6 +115,8 @@ export class Engine {
             this._componentManager.clearDestroyedComponents();
 
             this._nodeManager.clearDestroyedNodes();
+
+            this._inputSystem.clearKeyboardCodeCache();
         }
 
         this._renderSystem.render();

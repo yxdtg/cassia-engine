@@ -1,17 +1,42 @@
-import { BooleanPair, Color, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
-import type { Scene } from "cassia-engine/scene";
-import { RenderNode } from "cassia-engine/render";
 import { componentManager, nodeManager, sceneManager } from "cassia-engine";
-import type { INodeOptions } from "./define";
 import type { Component, IComponentConstructor } from "cassia-engine/component";
+import { EventObject } from "cassia-engine/event";
+import {
+    GLOBAL_POINTER_EVENT_TYPE,
+    IGlobalPointerEvent,
+    type IPointerEvent,
+    POINTER_EVENT_TYPE,
+} from "cassia-engine/input";
+import { BooleanPair, Color, IVec2, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
+import { RenderNode } from "cassia-engine/render";
+import type { Scene } from "cassia-engine/scene";
+import type { INodeOptions } from "./define";
 
-export class Node {
+export const NODE_EVENT_TYPE = {
+    ...POINTER_EVENT_TYPE,
+    ...GLOBAL_POINTER_EVENT_TYPE,
+} as const;
+export type NODE_EVENT_TYPE = (typeof NODE_EVENT_TYPE)[keyof typeof NODE_EVENT_TYPE];
+
+interface INodeEventTypeMap {
+    [NODE_EVENT_TYPE.PointerDown]: (event: IPointerEvent) => void;
+    [NODE_EVENT_TYPE.PointerMove]: (event: IPointerEvent) => void;
+    [NODE_EVENT_TYPE.PointerUp]: (event: IPointerEvent) => void;
+
+    [NODE_EVENT_TYPE.GlobalPointerDown]: (event: IGlobalPointerEvent) => void;
+    [NODE_EVENT_TYPE.GlobalPointerMove]: (event: IGlobalPointerEvent) => void;
+    [NODE_EVENT_TYPE.GlobalPointerUp]: (event: IGlobalPointerEvent) => void;
+}
+
+export class Node extends EventObject<INodeEventTypeMap> {
     private _renderNode: RenderNode;
     public get renderNode(): RenderNode {
         return this._renderNode;
     }
 
     constructor(options: INodeOptions = {}) {
+        super();
+
         this._renderNode = new RenderNode(this);
 
         this._name = options.name ?? "";
@@ -675,11 +700,36 @@ export class Node {
         const component = new componentClass(this);
         this._components.push(component);
 
-        componentManager.addComponent(component);
+        componentManager.addUnStartedComponent(component);
 
         (this._comp as any)[component.componentName] = component;
 
-        component.onCreate();
+        // on Use onPointerDown, onPointerMove, onPointerUp
+        {
+            if (component.useOnPointerDown) {
+                component.node.on(NODE_EVENT_TYPE.PointerDown, component.onPointerDown, component);
+            }
+            if (component.useOnPointerMove) {
+                component.node.on(NODE_EVENT_TYPE.PointerMove, component.onPointerMove, component);
+            }
+            if (component.useOnPointerUp) {
+                component.node.on(NODE_EVENT_TYPE.PointerUp, component.onPointerUp, component);
+            }
+        }
+        // on Use onGlobalPointerDown, onGlobalPointerMove, onGlobalPointerUp
+        {
+            if (component.useOnGlobalPointerDown) {
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerDown, component.onGlobalPointerDown, component);
+            }
+            if (component.useOnGlobalPointerMove) {
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerMove, component.onGlobalPointerMove, component);
+            }
+            if (component.useOnGlobalPointerUp) {
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
+            }
+        }
+
+        component.onInit();
 
         return component as T;
     }
@@ -717,5 +767,60 @@ export class Node {
         if (!component) return;
 
         componentManager.addDestroyedComponent(component);
+    }
+
+    public getWorldVertices(): IVec2[] {
+        const selfWorldPosition = this.getWorldPosition();
+        const selfWorldScale = this.getWorldScale();
+        const selfWorldRotation = this.getWorldRotation();
+        const selfSize = this._size.clone();
+        const selfAnchor = this._anchor.clone();
+
+        const vertices = Mathf.calculatePolygonVertices(
+            selfWorldPosition.x,
+            selfWorldPosition.y,
+            selfSize.width,
+            selfSize.height,
+            selfWorldScale.x,
+            selfWorldScale.y,
+            selfAnchor.x,
+            selfAnchor.y,
+            selfWorldRotation
+        );
+        return vertices;
+    }
+
+    private _active: boolean = true;
+    public get active(): boolean {
+        return this._active;
+    }
+    public set active(value: boolean) {
+        this._active = value;
+    }
+
+    private _interactive: boolean = true;
+    public get interactive(): boolean {
+        return this._interactive;
+    }
+    public set interactive(value: boolean) {
+        this._interactive = value;
+    }
+
+    public hitTest(worldPoint: Vec2): boolean;
+    public hitTest(x: number, y: number): boolean;
+    public hitTest(worldPointOrX: Vec2 | number, y?: number): boolean {
+        const worldPoint = typeof worldPointOrX === "object" ? worldPointOrX : vec2(worldPointOrX, y);
+        const worldVertices = this.getWorldVertices();
+        return Mathf.isPointInPolygon(worldPoint, worldVertices);
+    }
+
+    public addToHitNodes(worldPoint: Vec2, hitNodes: Node[]): void {
+        if (!this._active) return;
+
+        if (this._interactive && this.hitTest(worldPoint)) {
+            hitNodes.push(this);
+        }
+
+        this._children.forEach((child) => child.addToHitNodes(worldPoint, hitNodes));
     }
 }

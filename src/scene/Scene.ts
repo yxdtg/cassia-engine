@@ -20,6 +20,16 @@ export class Scene {
         return this._nodes;
     }
 
+    public getFlatNodes(): Node[] {
+        const flatNodes: Node[] = [];
+        this._nodes.forEach((node) => this._addToFlatNodes(node, flatNodes));
+        return flatNodes;
+    }
+    private _addToFlatNodes(node: Node, flatNodes: Node[]): void {
+        flatNodes.push(node);
+        node.children.forEach((child) => this._addToFlatNodes(child, flatNodes));
+    }
+
     /**
      * @internal
      * @param node

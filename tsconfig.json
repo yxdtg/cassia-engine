@@ -9,9 +9,6 @@
 
         "stripInternal": true,
 
-        "declaration": true,
-        "isolatedDeclarations": true,
-
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
 

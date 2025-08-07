@@ -1,6 +1,6 @@
-import { Component, defineComponent } from "cassia-engine/component";
+import { defineComponent } from "cassia-engine/component";
 import { Color, vec2, type Vec2 } from "cassia-engine/math";
-import { ContainerRenderer, GraphicsRenderer, TextRenderer } from "cassia-engine/render";
+import { RenderText } from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
 
 export const TEXT_OVER_FLOW = {
@@ -24,81 +24,15 @@ export const TEXT_VERTICAL_ALIGN = {
 export type TEXT_VERTICAL_ALIGN = (typeof TEXT_VERTICAL_ALIGN)[keyof typeof TEXT_VERTICAL_ALIGN];
 
 @defineComponent({ componentName: "Text" })
-export class Text extends RenderComponent {
-    private _renderContainer!: ContainerRenderer;
+export class Text extends RenderComponent<RenderText> {
     protected _onRenderCreate(): void {
-        const renderNode = this.node.renderNode;
-        this._renderContainer = renderNode.renderContainer;
-
-        this._textRenderer = new TextRenderer();
-        this._renderContainer.addChild(this._textRenderer);
-
-        this._maskRenderer = new GraphicsRenderer();
-        this._renderContainer.addChild(this._maskRenderer);
-
-        renderNode.applySize = (): void => {
-            const overflow = this._overflow;
-            if (overflow === TEXT_OVER_FLOW.None) {
-                // 更新文本尺寸 到 节点尺寸
-                const textSize = this._textRenderer.getSize();
-                this.node.size.set(textSize.width, textSize.height);
-
-                this._textRenderer.x = 0;
-                this._textRenderer.y = 0;
-
-                this.node.applyAnchor();
-                return;
-            }
-            if (overflow === TEXT_OVER_FLOW.Clamp) {
-                // 更新节点尺寸 到 mask尺寸
-                const size = this.node.size;
-                const anchor = this.node.anchor;
-
-                this._maskRenderer.clear();
-                this._maskRenderer.setSize(size.width, size.height);
-                this._maskRenderer.position.set(anchor.x * size.width, anchor.y * size.height);
-                this._maskRenderer
-                    .rect(-anchor.x * size.width, -anchor.y * size.height, size.width, size.height)
-                    .fill({ color: Color.white.toHex() });
-
-                this.applyHorizontalAlign();
-                this.applyVerticalAlign();
-                return;
-            }
-        };
-        renderNode.applyColor = (): void => {
-            const color = this.node.color.toDecimal();
-            const alpha = this.node.color.a / 255;
-
-            this._textRenderer.style.fill = color;
-            this._textRenderer.alpha = alpha;
-        };
-
-        this.applyFontSize();
-        this.applyFontFamily();
+        this._renderObject = new RenderText(this);
     }
 
-    private _textRenderer!: TextRenderer;
-    private _maskRenderer!: GraphicsRenderer;
-
-    public applyOverflow(): void {
-        const overflow = this._overflow;
-
-        if (overflow === TEXT_OVER_FLOW.None) {
-            this._textRenderer.mask = null;
-            this._maskRenderer.visible = false;
-            this.node.applySize();
-            return;
-        }
-        if (overflow === TEXT_OVER_FLOW.Clamp) {
-            this._textRenderer.mask = this._maskRenderer;
-            this._maskRenderer.visible = true;
-            this.node.applySize();
-            return;
-        }
-    }
+    /**
+     * --------------------------- overflow ---------------------------
+     */
     private _overflow: TEXT_OVER_FLOW = TEXT_OVER_FLOW.None;
-
     public get overflow(): TEXT_OVER_FLOW {
         return this._overflow;
     }
@@ -107,27 +41,14 @@ export class Text extends RenderComponent {
         this.applyOverflow();
     }
 
-    public applyHorizontalAlign(): void {
-        if (this._overflow !== TEXT_OVER_FLOW.Clamp) return;
-
-        const horizontalAlign = this._horizontalAlign;
-        const size = this.node.size;
-
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Left) {
-            this._textRenderer.x = 0;
-            return;
-        }
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Center) {
-            this._textRenderer.x = (size.width - this._textRenderer.width) / 2;
-            return;
-        }
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Right) {
-            this._textRenderer.x = size.width - this._textRenderer.width;
-            return;
-        }
+    public applyOverflow(): void {
+        this._renderObject?.applyOverflow();
     }
-    private _horizontalAlign: TEXT_HORIZONTAL_ALIGN = TEXT_HORIZONTAL_ALIGN.Center;
 
+    /**
+     * --------------------------- horizontalAlign ---------------------------
+     */
+    private _horizontalAlign: TEXT_HORIZONTAL_ALIGN = TEXT_HORIZONTAL_ALIGN.Center;
     public get horizontalAlign(): TEXT_HORIZONTAL_ALIGN {
         return this._horizontalAlign;
     }
@@ -136,27 +57,14 @@ export class Text extends RenderComponent {
         this.applyHorizontalAlign();
     }
 
-    public applyVerticalAlign(): void {
-        if (this._overflow !== TEXT_OVER_FLOW.Clamp) return;
-
-        const verticalAlign = this._verticalAlign;
-        const size = this.node.size;
-
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Top) {
-            this._textRenderer.y = 0;
-            return;
-        }
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Center) {
-            this._textRenderer.y = (size.height - this._textRenderer.height) / 2;
-            return;
-        }
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Bottom) {
-            this._textRenderer.y = size.height - this._textRenderer.height;
-            return;
-        }
+    public applyHorizontalAlign(): void {
+        this._renderObject?.applyHorizontalAlign();
     }
-    private _verticalAlign: TEXT_VERTICAL_ALIGN = TEXT_VERTICAL_ALIGN.Center;
 
+    /**
+     * --------------------------- verticalAlign ---------------------------
+     */
+    private _verticalAlign: TEXT_VERTICAL_ALIGN = TEXT_VERTICAL_ALIGN.Center;
     public get verticalAlign(): TEXT_VERTICAL_ALIGN {
         return this._verticalAlign;
     }
@@ -165,20 +73,14 @@ export class Text extends RenderComponent {
         this.applyVerticalAlign();
     }
 
-    public applyWordWrap(): void {
-        this._textRenderer.style.wordWrap = this._wordWrap;
-        this._textRenderer.style.breakWords = this._wordWrap;
-
-        if (this._wordWrap) {
-            if (this._overflow === TEXT_OVER_FLOW.Clamp) {
-                this._wrapWidth = this.node.width;
-            }
-        }
-
-        this._textRenderer.style.wordWrapWidth = this._wrapWidth;
+    public applyVerticalAlign(): void {
+        this._renderObject?.applyVerticalAlign();
     }
-    private _wordWrap: boolean = false;
 
+    /**
+     * --------------------------- wordWrap ---------------------------
+     */
+    private _wordWrap: boolean = false;
     public get wordWrap(): boolean {
         return this._wordWrap;
     }
@@ -187,22 +89,22 @@ export class Text extends RenderComponent {
         this.applyWordWrap();
     }
 
-    public applyWrapWidth(): void {
-        this.applyWordWrap();
-    }
     public _wrapWidth: number = 200;
     public get wrapWidth(): number {
         return this._wrapWidth;
     }
     public set wrapWidth(value: number) {
         this._wrapWidth = value;
-        this.applyWrapWidth();
+        this.applyWordWrap();
     }
 
-    public applyText(): void {
-        this._textRenderer.text = this._text;
-        this.node.applySize();
+    public applyWordWrap(): void {
+        this._renderObject?.applyWordWrap();
     }
+
+    /**
+     * --------------------------- text ---------------------------
+     */
     private _text: string = "";
     public get text(): string {
         return this._text;
@@ -212,10 +114,13 @@ export class Text extends RenderComponent {
         this.applyText();
     }
 
-    public applyFontSize(): void {
-        this._textRenderer.style.fontSize = this._fontSize;
-        this.applyLineHeight();
+    public applyText(): void {
+        this._renderObject?.applyText();
     }
+
+    /**
+     * --------------------------- fontSize ---------------------------
+     */
     private _fontSize: number = 32;
     public get fontSize(): number {
         return this._fontSize;
@@ -225,10 +130,14 @@ export class Text extends RenderComponent {
         this.applyFontSize();
     }
 
-    public applyLineHeight(): void {
-        this._textRenderer.style.lineHeight = this._fontSize * this._lineHeight;
-        this.node.applySize();
+    public applyFontSize(): void {
+        this._renderObject?.applyFontSize();
+        this.applyLineHeight();
     }
+
+    /**
+     * --------------------------- lineHeight ---------------------------
+     */
     private _lineHeight: number = 1;
     public get lineHeight(): number {
         return this._lineHeight;
@@ -238,10 +147,13 @@ export class Text extends RenderComponent {
         this.applyLineHeight();
     }
 
-    public applyFontFamily(): void {
-        this._textRenderer.style.fontFamily = this._fontFamily;
-        this.node.applySize();
+    public applyLineHeight(): void {
+        this._renderObject?.applyLineHeight();
     }
+
+    /**
+     * --------------------------- fontFamily ---------------------------
+     */
     private _fontFamily: string = "Arial";
     public get fontFamily(): string {
         return this._fontFamily;
@@ -251,10 +163,13 @@ export class Text extends RenderComponent {
         this.applyFontFamily();
     }
 
-    public applyBlod(): void {
-        this._textRenderer.style.fontWeight = this._isBold ? "bold" : "normal";
-        this.node.applySize();
+    public applyFontFamily(): void {
+        this._renderObject?.applyFontFamily();
     }
+
+    /**
+     * --------------------------- isBold ---------------------------
+     */
     private _isBold: boolean = false;
     public get isBold(): boolean {
         return this._isBold;
@@ -264,34 +179,29 @@ export class Text extends RenderComponent {
         this.applyBlod();
     }
 
-    public applyItalic(): void {
-        this._textRenderer.style.fontStyle = this._isItalic ? "italic" : "normal";
-        this.node.applySize();
+    public applyBlod(): void {
+        this._renderObject?.applyBlod();
     }
+
+    /**
+     * --------------------------- isItalic ---------------------------
+     */
     private _isItalic: boolean = false;
     public get isItalic(): boolean {
         return this._isItalic;
     }
     public set isItalic(value: boolean) {
         this._isItalic = value;
-        this.applyItalic();
+        this.applyIsItalic();
     }
 
-    public applyOutline(): void {
-        if (this._outlineEnabled) {
-            const outlineColor = this._outlineColor.toHex();
-            const outlineWidth = (this._outlineWidth * this._fontSize) / 32;
-
-            this._textRenderer.style.stroke = {
-                color: outlineColor,
-                width: outlineWidth,
-            };
-        } else {
-            this._textRenderer.style.stroke = {
-                width: 0,
-            };
-        }
+    public applyIsItalic(): void {
+        this._renderObject?.applyItalic();
     }
+
+    /**
+     * --------------------------- outline ---------------------------
+     */
     private _outlineEnabled: boolean = false;
     public get outlineEnabled(): boolean {
         return this._outlineEnabled;
@@ -319,23 +229,13 @@ export class Text extends RenderComponent {
         this.applyOutline();
     }
 
-    public applyShadow(): void {
-        if (this._shadowEnabled) {
-            const shadowColor = this._shadowColor.toHex();
-            const shadowAngle = this._shadowOffset.toRadians();
-            const shadowDistance = this._shadowOffset.length();
-
-            this._textRenderer.style.dropShadow = {
-                color: shadowColor,
-                alpha: 1,
-                angle: shadowAngle,
-                distance: shadowDistance,
-                blur: this._shadowBlur,
-            };
-        } else {
-            this._textRenderer.style.dropShadow = false;
-        }
+    public applyOutline(): void {
+        this._renderObject?.applyOutline();
     }
+
+    /**
+     * --------------------------- shadow ---------------------------
+     */
     private _shadowEnabled: boolean = false;
     public get shadowEnabled(): boolean {
         return this._shadowEnabled;
@@ -346,7 +246,6 @@ export class Text extends RenderComponent {
     }
 
     private _shadowColor: Color = Color.black;
-
     public get shadowColor(): Color {
         return this._shadowColor;
     }
@@ -356,7 +255,6 @@ export class Text extends RenderComponent {
     }
 
     private _shadowOffset: Vec2 = vec2(2, 2);
-
     public get shadowOffset(): Vec2 {
         return this._shadowOffset;
     }
@@ -382,12 +280,15 @@ export class Text extends RenderComponent {
     }
 
     private _shadowBlur: number = 2;
-
     public get shadowBlur(): number {
         return this._shadowBlur;
     }
     public set shadowBlur(value: number) {
         this._shadowBlur = value;
         this.applyShadow();
+    }
+
+    public applyShadow(): void {
+        this._renderObject?.applyShadow();
     }
 }

@@ -1,3 +1,4 @@
+import { NODE_EVENT_TYPE } from "cassia-engine/node";
 import type { Component, IComponentConstructor } from "./Component";
 
 export class ComponentManager {
@@ -29,12 +30,25 @@ export class ComponentManager {
         return this._components;
     }
 
+    private _unStartedComponents: Component[] = [];
+
     /**
      * @internal
      */
-    public addComponent(component: Component): void {
-        if (this._components.includes(component)) return;
-        this._components.push(component);
+    public addUnStartedComponent(component: Component): void {
+        if (this._unStartedComponents.includes(component)) return;
+        this._unStartedComponents.push(component);
+    }
+
+    /**
+     * @internal
+     */
+    public callStartComponents(): void {
+        this._unStartedComponents.forEach((component) => component.onStart());
+
+        this._components.push(...this._unStartedComponents);
+
+        this._unStartedComponents.length = 0;
     }
 
     /**
@@ -75,6 +89,31 @@ export class ComponentManager {
     public clearDestroyedComponents(): void {
         this._destroyedComponents.forEach((component) => {
             if (component.destroyed) {
+                // off Use onPointerDown, onPointerMove, onPointerUp
+                {
+                    if (component.useOnPointerDown) {
+                        component.node.off(NODE_EVENT_TYPE.PointerDown, component.onPointerDown, component);
+                    }
+                    if (component.useOnPointerMove) {
+                        component.node.off(NODE_EVENT_TYPE.PointerMove, component.onPointerMove, component);
+                    }
+                    if (component.useOnPointerUp) {
+                        component.node.off(NODE_EVENT_TYPE.PointerUp, component.onPointerUp, component);
+                    }
+                }
+                // off Use onGlobalPointerDown, onGlobalPointerMove, onGlobalPointerUp
+                {
+                    if (component.useOnGlobalPointerDown) {
+                        component.node.off(NODE_EVENT_TYPE.GlobalPointerDown, component.onGlobalPointerDown, component);
+                    }
+                    if (component.useOnGlobalPointerMove) {
+                        component.node.off(NODE_EVENT_TYPE.GlobalPointerMove, component.onGlobalPointerMove, component);
+                    }
+                    if (component.useOnGlobalPointerUp) {
+                        component.node.off(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
+                    }
+                }
+
                 component.onDestroy();
 
                 delete (component.node.comp as any)[component.componentName];

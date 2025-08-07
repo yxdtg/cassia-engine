@@ -4,7 +4,7 @@
     "description": "a 2d game engine",
     "main": "",
     "scripts": {
-        "dev": "pnpm exec tsdown --watch"
+        "dev": "nodemon --watch src --exec pnpm exec tsdown"
     },
     "keywords": [
         "cassia-engine",
