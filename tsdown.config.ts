@@ -8,5 +8,5 @@ export default defineConfig({
             js: ".js",
         };
     },
-    clean: true,
+    clean: false,
 });

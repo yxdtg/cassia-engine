@@ -1,5 +1,5 @@
 import { componentManager, nodeManager, sceneManager } from "cassia-engine";
-import type { Component, IComponentConstructor } from "cassia-engine/component";
+import type { Collider, Component, IComponentConstructor } from "cassia-engine/component";
 import { EventObject } from "cassia-engine/event";
 import {
     GLOBAL_POINTER_EVENT_TYPE,
@@ -19,6 +19,8 @@ export interface INodeOptions {
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
     ...GLOBAL_POINTER_EVENT_TYPE,
+    CollisionEnter: "collision-enter",
+    CollisionExit: "collision-exit",
 } as const;
 export type NODE_EVENT_TYPE = (typeof NODE_EVENT_TYPE)[keyof typeof NODE_EVENT_TYPE];
 
@@ -30,6 +32,9 @@ interface INodeEventTypeMap {
     [NODE_EVENT_TYPE.GlobalPointerDown]: (event: IGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.GlobalPointerMove]: (event: IGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.GlobalPointerUp]: (event: IGlobalPointerEvent) => void;
+
+    [NODE_EVENT_TYPE.CollisionEnter]: (selfCollider: Collider, otherCollider: Collider) => void;
+    [NODE_EVENT_TYPE.CollisionExit]: (selfCollider: Collider, otherCollider: Collider) => void;
 }
 
 export class Node extends EventObject<INodeEventTypeMap> {
@@ -730,6 +735,15 @@ export class Node extends EventObject<INodeEventTypeMap> {
             }
             if (component.useOnGlobalPointerUp) {
                 component.node.on(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
+            }
+        }
+        // on Use onCollisionEnter, onCollisionExit
+        {
+            if (component.useOnCollisionEnter) {
+                component.node.on(NODE_EVENT_TYPE.CollisionEnter, component.onCollisionEnter, component);
+            }
+            if (component.useOnCollisionExit) {
+                component.node.on(NODE_EVENT_TYPE.CollisionExit, component.onCollisionExit, component);
             }
         }
 

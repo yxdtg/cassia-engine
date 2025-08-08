@@ -113,6 +113,15 @@ export class ComponentManager {
                         component.node.off(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
                     }
                 }
+                // off Use onCollisionEnter, onCollisionExit
+                {
+                    if (component.useOnCollisionEnter) {
+                        component.node.off(NODE_EVENT_TYPE.CollisionEnter, component.onCollisionEnter, component);
+                    }
+                    if (component.useOnCollisionExit) {
+                        component.node.off(NODE_EVENT_TYPE.CollisionExit, component.onCollisionExit, component);
+                    }
+                }
 
                 component.onDestroy();
 

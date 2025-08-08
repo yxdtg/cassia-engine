@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@dimforge/rapier2d-compat':
+        specifier: ^0.18.0
+        version: 0.18.0
       howler:
         specifier: ^2.2.4
         version: 2.2.4
@@ -47,6 +50,9 @@ packages:
   '@babel/types@7.28.2':
     resolution: {integrity: sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==}
     engines: {node: '>=6.9.0'}
+
+  '@dimforge/rapier2d-compat@0.18.0':
+    resolution: {integrity: sha512-u9BqJplhwm1VPsl8eiS454AlVKFpN1aO5OgGDbF0JL1VO1sCWkw4R3mj822V9e4RChvcsf0MqtoL1Ug7gp8Ojw==}
 
   '@emnapi/core@1.4.5':
     resolution: {integrity: sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==}
@@ -385,6 +391,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@dimforge/rapier2d-compat@0.18.0': {}
 
   '@emnapi/core@1.4.5':
     dependencies:

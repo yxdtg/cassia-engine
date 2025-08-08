@@ -1,6 +1,7 @@
 import type { IGlobalPointerEvent, IPointerEvent } from "cassia-engine/input";
 import type { Node } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
+import type { Collider } from "./components";
 
 export class Component {
     private _node: Node;
@@ -64,6 +65,9 @@ export class Component {
      * @param event
      */
     public onGlobalPointerUp(event: IGlobalPointerEvent): void {}
+
+    public onCollisionEnter(selfCollider: Collider, otherCollider: Collider): void {}
+    public onCollisionExit(selfCollider: Collider, otherCollider: Collider): void {}
 }
 
 export interface Component {
@@ -76,6 +80,11 @@ export interface Component {
     readonly useOnGlobalPointerDown: boolean;
     readonly useOnGlobalPointerMove: boolean;
     readonly useOnGlobalPointerUp: boolean;
+
+    readonly useOnCollisionEnter: boolean;
+    readonly useOnCollisionExit: boolean;
+
+    readonly isCollider: boolean;
 }
 
 export type IComponentConstructor<T extends Component = Component> = new (node: Node) => T;
@@ -90,6 +99,11 @@ export interface IDefineComponentOptions {
     useOnGlobalPointerDown?: boolean;
     useOnGlobalPointerMove?: boolean;
     useOnGlobalPointerUp?: boolean;
+
+    useOnCollisionEnter?: boolean;
+    useOnCollisionExit?: boolean;
+
+    isCollider?: boolean;
 }
 
 export function defineComponent<T extends Component>(options: IDefineComponentOptions): Function {
@@ -104,6 +118,11 @@ export function defineComponent<T extends Component>(options: IDefineComponentOp
         const useOnGlobalPointerDown = options.useOnGlobalPointerDown ?? false;
         const useOnGlobalPointerMove = options.useOnGlobalPointerMove ?? false;
         const useOnGlobalPointerUp = options.useOnGlobalPointerUp ?? false;
+
+        const useOnCollisionEnter = options.useOnCollisionEnter ?? false;
+        const useOnCollisionExit = options.useOnCollisionExit ?? false;
+
+        const isCollider = options.isCollider ?? false;
 
         if (componentName.length === 0) throw new Error("componentName is empty");
 
@@ -142,6 +161,23 @@ export function defineComponent<T extends Component>(options: IDefineComponentOp
         Object.defineProperty(componentClassPrototype, "useOnGlobalPointerUp", {
             get(): boolean {
                 return useOnGlobalPointerUp;
+            },
+        });
+
+        Object.defineProperty(componentClassPrototype, "useOnCollisionEnter", {
+            get(): boolean {
+                return useOnCollisionEnter;
+            },
+        });
+        Object.defineProperty(componentClassPrototype, "useOnCollisionExit", {
+            get(): boolean {
+                return useOnCollisionExit;
+            },
+        });
+
+        Object.defineProperty(componentClassPrototype, "isCollider", {
+            get(): boolean {
+                return isCollider;
             },
         });
 

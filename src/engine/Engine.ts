@@ -2,6 +2,7 @@ import { AudioSystem } from "cassia-engine/audio";
 import { ComponentManager } from "cassia-engine/component";
 import { InputSystem } from "cassia-engine/input";
 import { NodeManager } from "cassia-engine/node";
+import { PhysicsSystem } from "cassia-engine/physics";
 import { RenderSystem } from "cassia-engine/render";
 import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
@@ -27,6 +28,11 @@ export class Engine {
         return this._inputSystem;
     }
 
+    private _physicsSystem: PhysicsSystem;
+    public get physicsSystem(): PhysicsSystem {
+        return this._physicsSystem;
+    }
+
     private _sceneManager: SceneManager;
     public get sceneManager(): SceneManager {
         return this._sceneManager;
@@ -47,6 +53,7 @@ export class Engine {
         this._resourceSystem = new ResourceSystem();
         this._audioSystem = new AudioSystem();
         this._inputSystem = new InputSystem();
+        this._physicsSystem = new PhysicsSystem();
 
         this._sceneManager = new SceneManager();
         this._nodeManager = new NodeManager();
@@ -86,6 +93,7 @@ export class Engine {
         try {
             await this._renderSystem.init();
             this._inputSystem.init();
+            await this._physicsSystem.init();
 
             this._lastTime = performance.now();
             requestAnimationFrame(this.update.bind(this));
@@ -118,6 +126,8 @@ export class Engine {
             }
 
             this._componentManager.callLateUpdateComponents(this._deltaTime);
+
+            this._physicsSystem.update();
 
             this._componentManager.clearDestroyedComponents();
 
