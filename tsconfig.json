@@ -15,7 +15,7 @@
         "strict": true,
         "skipLibCheck": true,
 
-        "outDir": "./dist",
+        "outDir": "./js",
 
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

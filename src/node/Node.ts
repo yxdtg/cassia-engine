@@ -315,34 +315,34 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyColor();
     }
 
-    public get r(): number {
+    public get colorR(): number {
         return this._color.r;
     }
-    public set r(value: number) {
+    public set colorR(value: number) {
         this._color.r = value;
         this.applyColor();
     }
 
-    public get g(): number {
+    public get colorG(): number {
         return this._color.g;
     }
-    public set g(value: number) {
+    public set colorG(value: number) {
         this._color.g = value;
         this.applyColor();
     }
 
-    public get b(): number {
+    public get colorB(): number {
         return this._color.b;
     }
-    public set b(value: number) {
+    public set colorB(value: number) {
         this._color.b = value;
         this.applyColor();
     }
 
-    public get a(): number {
+    public get colorA(): number {
         return this._color.a;
     }
-    public set a(value: number) {
+    public set colorA(value: number) {
         this._color.a = value;
         this.applyColor();
     }

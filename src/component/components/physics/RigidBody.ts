@@ -1,6 +1,6 @@
 import RAPIER from "@dimforge/rapier2d-compat";
 import { Component, defineComponent } from "cassia-engine/component";
-import { Collider, BoxCollider, CircleCollider } from "./colliders";
+import type { Collider } from "./colliders";
 import { vec2, Vec2 } from "cassia-engine/math";
 import { physicsSystem } from "cassia-engine";
 

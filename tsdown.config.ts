@@ -9,4 +9,5 @@ export default defineConfig({
         };
     },
     clean: false,
+    minify: false,
 });

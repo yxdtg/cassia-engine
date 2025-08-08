@@ -4,7 +4,10 @@
     "description": "a 2d game engine",
     "main": "",
     "scripts": {
-        "dev": "nodemon --watch src --ext ts --exec pnpm exec tsdown"
+        "dev": "nodemon --watch src --ext ts --exec pnpm exec tsdown",
+        "build": "pnpm exec tsdown --minify --clean",
+        "madge": "node ./scripts/madge.cjs",
+        "docs": "pnpm typedoc --options typedoc.json"
     },
     "keywords": [
         "cassia-engine",
@@ -19,7 +22,10 @@
     "packageManager": "pnpm@10.13.1",
     "devDependencies": {
         "@types/howler": "^2.2.12",
+        "fs-extra": "^11.3.1",
+        "madge": "^8.0.0",
         "tsdown": "^0.13.3",
+        "typedoc": "^0.28.9",
         "typescript": "^5.9.2"
     },
     "dependencies": {

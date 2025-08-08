@@ -2,12 +2,12 @@ import RAPIER from "@dimforge/rapier2d-compat";
 import { physicsSystem } from "cassia-engine";
 import { Component, defineComponent } from "cassia-engine/component";
 import { Vec2 } from "cassia-engine/math";
-import { RigidBody } from "../RigidBody";
+import type { RigidBody } from "../RigidBody";
 
 @defineComponent({ componentName: "Collider", isCollider: true })
 export class Collider extends Component {
     public getRigidBodyComponent(): RigidBody | null {
-        const rigidBody = this.node.getComponent(RigidBody);
+        const rigidBody = this.node.getComponent<RigidBody>("RigidBody");
         if (rigidBody && rigidBody.body && !rigidBody.destroyed) return rigidBody;
         return null;
     }
