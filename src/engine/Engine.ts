@@ -6,6 +6,7 @@ import { PhysicsSystem } from "cassia-engine/physics";
 import { RenderSystem } from "cassia-engine/render";
 import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
+import { TimeSystem } from "cassia-engine/time";
 
 export class Engine {
     private _renderSystem: RenderSystem;
@@ -33,6 +34,11 @@ export class Engine {
         return this._physicsSystem;
     }
 
+    private _timeSystem: TimeSystem;
+    public get timeSystem(): TimeSystem {
+        return this._timeSystem;
+    }
+
     private _sceneManager: SceneManager;
     public get sceneManager(): SceneManager {
         return this._sceneManager;
@@ -54,6 +60,7 @@ export class Engine {
         this._audioSystem = new AudioSystem();
         this._inputSystem = new InputSystem();
         this._physicsSystem = new PhysicsSystem();
+        this._timeSystem = new TimeSystem();
 
         this._sceneManager = new SceneManager();
         this._nodeManager = new NodeManager();
@@ -63,11 +70,6 @@ export class Engine {
     private _started: boolean = false;
     public get started(): boolean {
         return this._started;
-    }
-
-    private _paused: boolean = false;
-    public get paused(): boolean {
-        return this._paused;
     }
 
     private _lastTime: number = 0;
@@ -106,35 +108,39 @@ export class Engine {
      * @internal
      */
     public update(): void {
-        if (!this._paused) {
-            this._deltaTime = (performance.now() - this._lastTime) / 1000;
-            this._lastTime = performance.now();
+        this._deltaTime = (performance.now() - this._lastTime) / 1000;
+        this._lastTime = performance.now();
 
-            this._componentManager.callStartComponents();
+        this._timeSystem.updateTimers(this._deltaTime);
 
-            this._componentManager.callUpdateComponents(this._deltaTime);
+        this._sceneManager.createNextScene();
 
-            {
-                this._fixedTime += this._deltaTime;
+        this._inputSystem.dispatchEvents();
 
-                const count = Math.floor(this._fixedTime / this._fixedTimeStep);
-                for (let i = 0; i < count; i++) {
-                    this._componentManager.callFixedUpdateComponents(this._fixedTimeStep);
-                }
+        this._componentManager.callStartComponents();
 
-                this._fixedTime -= count * this._fixedTimeStep;
+        this._componentManager.callUpdateComponents(this._deltaTime);
+
+        {
+            this._fixedTime += this._deltaTime;
+
+            const count = Math.floor(this._fixedTime / this._fixedTimeStep);
+            for (let i = 0; i < count; i++) {
+                this._componentManager.callFixedUpdateComponents(this._fixedTimeStep);
             }
 
-            this._componentManager.callLateUpdateComponents(this._deltaTime);
-
-            this._physicsSystem.update();
-
-            this._componentManager.clearDestroyedComponents();
-
-            this._nodeManager.clearDestroyedNodes();
-
-            this._inputSystem.clearKeyboardCodeCache();
+            this._fixedTime -= count * this._fixedTimeStep;
         }
+
+        this._componentManager.callLateUpdateComponents(this._deltaTime);
+
+        this._physicsSystem.update();
+
+        this._componentManager.clearDestroyedComponents();
+
+        this._nodeManager.clearDestroyedNodes();
+
+        this._inputSystem.clearKeyboardCodeCache();
 
         this._renderSystem.render();
         this._renderSystem.clearDraw();

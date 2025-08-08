@@ -40,14 +40,15 @@ export class Color {
 
     public set(color?: Color): void;
     public set(r?: number, g?: number, b?: number, a?: number): void;
-    public set(color?: Color | number, g?: number, b?: number, a?: number): void {
-        if (color && typeof color === "object") {
-            this.r = color.r;
-            this.g = color.g;
-            this.b = color.b;
-            this.a = color.a;
+    public set(colorOrR?: Color | number, g?: number, b?: number, a?: number): void;
+    public set(colorOrR?: Color | number, g?: number, b?: number, a?: number): void {
+        if (colorOrR && typeof colorOrR === "object") {
+            this.r = colorOrR.r;
+            this.g = colorOrR.g;
+            this.b = colorOrR.b;
+            this.a = colorOrR.a;
         } else {
-            this.r = color ?? this.r;
+            this.r = colorOrR ?? this.r;
             this.g = g ?? this.g;
             this.b = b ?? this.b;
             this.a = a ?? this.a;

@@ -1,5 +1,6 @@
 import type { Node } from "cassia-engine/node";
 import { RenderScene } from "cassia-engine/render";
+import { SceneManager } from "./SceneManager";
 
 export class Scene {
     private _renderScene: RenderScene;
@@ -9,11 +10,9 @@ export class Scene {
 
     constructor() {
         this._renderScene = new RenderScene(this);
-
-        this.onCreate?.();
     }
 
-    public onCreate?(): void;
+    public onInit(): void {}
 
     private _nodes: Node[] = [];
     public get nodes(): Node[] {
@@ -82,6 +81,36 @@ export class Scene {
         const renderNode = node.renderNode;
         this._renderScene.setRenderNodeIndex(renderNode, index);
     }
+
+    public destroyAllNodes(): void {
+        for (let i = this._nodes.length - 1; i >= 0; i--) {
+            const node = this._nodes[i];
+            node.destroy();
+        }
+    }
 }
 
-export type ISceneConstructor = new (...args: any[]) => Scene;
+export interface Scene {
+    readonly sceneName: string;
+}
+
+export interface IDefineSceneOptions {
+    sceneName: string;
+}
+
+export type ISceneConstructor<T extends Scene = Scene> = new () => T;
+
+export function defineScene<T extends Scene>(options: IDefineSceneOptions): Function {
+    return function (constructor: ISceneConstructor<T>) {
+        const sceneClassPrototype = constructor.prototype as T;
+        const sceneName = options.sceneName;
+
+        if (sceneName.length === 0) throw new Error("sceneName is empty");
+
+        Object.defineProperty(sceneClassPrototype, "sceneName", {
+            get: (): string => sceneName,
+        });
+
+        SceneManager.defineScene(constructor);
+    };
+}

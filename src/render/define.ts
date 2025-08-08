@@ -2,12 +2,10 @@ import { Container, Graphics, NineSliceSprite, Sprite, Text, TilingSprite } from
 
 function defineRenderer(rendererName: string): Function {
     return function (constructor: any) {
-        const renderer = constructor.prototype;
+        const rendererClassPrototype = constructor.prototype;
 
-        Object.defineProperty(renderer, "rendererName", {
-            get(): string {
-                return rendererName;
-            },
+        Object.defineProperty(rendererClassPrototype, "rendererName", {
+            get: (): string => rendererName,
         });
     };
 }
@@ -30,6 +28,14 @@ export class NineSliceSpriteRenderer extends NineSliceSprite {}
 @defineRenderer("TilingSpriteRenderer")
 export class TilingSpriteRenderer extends TilingSprite {}
 
+export function isContainerRenderer(renderer: any): boolean {
+    return renderer.rendererName === "ContainerRenderer";
+}
+
+export function isGraphicsRenderer(renderer: any): boolean {
+    return renderer.rendererName === "GraphicsRenderer";
+}
+
 export function isSpriteRenderer(renderer: any): boolean {
     return renderer.rendererName === "SpriteRenderer";
 }
@@ -44,8 +50,4 @@ export function isTilingSpriteRenderer(renderer: any): boolean {
 
 export function isTextRenderer(renderer: any): boolean {
     return renderer.rendererName === "TextRenderer";
-}
-
-export function isGraphicsRenderer(renderer: any): boolean {
-    return renderer.rendererName === "GraphicsRenderer";
 }

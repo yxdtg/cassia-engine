@@ -21,6 +21,9 @@ export class InputSystem {
         this._initKeyboardEvent();
     }
 
+    private _pointerEvents: IPointerEvent[] = [];
+    private _globalPointerEvents: IGlobalPointerEvent[] = [];
+
     private _initPointerEvent(): void {
         window.addEventListener("blur", () => {});
 
@@ -62,14 +65,7 @@ export class InputSystem {
 
             source: event,
         };
-
-        {
-            const scene = sceneManager.scene;
-            if (scene) {
-                const flatNodes = scene.getFlatNodes();
-                flatNodes.forEach((node) => node.emit(globalPointerEventType, globalPointerEvent));
-            }
-        }
+        this._globalPointerEvents.push(globalPointerEvent);
 
         if (hitNode) {
             const pointerEvent: IPointerEvent = {
@@ -88,9 +84,30 @@ export class InputSystem {
 
                 source: event,
             };
-
-            hitNode.emit(pointerEventType, pointerEvent);
+            this._pointerEvents.push(pointerEvent);
         }
+    }
+
+    /**
+     * @internal
+     */
+    public dispatchEvents(): void {
+        const currentScene = sceneManager.currentScene;
+
+        if (currentScene) {
+            this._globalPointerEvents.forEach((globalPointerEvent) => {
+                const flatNodes = currentScene.getFlatNodes();
+                flatNodes.forEach((node) => node.emit(globalPointerEvent.type, globalPointerEvent));
+            });
+        }
+        this._globalPointerEvents.length = 0;
+
+        this._pointerEvents.forEach((pointerEvent) => {
+            if (pointerEvent.target) {
+                pointerEvent.target.emit(pointerEvent.type, pointerEvent);
+            }
+        });
+        this._pointerEvents.length = 0;
     }
 
     private _getPointerEventTypeByNativeEventType(nativePointerEvent: NATIVE_POINTER_EVENT): POINTER_EVENT_TYPE {
@@ -166,11 +183,11 @@ export class InputSystem {
         return this.getHitNodes(worldPoint).at(-1) ?? null;
     }
     public getHitNodes(worldPoint: Vec2): Node[] {
-        const scene = sceneManager.scene;
-        if (!scene) return [];
+        const currentScene = sceneManager.currentScene;
+        if (!currentScene) return [];
 
         const hitNodes: Node[] = [];
-        scene.nodes.forEach((node) => node.addToHitNodes(worldPoint, hitNodes));
+        currentScene.nodes.forEach((node) => node.addToHitNodes(worldPoint, hitNodes));
 
         return hitNodes;
     }

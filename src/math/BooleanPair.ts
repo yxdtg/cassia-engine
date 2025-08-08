@@ -16,6 +16,7 @@ export class BooleanPair {
 
     public set(booleanPair?: BooleanPair): void;
     public set(x?: boolean, y?: boolean): void;
+    public set(booleanPairOrX?: BooleanPair | boolean, y?: boolean): void;
     public set(booleanPairOrX?: BooleanPair | boolean, y?: boolean): void {
         if (booleanPairOrX && typeof booleanPairOrX === "object") {
             this.x = booleanPairOrX.x;

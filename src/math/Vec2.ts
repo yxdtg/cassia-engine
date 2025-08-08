@@ -49,12 +49,13 @@ export class Vec2 {
 
     public set(vec2?: Vec2): void;
     public set(x?: number, y?: number): void;
-    public set(vec2?: Vec2 | number, y?: number): void {
-        if (vec2 && typeof vec2 === "object") {
-            this.x = vec2.x;
-            this.y = vec2.y;
+    public set(vec2OrX?: Vec2 | number, y?: number): void;
+    public set(vec2OrX?: Vec2 | number, y?: number): void {
+        if (vec2OrX && typeof vec2OrX === "object") {
+            this.x = vec2OrX.x;
+            this.y = vec2OrX.y;
         } else {
-            this.x = vec2 ?? this.x;
+            this.x = vec2OrX ?? this.x;
             this.y = y ?? this.y;
         }
     }

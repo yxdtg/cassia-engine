@@ -17,14 +17,15 @@ export class Bounds {
 
     public set(bounds: Bounds): void;
     public set(top?: number, bottom?: number, left?: number, right?: number): void;
-    public set(bounds?: Bounds | number, bottom?: number, left?: number, right?: number): void {
-        if (bounds != null && typeof bounds === "object") {
-            this.top = bounds.top;
-            this.bottom = bounds.bottom;
-            this.left = bounds.left;
-            this.right = bounds.right;
+    public set(boundsOrTop?: Bounds | number, bottom?: number, left?: number, right?: number): void;
+    public set(boundsOrTop?: Bounds | number, bottom?: number, left?: number, right?: number): void {
+        if (boundsOrTop != null && typeof boundsOrTop === "object") {
+            this.top = boundsOrTop.top;
+            this.bottom = boundsOrTop.bottom;
+            this.left = boundsOrTop.left;
+            this.right = boundsOrTop.right;
         } else {
-            this.top = bounds ?? this.top;
+            this.top = boundsOrTop ?? this.top;
             this.bottom = bottom ?? this.bottom;
             this.left = left ?? this.left;
             this.right = right ?? this.right;

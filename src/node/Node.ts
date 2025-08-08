@@ -1,5 +1,5 @@
 import { componentManager, nodeManager, sceneManager } from "cassia-engine";
-import type { Collider, Component, IComponentConstructor } from "cassia-engine/component";
+import { type Collider, type Component, ComponentManager, type IComponentConstructor } from "cassia-engine/component";
 import { EventObject } from "cassia-engine/event";
 import {
     GLOBAL_POINTER_EVENT_TYPE,
@@ -381,7 +381,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     public get scene(): Scene | null {
-        return sceneManager.scene;
+        return sceneManager.currentScene;
     }
 
     private _destroyed: boolean = false;
@@ -705,7 +705,19 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._comp;
     }
 
-    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T {
+    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T;
+    public addComponent<T extends Component>(componentName: string): T;
+    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T;
+    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T {
+        const componentClass =
+            typeof componentClassOrName === "string"
+                ? ComponentManager.getComponentClass(componentClassOrName)
+                : componentClassOrName;
+        if (!componentClass || !(componentClass.prototype as T | null)?.componentName) {
+            console.error(`Component ${componentClassOrName} is not defined.`);
+            return null as any;
+        }
+
         const component = new componentClass(this);
         this._components.push(component);
 
@@ -826,6 +838,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     public hitTest(worldPoint: Vec2): boolean;
     public hitTest(x: number, y: number): boolean;
+    public hitTest(worldPointOrX: Vec2 | number, y?: number): boolean;
     public hitTest(worldPointOrX: Vec2 | number, y?: number): boolean {
         const worldPoint = typeof worldPointOrX === "object" ? worldPointOrX : vec2(worldPointOrX, y);
         const worldVertices = this.getWorldVertices();

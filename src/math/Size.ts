@@ -22,12 +22,13 @@ export class Size {
 
     public set(size?: Size): void;
     public set(width?: number, height?: number): void;
-    public set(size?: Size | number, height?: number): void {
-        if (size && typeof size === "object") {
-            this.width = size.width;
-            this.height = size.height;
+    public set(sizeOrWidth?: Size | number, height?: number): void;
+    public set(sizeOrWidth?: Size | number, height?: number): void {
+        if (sizeOrWidth && typeof sizeOrWidth === "object") {
+            this.width = sizeOrWidth.width;
+            this.height = sizeOrWidth.height;
         } else {
-            this.width = size ?? this.width;
+            this.width = sizeOrWidth ?? this.width;
             this.height = height ?? this.height;
         }
     }
