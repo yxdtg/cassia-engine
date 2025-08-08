@@ -1,7 +1,6 @@
 import { Text } from "cassia-engine/component";
 import { Color } from "cassia-engine/math";
-import { Node } from "cassia-engine/node";
-import { ContainerRenderer, GraphicsRenderer, TextRenderer } from "../define";
+import { GraphicsRenderer, TextRenderer } from "../define";
 import { RenderObject } from "./RenderObject";
 
 export const TEXT_OVER_FLOW = {

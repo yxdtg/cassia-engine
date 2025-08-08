@@ -10,7 +10,11 @@ import {
 import { BooleanPair, Color, IVec2, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
-import type { INodeOptions } from "./define";
+
+export interface INodeOptions {
+    name?: string;
+    parent?: Node | null;
+}
 
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,

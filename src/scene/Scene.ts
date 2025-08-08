@@ -83,3 +83,5 @@ export class Scene {
         this._renderScene.setRenderNodeIndex(renderNode, index);
     }
 }
+
+export type ISceneConstructor = new (...args: any[]) => Scene;

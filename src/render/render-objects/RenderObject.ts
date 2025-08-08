@@ -25,6 +25,13 @@ export class RenderObject<T extends RenderComponent = any> {
         this._renderContainer = this._renderNode.renderContainer;
 
         this._onRenderCreate();
+
+        this._applySizeAndColor();
     }
     protected _onRenderCreate(): void {}
+
+    protected _applySizeAndColor(): void {
+        this._renderNode.applySize();
+        this._renderNode.applyColor();
+    }
 }

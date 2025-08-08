@@ -6,9 +6,6 @@ export class RenderComponent<T extends RenderObject = any> extends Component {
 
     public onInit(): void {
         this._onRenderCreate();
-
-        this.node.applySize();
-        this.node.applyColor();
     }
     protected _onRenderCreate(): void {}
 }

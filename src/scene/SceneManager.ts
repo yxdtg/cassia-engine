@@ -1,6 +1,5 @@
 import { renderSystem } from "cassia-engine";
-import type { ISceneConstructor } from "./define";
-import type { Scene } from "./Scene";
+import type { Scene, ISceneConstructor } from "./Scene";
 
 export class SceneManager {
     private _scene: Scene | null = null;
