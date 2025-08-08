@@ -1,5 +1,13 @@
-import { type ILoadResourceInfo, type IUnloadResourceInfo, loadTexture, RESOURCE_TYPE, unloadTexture } from "./define";
-import { Resource, TextureResource } from "./resources";
+import {
+    type ILoadResourceInfo,
+    type IUnloadResourceInfo,
+    loadAudio,
+    loadTexture,
+    RESOURCE_TYPE,
+    unloadAudio,
+    unloadTexture,
+} from "./define";
+import { AudioResource, Resource, TextureResource } from "./resources";
 
 export class ResourceSystem {
     constructor() {}
@@ -12,9 +20,22 @@ export class ResourceSystem {
 
             const fnMap = {
                 [RESOURCE_TYPE.Texture]: async (): Promise<TextureResource> => {
-                    const texture = await loadTexture(src);
-                    const resource = new TextureResource(loadResourceInfo, texture);
-                    return resource;
+                    try {
+                        const texture = await loadTexture(src);
+                        const resource = new TextureResource(loadResourceInfo, texture);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.Audio]: async (): Promise<AudioResource> => {
+                    try {
+                        const audio = await loadAudio(src);
+                        const resource = new AudioResource(loadResourceInfo, audio);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
                 },
             } as const;
 
@@ -65,6 +86,13 @@ export class ResourceSystem {
                         throw e;
                     }
                 },
+                [RESOURCE_TYPE.Audio]: async (): Promise<void> => {
+                    try {
+                        unloadAudio(resource.data);
+                    } catch (e) {
+                        throw e;
+                    }
+                },
             } as const;
 
             if (fnMap[type]) {
@@ -88,14 +116,18 @@ export class ResourceSystem {
         }
     }
 
-    public getResource<T extends RESOURCE_TYPE>(type: RESOURCE_TYPE, name: string): IResourceTypeMap[T] | null {
+    public getResource<T extends RESOURCE_TYPE>(type: T, name: string): IResourceTypeMap[T] | null {
         return (this._typeToNameToResourceMap.get(type)?.get(name) as IResourceTypeMap[T]) ?? null;
     }
     public getTextureResource(name: string): TextureResource | null {
         return this.getResource(RESOURCE_TYPE.Texture, name);
     }
+    public getAudioResource(name: string): AudioResource | null {
+        return this.getResource(RESOURCE_TYPE.Audio, name);
+    }
 }
 
 interface IResourceTypeMap {
     [RESOURCE_TYPE.Texture]: TextureResource;
+    [RESOURCE_TYPE.Audio]: AudioResource;
 }

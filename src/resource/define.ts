@@ -14,6 +14,7 @@ export interface IUnloadResourceInfo {
 
 export const RESOURCE_TYPE = {
     Texture: "texture",
+    Audio: "audio",
 } as const;
 export type RESOURCE_TYPE = (typeof RESOURCE_TYPE)[keyof typeof RESOURCE_TYPE];
 
@@ -49,4 +50,8 @@ export function loadAudio(url: string): Promise<Howl> {
             reject(e);
         }
     });
+}
+
+export function unloadAudio(audio: Howl): void {
+    audio.unload();
 }

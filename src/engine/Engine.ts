@@ -1,3 +1,4 @@
+import { AudioSystem } from "cassia-engine/audio";
 import { ComponentManager } from "cassia-engine/component";
 import { InputSystem } from "cassia-engine/input";
 import { NodeManager } from "cassia-engine/node";
@@ -14,6 +15,11 @@ export class Engine {
     private _resourceSystem: ResourceSystem;
     public get resourceSystem(): ResourceSystem {
         return this._resourceSystem;
+    }
+
+    private _audioSystem: AudioSystem;
+    public get audioSystem(): AudioSystem {
+        return this._audioSystem;
     }
 
     private _inputSystem: InputSystem;
@@ -39,6 +45,7 @@ export class Engine {
     constructor() {
         this._renderSystem = new RenderSystem();
         this._resourceSystem = new ResourceSystem();
+        this._audioSystem = new AudioSystem();
         this._inputSystem = new InputSystem();
 
         this._sceneManager = new SceneManager();
