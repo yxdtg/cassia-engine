@@ -84,6 +84,7 @@ export interface Component {
     readonly useOnCollisionEnter: boolean;
     readonly useOnCollisionExit: boolean;
 
+    readonly isRender: boolean;
     readonly isCollider: boolean;
 }
 
@@ -103,6 +104,7 @@ export interface IDefineComponentOptions {
     useOnCollisionEnter?: boolean;
     useOnCollisionExit?: boolean;
 
+    isRender?: boolean;
     isCollider?: boolean;
 }
 
@@ -122,63 +124,47 @@ export function defineComponent<T extends Component>(options: IDefineComponentOp
         const useOnCollisionEnter = options.useOnCollisionEnter ?? false;
         const useOnCollisionExit = options.useOnCollisionExit ?? false;
 
+        const isRender = options.isRender ?? false;
         const isCollider = options.isCollider ?? false;
 
         if (componentName.length === 0) throw new Error("componentName is empty");
 
         Object.defineProperty(componentClassPrototype, "componentName", {
-            get(): string {
-                return componentName;
-            },
+            get: (): string => componentName,
         });
 
         Object.defineProperty(componentClassPrototype, "useOnPointerDown", {
-            get(): boolean {
-                return useOnPointerDown;
-            },
+            get: (): boolean => useOnPointerDown,
         });
         Object.defineProperty(componentClassPrototype, "useOnPointerMove", {
-            get(): boolean {
-                return useOnPointerMove;
-            },
+            get: (): boolean => useOnPointerMove,
         });
         Object.defineProperty(componentClassPrototype, "useOnPointerUp", {
-            get(): boolean {
-                return useOnPointerUp;
-            },
+            get: (): boolean => useOnPointerUp,
         });
 
         Object.defineProperty(componentClassPrototype, "useOnGlobalPointerDown", {
-            get(): boolean {
-                return useOnGlobalPointerDown;
-            },
+            get: (): boolean => useOnGlobalPointerDown,
         });
         Object.defineProperty(componentClassPrototype, "useOnGlobalPointerMove", {
-            get(): boolean {
-                return useOnGlobalPointerMove;
-            },
+            get: (): boolean => useOnGlobalPointerMove,
         });
         Object.defineProperty(componentClassPrototype, "useOnGlobalPointerUp", {
-            get(): boolean {
-                return useOnGlobalPointerUp;
-            },
+            get: (): boolean => useOnGlobalPointerUp,
         });
 
         Object.defineProperty(componentClassPrototype, "useOnCollisionEnter", {
-            get(): boolean {
-                return useOnCollisionEnter;
-            },
+            get: (): boolean => useOnCollisionEnter,
         });
         Object.defineProperty(componentClassPrototype, "useOnCollisionExit", {
-            get(): boolean {
-                return useOnCollisionExit;
-            },
+            get: (): boolean => useOnCollisionExit,
         });
 
+        Object.defineProperty(componentClassPrototype, "isRender", {
+            get: (): boolean => isRender,
+        });
         Object.defineProperty(componentClassPrototype, "isCollider", {
-            get(): boolean {
-                return isCollider;
-            },
+            get: (): boolean => isCollider,
         });
 
         ComponentManager.defineComponent(constructor);

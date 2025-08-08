@@ -1,9 +1,10 @@
 import RAPIER from "@dimforge/rapier2d-compat";
 import { physicsSystem } from "cassia-engine";
-import { Component } from "cassia-engine/component";
+import { Component, defineComponent } from "cassia-engine/component";
 import { Vec2 } from "cassia-engine/math";
 import { RigidBody } from "../RigidBody";
 
+@defineComponent({ componentName: "Collider", isCollider: true })
 export class Collider extends Component {
     public getRigidBodyComponent(): RigidBody | null {
         const rigidBody = this.node.getComponent(RigidBody);
@@ -88,6 +89,9 @@ export class Collider extends Component {
         this._collider.setSensor(this._isSensor);
     }
 
+    /**
+     * @internal
+     */
     public _onUpdateSize(): void {
         throw new Error("not implemented");
     }
