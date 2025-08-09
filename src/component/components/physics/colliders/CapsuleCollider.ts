@@ -24,6 +24,9 @@ export class CapsuleCollider extends Collider {
         this.applySize();
     }
 
+    /**
+     * @internal
+     */
     public applySize(): void {
         if (!this._collider) return;
 
@@ -35,6 +38,9 @@ export class CapsuleCollider extends Collider {
         this._collider.setHalfHeight(halfHeight);
     }
 
+    /**
+     * @internal
+     */
     public _onUpdateSize(): void {
         this.applySize();
     }

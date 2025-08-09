@@ -19,6 +19,9 @@ export class Sprite extends RenderComponent<RenderSprite> {
         this.applySpriteType();
     }
 
+    /**
+     * @internal
+     */
     public applySpriteType(): void {
         this._renderObject.applySpriteType();
     }
@@ -32,6 +35,9 @@ export class Sprite extends RenderComponent<RenderSprite> {
         this.applyTexture();
     }
 
+    /**
+     * @internal
+     */
     public applyTexture(): void {
         this._renderObject.applyTexture();
     }
@@ -85,6 +91,9 @@ export class Sprite extends RenderComponent<RenderSprite> {
         this.applyNineSliceBounds();
     }
 
+    /**
+     * @internal
+     */
     public applyNineSliceBounds(): void {
         this._renderObject.applyNineSliceBounds();
     }

@@ -101,9 +101,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._interactive = value;
     }
 
-    /**
-     * --------------------------- position ---------------------------
-     */
+    /*************************** position ***************************/
     private _position: Vec2 = Vec2.zero;
     public get position(): Vec2 {
         return this._position;
@@ -144,9 +142,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyPosition();
     }
 
-    /**
-     * --------------------------- size ---------------------------
-     */
+    /*************************** size ***************************/
     private _size: Size = Size.default;
     public get size(): Size {
         return this._size;
@@ -188,9 +184,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyAnchor();
     }
 
-    /**
-     * --------------------------- scale ---------------------------
-     */
+    /*************************** scale ***************************/
     private _scale: Vec2 = Vec2.one;
     public get scale(): Vec2 {
         return this._scale;
@@ -231,9 +225,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyScale();
     }
 
-    /**
-     * --------------------------- anchor ---------------------------
-     */
+    /*************************** anchor ***************************/
     private _anchor: Vec2 = Vec2.half;
     public get anchor(): Vec2 {
         return this._anchor;
@@ -274,9 +266,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyAnchor();
     }
 
-    /**
-     * --------------------------- rotation ---------------------------
-     */
+    /*************************** rotation ***************************/
     private _rotation: number = 0;
     public get rotation(): number {
         return this._rotation;
@@ -293,9 +283,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyRotation();
     }
 
-    /**
-     * --------------------------- angle ---------------------------
-     */
+    /*************************** angle ***************************/
     public get angle(): number {
         return Mathf.radiansToDegrees(this._rotation);
     }
@@ -303,9 +291,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.rotation = Mathf.degreesToRadians(value);
     }
 
-    /**
-     * --------------------------- flip ---------------------------
-     */
+    /*************************** flip ***************************/
     private _flip: BooleanPair = BooleanPair.false;
     public get flip(): BooleanPair {
         return this._flip;
@@ -346,9 +332,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyFlip();
     }
 
-    /**
-     * --------------------------- color ---------------------------
-     */
+    /*************************** color ***************************/
     private _color: Color = Color.white;
     public get color(): Color {
         return this._color;
@@ -405,9 +389,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.applyColor();
     }
 
-    /**
-     * --------------------------- opacity ---------------------------
-     */
+    /*************************** opacity ***************************/
     private _opacity: number = 255;
     public get opacity(): number {
         return this._opacity;
@@ -448,9 +430,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         nodeManager.addDestroyedNode(this);
     }
 
-    /**
-     * --------------------------- parent ---------------------------
-     */
+    /*************************** parent ***************************/
     private _parent: Node | null = null;
     public get parent(): Node | null {
         return this._parent;
@@ -468,9 +448,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
     }
 
-    /**
-     * --------------------------- children ---------------------------
-     */
+    /*************************** children ***************************/
     private _children: Node[] = [];
     public get children(): Node[] {
         return this._children;
@@ -534,9 +512,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return null;
     }
 
-    /**
-     * --------------------------- siblingIndex ---------------------------
-     */
+    /*************************** siblingIndex ***************************/
     public getSiblingIndex(): number {
         if (!this._parent) return this.scene?.getNodeIndex(this) ?? -1;
         return this._parent._children.indexOf(this);
@@ -558,11 +534,10 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.setSiblingIndex(index);
     }
 
-    /**
-     * --------------------------- transform ---------------------------
-     */
+    /*************************** transform ***************************/
     public toLocalPosition(worldPosition: Vec2): Vec2;
     public toLocalPosition(x: number, y: number): Vec2;
+    public toLocalPosition(worldPositionOrX: Vec2 | number, y?: number): Vec2;
     public toLocalPosition(worldPositionOrX: Vec2 | number, y?: number): Vec2 {
         const localPosition =
             typeof worldPositionOrX === "object" ? worldPositionOrX.clone() : vec2(worldPositionOrX, y);
@@ -594,6 +569,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     public toWorldPosition(localPosition: Vec2): Vec2;
     public toWorldPosition(x: number, y: number): Vec2;
+    public toWorldPosition(localPositionOrX: Vec2 | number, y?: number): Vec2;
     public toWorldPosition(localPositionOrX: Vec2 | number, y?: number): Vec2 {
         const worldPosition =
             typeof localPositionOrX === "object" ? localPositionOrX.clone() : vec2(localPositionOrX, y);
@@ -621,6 +597,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
     public setWorldPosition(worldPosition?: Vec2): void;
     public setWorldPosition(x: number, y: number): void;
+    public setWorldPosition(worldPositionOrX?: Vec2 | number, y?: number): void;
     public setWorldPosition(worldPositionOrX?: Vec2 | number, y?: number): void {
         const worldPosition = typeof worldPositionOrX === "object" ? worldPositionOrX : vec2(worldPositionOrX, y);
 
@@ -686,6 +663,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     public toLocalScale(worldScale: Vec2): Vec2;
     public toLocalScale(x: number, y: number): Vec2;
+    public toLocalScale(worldScaleOrX: Vec2 | number, y?: number): Vec2;
     public toLocalScale(worldScaleOrX: Vec2 | number, y?: number): Vec2 {
         const localScale = typeof worldScaleOrX === "object" ? worldScaleOrX.clone() : vec2(worldScaleOrX, y);
 
@@ -706,6 +684,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
     public toWorldScale(localScale: Vec2): Vec2;
     public toWorldScale(x: number, y: number): Vec2;
+    public toWorldScale(localScaleOrX: Vec2 | number, y?: number): Vec2;
     public toWorldScale(localScaleOrX: Vec2 | number, y?: number): Vec2 {
         const worldScale = typeof localScaleOrX === "object" ? localScaleOrX.clone() : vec2(localScaleOrX, y);
         worldScale.multiplySelf(this._scale);
@@ -725,6 +704,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
     public setWorldScale(worldScale: Vec2): void;
     public setWorldScale(x: number, y: number): void;
+    public setWorldScale(worldScaleOrX: Vec2 | number, y?: number): void;
     public setWorldScale(worldScaleOrX: Vec2 | number, y?: number): void {
         const worldScale = typeof worldScaleOrX === "object" ? worldScaleOrX : vec2(worldScaleOrX, y);
 
@@ -736,9 +716,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
     }
 
-    /**
-     * --------------------------- component ---------------------------
-     */
+    /*************************** component ***************************/
     private _components: Component[] = [];
     public get components(): Component[] {
         return this._components;
@@ -873,6 +851,12 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return Mathf.isPointInPolygon(worldPoint, worldVertices);
     }
 
+    /**
+     * @internal
+     * @param worldPoint
+     * @param hitNodes
+     * @returns
+     */
     public addToHitNodes(worldPoint: Vec2, hitNodes: Node[]): void {
         if (!this._active) return;
 

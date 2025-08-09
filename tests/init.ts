@@ -1,4 +1,4 @@
-import { defineScene, engine, Scene, sceneManager, timeSystem } from "../dist/index";
+import { defineScene, engine, Scene } from "../dist/index";
 
 export async function startEngine(): Promise<void> {
     await engine.start();

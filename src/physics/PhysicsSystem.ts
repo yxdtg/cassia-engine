@@ -4,9 +4,15 @@ import { Collider, RigidBody } from "cassia-engine/component";
 import { color, vec2, Vec2 } from "cassia-engine/math";
 
 export class PhysicsSystem {
+    public debug: boolean = false;
+
     private _gravity: { x: number; y: number } = { x: 0, y: -98.1 };
     private _world: RAPIER.World = null!;
 
+    /**
+     * @internal
+     * @returns
+     */
     public async init(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             RAPIER.init()
@@ -25,12 +31,24 @@ export class PhysicsSystem {
 
     private _colliderToColliderComponentMap: Map<RAPIER.Collider, Collider> = new Map();
 
+    /**
+     * @internal
+     * @param rigidBodyComponent
+     * @param bodyDesc
+     * @returns
+     */
     public createBody(rigidBodyComponent: RigidBody, bodyDesc: RAPIER.RigidBodyDesc): RAPIER.RigidBody | null {
         if (this._rigidBodyComponents.includes(rigidBodyComponent)) return null;
 
         this._rigidBodyComponents.push(rigidBodyComponent);
         return this._world.createRigidBody(bodyDesc);
     }
+    /**
+     * @internal
+     * @param rigidBodyComponent
+     * @param body
+     * @returns
+     */
     public destroyBody(rigidBodyComponent: RigidBody, body: RAPIER.RigidBody): void {
         const index = this._rigidBodyComponents.indexOf(rigidBodyComponent);
         if (index === -1) return;
@@ -39,6 +57,12 @@ export class PhysicsSystem {
         this._world.removeRigidBody(body);
     }
 
+    /**
+     * @internal
+     * @param colliderComponent
+     * @param colliderDesc
+     * @returns
+     */
     public createCollider(colliderComponent: Collider, colliderDesc: RAPIER.ColliderDesc): RAPIER.Collider | null {
         if (this._colliderComponents.includes(colliderComponent)) return null;
 
@@ -63,6 +87,12 @@ export class PhysicsSystem {
 
         return collider;
     }
+    /**
+     * @internal
+     * @param colliderComponent
+     * @param collider
+     * @returns
+     */
     public destroyCollider(colliderComponent: Collider, collider: RAPIER.Collider): void {
         const index = this._colliderComponents.indexOf(colliderComponent);
         if (index === -1) return;
@@ -154,6 +184,9 @@ export class PhysicsSystem {
         }
     }
 
+    /**
+     * @internal
+     */
     public update(): void {
         this._syncToBodys();
 
@@ -186,6 +219,8 @@ export class PhysicsSystem {
 
         this._syncToNodes();
 
-        this._drawDebug();
+        if (this.debug) {
+            this._drawDebug();
+        }
     }
 }

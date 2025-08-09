@@ -31,6 +31,9 @@ export class BoxCollider extends Collider {
         this.applySize();
     }
 
+    /**
+     * @internal
+     */
     public applySize(): void {
         if (!this._collider) return;
 
@@ -42,6 +45,9 @@ export class BoxCollider extends Collider {
         this._collider.setHalfExtents({ x: halfWidth, y: halfHeight });
     }
 
+    /**
+     * @internal
+     */
     public _onUpdateSize(): void {
         this.applySize();
     }

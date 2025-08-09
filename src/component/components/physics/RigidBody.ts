@@ -58,6 +58,9 @@ export class RigidBody extends Component {
         this.applyBodyType();
     }
 
+    /**
+     * @internal
+     */
     public applyBodyType(): void {
         if (!this._body) return console.warn("Body not found");
         this._body.setBodyType(this._bodyType, true);
@@ -72,6 +75,9 @@ export class RigidBody extends Component {
         this.applyGravityScale();
     }
 
+    /**
+     * @internal
+     */
     public applyGravityScale(): void {
         if (!this._body) return;
         this._body.setGravityScale(this._gravityScale, true);
@@ -86,6 +92,9 @@ export class RigidBody extends Component {
         this.applyLineDamping();
     }
 
+    /**
+     * @internal
+     */
     public applyLineDamping(): void {
         if (!this._body) return;
         this._body.setLinearDamping(this._linearDamping);
@@ -100,6 +109,9 @@ export class RigidBody extends Component {
         this.applyAngularDamping();
     }
 
+    /**
+     * @internal
+     */
     public applyAngularDamping(): void {
         if (!this._body) return;
         this._body.setAngularDamping(this._angularDamping);
@@ -148,6 +160,9 @@ export class RigidBody extends Component {
         this.applyLockRotations();
     }
 
+    /**
+     * @internal
+     */
     public applyLockRotations(): void {
         if (!this._body) return;
         this._body.lockRotations(this._lockRotations, true);
@@ -161,6 +176,10 @@ export class RigidBody extends Component {
         this._ccdEnabled = value;
         this.applyCcdEnabled();
     }
+
+    /**
+     * @internal
+     */
     public applyCcdEnabled(): void {
         if (!this._body) return;
         this._body.enableCcd(this._ccdEnabled);

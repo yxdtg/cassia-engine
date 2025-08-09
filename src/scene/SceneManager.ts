@@ -1,4 +1,4 @@
-import { renderSystem, timeSystem } from "cassia-engine";
+import { renderSystem } from "cassia-engine";
 import type { Scene, ISceneConstructor } from "./Scene";
 
 export class SceneManager {

@@ -14,6 +14,9 @@ export class CircleCollider extends Collider {
         this.applyRadius();
     }
 
+    /**
+     * @internal
+     */
     public applyRadius(): void {
         if (!this._collider) return;
 
@@ -23,6 +26,9 @@ export class CircleCollider extends Collider {
         this._collider.setRadius(radius);
     }
 
+    /**
+     * @internal
+     */
     public _onUpdateSize(): void {
         this.applyRadius();
     }

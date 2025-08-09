@@ -140,7 +140,7 @@ export class Engine {
 
         this._nodeManager.clearDestroyedNodes();
 
-        this._inputSystem.clearKeyboardCodeCache();
+        this._inputSystem.clearCache();
 
         this._renderSystem.render();
         this._renderSystem.clearDraw();

@@ -88,7 +88,17 @@ export class Component {
      */
     public onGlobalPointerUp(event: IGlobalPointerEvent): void {}
 
+    /**
+     * defineComponent useOnCollisionEnter: true
+     * @param selfCollider
+     * @param otherCollider
+     */
     public onCollisionEnter(selfCollider: Collider, otherCollider: Collider): void {}
+    /**
+     * defineComponent useOnCollisionExit: true
+     * @param selfCollider
+     * @param otherCollider
+     */
     public onCollisionExit(selfCollider: Collider, otherCollider: Collider): void {}
 }
 

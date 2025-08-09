@@ -29,9 +29,7 @@ export class Text extends RenderComponent<RenderText> {
         this._renderObject = new RenderText(this);
     }
 
-    /**
-     * --------------------------- overflow ---------------------------
-     */
+    /*************************** overflow ***************************/
     private _overflow: TEXT_OVER_FLOW = TEXT_OVER_FLOW.None;
     public get overflow(): TEXT_OVER_FLOW {
         return this._overflow;
@@ -41,13 +39,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyOverflow();
     }
 
+    /**
+     * @internal
+     */
     public applyOverflow(): void {
         this._renderObject?.applyOverflow();
     }
 
-    /**
-     * --------------------------- horizontalAlign ---------------------------
-     */
+    /*************************** horizontalAlign ***************************/
     private _horizontalAlign: TEXT_HORIZONTAL_ALIGN = TEXT_HORIZONTAL_ALIGN.Center;
     public get horizontalAlign(): TEXT_HORIZONTAL_ALIGN {
         return this._horizontalAlign;
@@ -57,13 +56,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyHorizontalAlign();
     }
 
+    /**
+     * @internal
+     */
     public applyHorizontalAlign(): void {
         this._renderObject?.applyHorizontalAlign();
     }
 
-    /**
-     * --------------------------- verticalAlign ---------------------------
-     */
+    /*************************** verticalAlign ***************************/
     private _verticalAlign: TEXT_VERTICAL_ALIGN = TEXT_VERTICAL_ALIGN.Center;
     public get verticalAlign(): TEXT_VERTICAL_ALIGN {
         return this._verticalAlign;
@@ -73,13 +73,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyVerticalAlign();
     }
 
+    /**
+     * @internal
+     */
     public applyVerticalAlign(): void {
         this._renderObject?.applyVerticalAlign();
     }
 
-    /**
-     * --------------------------- wordWrap ---------------------------
-     */
+    /*************************** wordWrap ***************************/
     private _wordWrap: boolean = false;
     public get wordWrap(): boolean {
         return this._wordWrap;
@@ -98,13 +99,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyWordWrap();
     }
 
+    /**
+     * @internal
+     */
     public applyWordWrap(): void {
         this._renderObject?.applyWordWrap();
     }
 
-    /**
-     * --------------------------- text ---------------------------
-     */
+    /*************************** text ***************************/
     private _text: string = "";
     public get text(): string {
         return this._text;
@@ -114,13 +116,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyText();
     }
 
+    /**
+     * @internal
+     */
     public applyText(): void {
         this._renderObject?.applyText();
     }
 
-    /**
-     * --------------------------- fontSize ---------------------------
-     */
+    /*************************** fontSize ***************************/
     private _fontSize: number = 32;
     public get fontSize(): number {
         return this._fontSize;
@@ -130,14 +133,15 @@ export class Text extends RenderComponent<RenderText> {
         this.applyFontSize();
     }
 
+    /**
+     * @internal
+     */
     public applyFontSize(): void {
         this._renderObject?.applyFontSize();
         this.applyLineHeight();
     }
 
-    /**
-     * --------------------------- lineHeight ---------------------------
-     */
+    /*************************** lineHeight ***************************/
     private _lineHeight: number = 1;
     public get lineHeight(): number {
         return this._lineHeight;
@@ -147,13 +151,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyLineHeight();
     }
 
+    /**
+     * @internal
+     */
     public applyLineHeight(): void {
         this._renderObject?.applyLineHeight();
     }
 
-    /**
-     * --------------------------- fontFamily ---------------------------
-     */
+    /*************************** fontFamily ***************************/
     private _fontFamily: string = "Arial";
     public get fontFamily(): string {
         return this._fontFamily;
@@ -163,13 +168,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyFontFamily();
     }
 
+    /**
+     * @internal
+     */
     public applyFontFamily(): void {
         this._renderObject?.applyFontFamily();
     }
 
-    /**
-     * --------------------------- isBold ---------------------------
-     */
+    /*************************** isBold ***************************/
     private _isBold: boolean = false;
     public get isBold(): boolean {
         return this._isBold;
@@ -179,13 +185,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyBlod();
     }
 
+    /**
+     * @internal
+     */
     public applyBlod(): void {
         this._renderObject?.applyBlod();
     }
 
-    /**
-     * --------------------------- isItalic ---------------------------
-     */
+    /*************************** isItalic ***************************/
     private _isItalic: boolean = false;
     public get isItalic(): boolean {
         return this._isItalic;
@@ -195,13 +202,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyIsItalic();
     }
 
+    /**
+     * @internal
+     */
     public applyIsItalic(): void {
         this._renderObject?.applyItalic();
     }
 
-    /**
-     * --------------------------- outline ---------------------------
-     */
+    /*************************** outline ***************************/
     private _outlineEnabled: boolean = false;
     public get outlineEnabled(): boolean {
         return this._outlineEnabled;
@@ -229,13 +237,14 @@ export class Text extends RenderComponent<RenderText> {
         this.applyOutline();
     }
 
+    /**
+     * @internal
+     */
     public applyOutline(): void {
         this._renderObject?.applyOutline();
     }
 
-    /**
-     * --------------------------- shadow ---------------------------
-     */
+    /*************************** shadow ***************************/
     private _shadowEnabled: boolean = false;
     public get shadowEnabled(): boolean {
         return this._shadowEnabled;
@@ -288,6 +297,9 @@ export class Text extends RenderComponent<RenderText> {
         this.applyShadow();
     }
 
+    /**
+     * @internal
+     */
     public applyShadow(): void {
         this._renderObject?.applyShadow();
     }

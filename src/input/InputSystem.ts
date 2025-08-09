@@ -22,7 +22,29 @@ export class InputSystem {
     }
 
     private _pointerEvents: IPointerEvent[] = [];
+    public get pointerEvents(): IPointerEvent[] {
+        return this._pointerEvents;
+    }
+
     private _globalPointerEvents: IGlobalPointerEvent[] = [];
+    public get globalPointerEvents(): IGlobalPointerEvent[] {
+        return this._globalPointerEvents;
+    }
+
+    private _isGlobalPointerDown: boolean = false;
+    public get isGlobalPointerDown(): boolean {
+        return this._isGlobalPointerDown;
+    }
+
+    private _isGlobalPointerMove: boolean = false;
+    public get isGlobalPointerMove(): boolean {
+        return this._isGlobalPointerMove;
+    }
+
+    private _isGlobalPointerUp: boolean = false;
+    public get isGlobalPointerUp(): boolean {
+        return this._isGlobalPointerUp;
+    }
 
     private _initPointerEvent(): void {
         window.addEventListener("blur", () => {});
@@ -66,6 +88,18 @@ export class InputSystem {
             source: event,
         };
         this._globalPointerEvents.push(globalPointerEvent);
+
+        if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerDown) {
+            this._isGlobalPointerDown = true;
+        } else {
+            if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerMove) {
+                this._isGlobalPointerMove = true;
+            } else {
+                if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerUp) {
+                    this._isGlobalPointerUp = true;
+                }
+            }
+        }
 
         if (hitNode) {
             const pointerEvent: IPointerEvent = {
@@ -174,7 +208,11 @@ export class InputSystem {
     /**
      * @internal
      */
-    public clearKeyboardCodeCache(): void {
+    public clearCache(): void {
+        this._isGlobalPointerDown = false;
+        this._isGlobalPointerMove = false;
+        this._isGlobalPointerUp = false;
+
         this._keyboardCodeDownSet.clear();
         this._keyboardCodeUpSet.clear();
     }

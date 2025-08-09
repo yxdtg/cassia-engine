@@ -6,6 +6,9 @@ import type { RigidBody } from "../RigidBody";
 
 @defineComponent({ componentName: "Collider", isCollider: true })
 export class Collider extends Component {
+    /**
+     * @internal
+     */
     public getRigidBodyComponent(): RigidBody | null {
         const rigidBody = this.node.getComponent<RigidBody>("RigidBody");
         if (rigidBody && rigidBody.body && !rigidBody.destroyed) return rigidBody;
@@ -42,6 +45,9 @@ export class Collider extends Component {
         this.applyDensity();
     }
 
+    /**
+     * @internal
+     */
     public applyDensity(): void {
         if (!this._collider) return;
         this._collider.setDensity(this._density);
@@ -56,6 +62,9 @@ export class Collider extends Component {
         this.applyFriction();
     }
 
+    /**
+     * @internal
+     */
     public applyFriction(): void {
         if (!this._collider) return;
         this._collider.setFriction(this._friction);
@@ -70,6 +79,9 @@ export class Collider extends Component {
         this.applyRestitution();
     }
 
+    /**
+     * @internal
+     */
     public applyRestitution(): void {
         if (!this._collider) return;
         this._collider.setRestitution(this._restitution);
@@ -84,6 +96,9 @@ export class Collider extends Component {
         this.applyIsSensor();
     }
 
+    /**
+     * @internal
+     */
     public applyIsSensor(): void {
         if (!this._collider) return;
         this._collider.setSensor(this._isSensor);
@@ -126,6 +141,9 @@ export class Collider extends Component {
         this._collider = null;
     }
 
+    /**
+     * @internal
+     */
     public reCreateCollider(): void {
         this._destroyCollider();
         this._createCollider();
