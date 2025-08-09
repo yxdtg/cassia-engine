@@ -28,6 +28,7 @@ export class RenderSystem {
 
     public setDesignSize(size?: Size): void;
     public setDesignSize(width?: number, height?: number): void;
+    public setDesignSize(sizeOrWidth?: Size | number, height?: number): void;
     public setDesignSize(...args: any[]): void {
         this._designSize.set(...args);
         this.applyDesignSize();

@@ -146,8 +146,8 @@ export class Mathf {
         anchorY: number,
         radians: number
     ): IVec2[] {
-        let offsetX = width * anchorX;
-        let offsetY = height * anchorY;
+        const offsetX = width * anchorX;
+        const offsetY = height * anchorY;
 
         // 获取四个顶点
         let vertices: IVec2[] = [

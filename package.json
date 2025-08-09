@@ -7,7 +7,8 @@
         "dev": "nodemon --watch src --ext ts --exec pnpm exec tsdown",
         "build": "pnpm exec tsdown --minify --clean",
         "madge": "node ./scripts/madge.cjs",
-        "docs": "pnpm typedoc --options typedoc.json"
+        "docs": "pnpm typedoc --options typedoc.json",
+        "test": "vitest"
     },
     "keywords": [
         "cassia-engine",
@@ -26,7 +27,8 @@
         "madge": "^8.0.0",
         "tsdown": "^0.13.3",
         "typedoc": "^0.28.9",
-        "typescript": "^5.9.2"
+        "typescript": "^5.9.2",
+        "vitest": "^3.2.4"
     },
     "dependencies": {
         "@dimforge/rapier2d-compat": "^0.18.0",

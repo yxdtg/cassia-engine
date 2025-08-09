@@ -63,6 +63,44 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._name = value;
     }
 
+    private _active: boolean = true;
+    public get active(): boolean {
+        return this._active;
+    }
+    public set active(value: boolean) {
+        const isChanged = this._active !== value;
+        this._active = value;
+
+        if (isChanged) {
+            if (this._active) {
+                for (const component of this._components) {
+                    component.onEnable();
+                }
+            } else {
+                for (const component of this._components) {
+                    component.onDisable();
+                }
+            }
+        }
+
+        this.applyActive();
+    }
+
+    /**
+     * @internal
+     */
+    public applyActive(): void {
+        this._renderNode.applyActive();
+    }
+
+    private _interactive: boolean = true;
+    public get interactive(): boolean {
+        return this._interactive;
+    }
+    public set interactive(value: boolean) {
+        this._interactive = value;
+    }
+
     /**
      * --------------------------- position ---------------------------
      */
@@ -91,8 +129,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyPosition();
     }
 
-    public setPosition(vec2: Vec2): void;
-    public setPosition(x: number, y: number): void;
+    public setPosition(vec2?: Vec2): void;
+    public setPosition(x?: number, y?: number): void;
+    public setPosition(vec2OrX?: Vec2 | number, y?: number): void;
     public setPosition(...args: any[]): void {
         this._position.set(...args);
         this.applyPosition();
@@ -133,8 +172,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applySize();
     }
 
-    public setSize(size: Size): void;
-    public setSize(width: number, height: number): void;
+    public setSize(size?: Size): void;
+    public setSize(width?: number, height?: number): void;
+    public setSize(sizeOrWidth?: Size | number, height?: number): void;
     public setSize(...args: any[]): void {
         this._size.set(...args);
         this.applySize();
@@ -176,8 +216,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyScale();
     }
 
-    public setScale(vec2: Vec2): void;
-    public setScale(x: number, y: number): void;
+    public setScale(vec2?: Vec2): void;
+    public setScale(x?: number, y?: number): void;
+    public setScale(vec2OrX?: Vec2 | number, y?: number): void;
     public setScale(...args: any[]): void {
         this._scale.set(...args);
         this.applyScale();
@@ -218,8 +259,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyAnchor();
     }
 
-    public setAnchor(vec2: Vec2): void;
-    public setAnchor(x: number, y: number): void;
+    public setAnchor(vec2?: Vec2): void;
+    public setAnchor(x?: number, y?: number): void;
+    public setAnchor(vec2OrX?: Vec2 | number, y?: number): void;
     public setAnchor(...args: any[]): void {
         this._anchor.set(...args);
         this.applyAnchor();
@@ -289,8 +331,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyFlip();
     }
 
-    public setFlip(booleanPair: BooleanPair): void;
-    public setFlip(x: boolean, y: boolean): void;
+    public setFlip(booleanPair?: BooleanPair): void;
+    public setFlip(x?: boolean, y?: boolean): void;
+    public setFlip(booleanPairOrX?: BooleanPair | boolean, y?: boolean): void;
     public setFlip(...args: any[]): void {
         this._flip.set(...args);
         this.applyFlip();
@@ -347,8 +390,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyColor();
     }
 
-    public setColor(color: Color): void;
+    public setColor(color?: Color): void;
     public setColor(r?: number, g?: number, b?: number, a?: number): void;
+    public setColor(colorOrR?: Color | number, g?: number, b?: number, a?: number): void;
     public setColor(...args: any[]): void {
         this._color.set(...args);
         this.applyColor();
@@ -818,22 +862,6 @@ export class Node extends EventObject<INodeEventTypeMap> {
             selfWorldRotation
         );
         return vertices;
-    }
-
-    private _active: boolean = true;
-    public get active(): boolean {
-        return this._active;
-    }
-    public set active(value: boolean) {
-        this._active = value;
-    }
-
-    private _interactive: boolean = true;
-    public get interactive(): boolean {
-        return this._interactive;
-    }
-    public set interactive(value: boolean) {
-        this._interactive = value;
     }
 
     public hitTest(worldPoint: Vec2): boolean;

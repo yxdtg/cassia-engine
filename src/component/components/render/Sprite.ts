@@ -79,6 +79,7 @@ export class Sprite extends RenderComponent<RenderSprite> {
 
     public setNineSliceBounds(bounds?: Bounds): void;
     public setNineSliceBounds(top?: number, bottom?: number, left?: number, right?: number): void;
+    public setNineSliceBounds(boundsOrTop?: Bounds | number, bottom?: number, left?: number, right?: number): void;
     public setNineSliceBounds(...args: any[]): void {
         this._nineSliceBounds.set(...args);
         this.applyNineSliceBounds();

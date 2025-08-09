@@ -111,9 +111,9 @@ export class Engine {
         this._deltaTime = (performance.now() - this._lastTime) / 1000;
         this._lastTime = performance.now();
 
-        this._timeSystem.updateTimers(this._deltaTime);
-
         this._sceneManager.createNextScene();
+
+        this._timeSystem.updateTimers(this._deltaTime);
 
         this._inputSystem.dispatchEvents();
 

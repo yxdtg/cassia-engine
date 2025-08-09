@@ -1,4 +1,4 @@
-import { NODE_EVENT_TYPE } from "cassia-engine/node";
+import { type Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import type { Component, IComponentConstructor } from "./Component";
 
 export class ComponentManager {
@@ -44,7 +44,11 @@ export class ComponentManager {
      * @internal
      */
     public callStartComponents(): void {
-        this._unStartedComponents.forEach((component) => component.onStart());
+        this._unStartedComponents.forEach((component) => {
+            if (canExecuteComponent(component)) {
+                component.onStart();
+            }
+        });
 
         this._components.push(...this._unStartedComponents);
 
@@ -55,21 +59,33 @@ export class ComponentManager {
      * @internal
      */
     public callUpdateComponents(deltaTime: number): void {
-        this._components.forEach((component) => component.onUpdate(deltaTime));
+        this._components.forEach((component) => {
+            if (canExecuteComponent(component)) {
+                component.onUpdate(deltaTime);
+            }
+        });
     }
 
     /**
      * @internal
      */
     public callFixedUpdateComponents(fixedTimeStep: number): void {
-        this._components.forEach((component) => component.onFixedUpdate(fixedTimeStep));
+        this._components.forEach((component) => {
+            if (canExecuteComponent(component)) {
+                component.onFixedUpdate(fixedTimeStep);
+            }
+        });
     }
 
     /**
      * @internal
      */
     public callLateUpdateComponents(deltaTime: number): void {
-        this._components.forEach((component) => component.onLateUpdate(deltaTime));
+        this._components.forEach((component) => {
+            if (canExecuteComponent(component)) {
+                component.onLateUpdate(deltaTime);
+            }
+        });
     }
 
     private _destroyedComponents: Component[] = [];
@@ -136,4 +152,24 @@ export class ComponentManager {
         });
         this._destroyedComponents.length = 0;
     }
+}
+
+export function canExecuteComponent(component: Component): boolean {
+    if (!component.enabled) return false;
+
+    let node: Node | null = component.node;
+
+    let active = true;
+
+    while (node) {
+        if (!node.active) {
+            active = false;
+            break;
+        }
+
+        node = node.parent;
+    }
+
+    if (active) return true;
+    return false;
 }

@@ -13,6 +13,25 @@ export class Component {
         this._node = node;
     }
 
+    private _enabled: boolean = true;
+    public get enabled(): boolean {
+        return this._enabled;
+    }
+    public set enabled(value: boolean) {
+        const isChanged = this._enabled !== value;
+        this._enabled = value;
+
+        if (isChanged) {
+            if (this.node.active) {
+                if (this._enabled) {
+                    this.onEnable();
+                } else {
+                    this.onDisable();
+                }
+            }
+        }
+    }
+
     private _destroyed: boolean = false;
     public get destroyed(): boolean {
         return this._destroyed;
@@ -28,6 +47,9 @@ export class Component {
 
     public onStart(): void {}
     public onDestroy(): void {}
+
+    public onEnable(): void {}
+    public onDisable(): void {}
 
     public onFixedUpdate(dt: number): void {}
 

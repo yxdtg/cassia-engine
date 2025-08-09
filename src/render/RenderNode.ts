@@ -72,6 +72,10 @@ export class RenderNode {
         return this._node;
     }
 
+    public applyActive(): void {
+        const active = this._node.active;
+        this._renderer.visible = active;
+    }
     public applyPosition(): void {
         const position = this._node.position;
         this._renderer.position.set(position.x, position.y);
