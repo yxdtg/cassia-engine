@@ -2,10 +2,10 @@ import RAPIER from "@dimforge/rapier2d-compat";
 import { physicsSystem } from "cassia-engine";
 import { defineComponent } from "cassia-engine/component";
 import { Size } from "cassia-engine/math";
-import { Collider } from "./Collider";
+import { ColliderComponent } from "./ColliderComponent";
 
 @defineComponent({ componentName: "CapsuleCollider" })
-export class CapsuleCollider extends Collider {
+export class CapsuleCollider extends ColliderComponent {
     private _radius: number = 32;
     public get radius(): number {
         return this._radius;

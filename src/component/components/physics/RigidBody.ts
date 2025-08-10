@@ -1,6 +1,6 @@
 import RAPIER from "@dimforge/rapier2d-compat";
 import { Component, defineComponent } from "cassia-engine/component";
-import type { Collider } from "./colliders";
+import type { ColliderComponent } from "./colliders";
 import { vec2, Vec2 } from "cassia-engine/math";
 import { physicsSystem } from "cassia-engine";
 
@@ -19,12 +19,12 @@ export class RigidBody extends Component {
         return this._body;
     }
 
-    public get colliderComponents(): Collider[] {
-        const components: Collider[] = [];
+    public get colliderComponents(): ColliderComponent[] {
+        const components: ColliderComponent[] = [];
 
         this.node.components.forEach((component) => {
-            if (component.isCollider) {
-                components.push(component as Collider);
+            if (component.isColliderComponent) {
+                components.push(component as ColliderComponent);
             }
         });
         return components;

@@ -1,12 +1,12 @@
 import RAPIER from "@dimforge/rapier2d-compat";
 import { NODE_EVENT_TYPE, renderSystem } from "cassia-engine";
-import { Collider, RigidBody } from "cassia-engine/component";
-import { color, vec2, Vec2 } from "cassia-engine/math";
+import { ColliderComponent, RigidBody } from "cassia-engine/component";
+import { color, type IVec2, vec2, Vec2 } from "cassia-engine/math";
 
 export class PhysicsSystem {
     public debug: boolean = false;
 
-    private _gravity: { x: number; y: number } = { x: 0, y: -98.1 };
+    private _gravity: IVec2 = { x: 0, y: -98.1 };
     private _world: RAPIER.World = null!;
 
     /**
@@ -27,9 +27,9 @@ export class PhysicsSystem {
     }
 
     private _rigidBodyComponents: RigidBody[] = [];
-    private _colliderComponents: Collider[] = [];
+    private _colliderComponents: ColliderComponent[] = [];
 
-    private _colliderToColliderComponentMap: Map<RAPIER.Collider, Collider> = new Map();
+    private _colliderToColliderComponentMap: Map<RAPIER.Collider, ColliderComponent> = new Map();
 
     /**
      * @internal
@@ -63,7 +63,10 @@ export class PhysicsSystem {
      * @param colliderDesc
      * @returns
      */
-    public createCollider(colliderComponent: Collider, colliderDesc: RAPIER.ColliderDesc): RAPIER.Collider | null {
+    public createCollider(
+        colliderComponent: ColliderComponent,
+        colliderDesc: RAPIER.ColliderDesc
+    ): RAPIER.Collider | null {
         if (this._colliderComponents.includes(colliderComponent)) return null;
 
         let collider: RAPIER.Collider;
@@ -93,7 +96,7 @@ export class PhysicsSystem {
      * @param collider
      * @returns
      */
-    public destroyCollider(colliderComponent: Collider, collider: RAPIER.Collider): void {
+    public destroyCollider(colliderComponent: ColliderComponent, collider: RAPIER.Collider): void {
         const index = this._colliderComponents.indexOf(colliderComponent);
         if (index === -1) return;
 

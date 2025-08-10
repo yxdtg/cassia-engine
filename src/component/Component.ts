@@ -1,7 +1,7 @@
 import type { IGlobalPointerEvent, IPointerEvent } from "cassia-engine/input";
 import type { Node } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
-import type { Collider } from "./components";
+import type { ColliderComponent } from "./components";
 
 export class Component {
     private _node: Node;
@@ -21,13 +21,11 @@ export class Component {
         const isChanged = this._enabled !== value;
         this._enabled = value;
 
-        if (isChanged) {
-            if (this.node.active) {
-                if (this._enabled) {
-                    this.onEnable();
-                } else {
-                    this.onDisable();
-                }
+        if (isChanged && this.node.active) {
+            if (this._enabled) {
+                this.onEnable();
+            } else {
+                this.onDisable();
             }
         }
     }
@@ -93,31 +91,55 @@ export class Component {
      * @param selfCollider
      * @param otherCollider
      */
-    public onCollisionEnter(selfCollider: Collider, otherCollider: Collider): void {}
+    public onCollisionEnter(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
     /**
      * defineComponent useOnCollisionExit: true
      * @param selfCollider
      * @param otherCollider
      */
-    public onCollisionExit(selfCollider: Collider, otherCollider: Collider): void {}
+    public onCollisionExit(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
 }
 
 export interface Component {
     readonly componentName: string;
 
+    /**
+     * @internal
+     */
     readonly useOnPointerDown: boolean;
+    /**
+     * @internal
+     */
     readonly useOnPointerMove: boolean;
+    /**
+     * @internal
+     */
     readonly useOnPointerUp: boolean;
 
+    /**
+     * @internal
+     */
     readonly useOnGlobalPointerDown: boolean;
+    /**
+     * @internal
+     */
     readonly useOnGlobalPointerMove: boolean;
+    /**
+     * @internal
+     */
     readonly useOnGlobalPointerUp: boolean;
 
+    /**
+     * @internal
+     */
     readonly useOnCollisionEnter: boolean;
+    /**
+     * @internal
+     */
     readonly useOnCollisionExit: boolean;
 
-    readonly isRender: boolean;
-    readonly isCollider: boolean;
+    readonly isRenderComponent: boolean;
+    readonly isColliderComponent: boolean;
 }
 
 export type IComponentConstructor<T extends Component = Component> = new (node: Node) => T;
@@ -136,8 +158,8 @@ export interface IDefineComponentOptions {
     useOnCollisionEnter?: boolean;
     useOnCollisionExit?: boolean;
 
-    isRender?: boolean;
-    isCollider?: boolean;
+    isRenderComponent?: boolean;
+    isColliderComponent?: boolean;
 }
 
 export function defineComponent<T extends Component>(options: IDefineComponentOptions): Function {
@@ -156,8 +178,8 @@ export function defineComponent<T extends Component>(options: IDefineComponentOp
         const useOnCollisionEnter = options.useOnCollisionEnter ?? false;
         const useOnCollisionExit = options.useOnCollisionExit ?? false;
 
-        const isRender = options.isRender ?? false;
-        const isCollider = options.isCollider ?? false;
+        const isRenderComponent = options.isRenderComponent ?? false;
+        const isColliderComponent = options.isColliderComponent ?? false;
 
         if (componentName.length === 0) throw new Error("componentName is empty");
 
@@ -192,11 +214,11 @@ export function defineComponent<T extends Component>(options: IDefineComponentOp
             get: (): boolean => useOnCollisionExit,
         });
 
-        Object.defineProperty(componentClassPrototype, "isRender", {
-            get: (): boolean => isRender,
+        Object.defineProperty(componentClassPrototype, "isRenderComponent", {
+            get: (): boolean => isRenderComponent,
         });
-        Object.defineProperty(componentClassPrototype, "isCollider", {
-            get: (): boolean => isCollider,
+        Object.defineProperty(componentClassPrototype, "isColliderComponent", {
+            get: (): boolean => isColliderComponent,
         });
 
         ComponentManager.defineComponent(constructor);

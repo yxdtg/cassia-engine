@@ -1,5 +1,10 @@
 import { componentManager, nodeManager, sceneManager } from "cassia-engine";
-import { type Collider, type Component, ComponentManager, type IComponentConstructor } from "cassia-engine/component";
+import {
+    type ColliderComponent,
+    type Component,
+    ComponentManager,
+    type IComponentConstructor,
+} from "cassia-engine/component";
 import { EventObject } from "cassia-engine/event";
 import {
     GLOBAL_POINTER_EVENT_TYPE,
@@ -33,8 +38,8 @@ interface INodeEventTypeMap {
     [NODE_EVENT_TYPE.GlobalPointerMove]: (event: IGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.GlobalPointerUp]: (event: IGlobalPointerEvent) => void;
 
-    [NODE_EVENT_TYPE.CollisionEnter]: (selfCollider: Collider, otherCollider: Collider) => void;
-    [NODE_EVENT_TYPE.CollisionExit]: (selfCollider: Collider, otherCollider: Collider) => void;
+    [NODE_EVENT_TYPE.CollisionEnter]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;
+    [NODE_EVENT_TYPE.CollisionExit]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;
 }
 
 export class Node extends EventObject<INodeEventTypeMap> {

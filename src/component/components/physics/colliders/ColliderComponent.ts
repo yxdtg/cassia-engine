@@ -4,8 +4,8 @@ import { Component, defineComponent } from "cassia-engine/component";
 import { Vec2 } from "cassia-engine/math";
 import type { RigidBody } from "../RigidBody";
 
-@defineComponent({ componentName: "Collider", isCollider: true })
-export class Collider extends Component {
+@defineComponent({ componentName: "ColliderComponent", isColliderComponent: true })
+export class ColliderComponent extends Component {
     /**
      * @internal
      */
