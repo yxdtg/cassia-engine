@@ -1,22 +1,30 @@
 import { Assets, Texture } from "pixi.js";
 import { Howl } from "howler";
 
-export interface ILoadResourceInfo {
-    name: string;
-    type: RESOURCE_TYPE;
-    src: string;
-}
-
-export interface IUnloadResourceInfo {
-    type: RESOURCE_TYPE;
-    name: string;
-}
-
 export const RESOURCE_TYPE = {
     Texture: "texture",
     Audio: "audio",
 } as const;
 export type RESOURCE_TYPE = (typeof RESOURCE_TYPE)[keyof typeof RESOURCE_TYPE];
+
+export interface ILoadResourceInfo {
+    name: string;
+    type: RESOURCE_TYPE;
+    src: string;
+    options?: {
+        /**
+         * type: "texture"
+         */
+        pixelStyle?: boolean;
+    };
+}
+
+export type ILoadTargetTypeResourceInfo = Omit<ILoadResourceInfo, "type">;
+
+export interface IUnloadResourceInfo {
+    type: RESOURCE_TYPE;
+    name: string;
+}
 
 export async function loadTexture(url: string): Promise<Texture> {
     try {

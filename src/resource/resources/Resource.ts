@@ -1,7 +1,7 @@
 import type { ILoadResourceInfo, RESOURCE_TYPE } from "../define";
 
 export class Resource<T = any> {
-    private _resourceInfo: ILoadResourceInfo;
+    protected _resourceInfo: ILoadResourceInfo;
     public get resourceInfo(): ILoadResourceInfo {
         return this._resourceInfo;
     }
@@ -16,7 +16,7 @@ export class Resource<T = any> {
         return this._resourceInfo.src;
     }
 
-    private _data: T;
+    protected _data: T;
     public get data(): T {
         return this._data;
     }

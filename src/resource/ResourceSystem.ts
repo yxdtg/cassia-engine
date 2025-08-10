@@ -1,5 +1,6 @@
 import {
     type ILoadResourceInfo,
+    ILoadTargetTypeResourceInfo,
     type IUnloadResourceInfo,
     loadAudio,
     loadTexture,
@@ -68,6 +69,39 @@ export class ResourceSystem {
         }
     }
 
+    public async loadTargetTypeResources(
+        type: RESOURCE_TYPE,
+        loadTargetTypeResourceInfos: ILoadTargetTypeResourceInfo[]
+    ): Promise<void> {
+        try {
+            const loadResourceInfos = loadTargetTypeResourceInfos.map((loadTargetTypeResourceInfo) => {
+                const loadResourceInfo: ILoadResourceInfo = {
+                    type: type,
+                    ...loadTargetTypeResourceInfo,
+                };
+                return loadResourceInfo;
+            });
+
+            await this.loadResources(loadResourceInfos);
+        } catch (e) {
+            throw e;
+        }
+    }
+    public async loadTextureResources(loadTextureResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
+        try {
+            await this.loadTargetTypeResources(RESOURCE_TYPE.Texture, loadTextureResourceInfos);
+        } catch (e) {
+            throw e;
+        }
+    }
+    public async loadAudioResources(loadAudioResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
+        try {
+            await this.loadTargetTypeResources(RESOURCE_TYPE.Audio, loadAudioResourceInfos);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     public async unloadResource(unloadResourceInfo: IUnloadResourceInfo): Promise<void> {
         try {
             const { name, type } = unloadResourceInfo;
@@ -116,6 +150,36 @@ export class ResourceSystem {
         }
     }
 
+    public async unloadTargetTypeResources(type: RESOURCE_TYPE, names: string[]): Promise<void> {
+        try {
+            const unloadResourceInfos = names.map((name) => {
+                const unloadResourceInfo: IUnloadResourceInfo = {
+                    type: type,
+                    name: name,
+                };
+                return unloadResourceInfo;
+            });
+
+            await this.unloadResources(unloadResourceInfos);
+        } catch (e) {
+            throw e;
+        }
+    }
+    public async unloadTextureResources(names: string[]): Promise<void> {
+        try {
+            await this.unloadTargetTypeResources(RESOURCE_TYPE.Texture, names);
+        } catch (e) {
+            throw e;
+        }
+    }
+    public async unloadAudioResources(names: string[]): Promise<void> {
+        try {
+            await this.unloadTargetTypeResources(RESOURCE_TYPE.Audio, names);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     public getResource<T extends RESOURCE_TYPE>(type: T, name: string): IResourceTypeMap[T] | null {
         return (this._typeToNameToResourceMap.get(type)?.get(name) as IResourceTypeMap[T]) ?? null;
     }
@@ -124,6 +188,19 @@ export class ResourceSystem {
     }
     public getAudioResource(name: string): AudioResource | null {
         return this.getResource(RESOURCE_TYPE.Audio, name);
+    }
+
+    public getTargetTypeResources<T extends RESOURCE_TYPE>(type: T): IResourceTypeMap[T][] {
+        const nameToResourceMap = this._typeToNameToResourceMap.get(type);
+        if (!nameToResourceMap) return [];
+
+        return Array.from(nameToResourceMap.values()) as IResourceTypeMap[T][];
+    }
+    public getTextureResources(): TextureResource[] {
+        return this.getTargetTypeResources(RESOURCE_TYPE.Texture);
+    }
+    public getAudioResources(): AudioResource[] {
+        return this.getTargetTypeResources(RESOURCE_TYPE.Audio);
     }
 }
 
