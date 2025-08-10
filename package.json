@@ -3,6 +3,12 @@
     "version": "0.0.1",
     "description": "A TypeScript game engine focused on 2D, ease of use, and high performance.",
     "main": "./dist/index.js",
+    "files": [
+        "dist",
+        "package.json",
+        "README.md",
+        "LICENSE"
+    ],
     "scripts": {
         "dev": "pnpm exec nodemon --watch src --ext ts --exec pnpm exec tsdown",
         "build": "pnpm exec tsdown --minify --clean",
@@ -35,5 +41,9 @@
         "@dimforge/rapier2d-compat": "^0.18.0",
         "howler": "^2.2.4",
         "pixi.js": "^8.12.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yxdtg/cassia-engine.git"
     }
 }
