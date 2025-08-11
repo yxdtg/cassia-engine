@@ -1,9 +1,8 @@
 node_modules
 
 dist
-build
-
 types
+build
 
 js
 docs

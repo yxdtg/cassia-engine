@@ -87,14 +87,14 @@ export class ResourceSystem {
             throw e;
         }
     }
-    public async loadTextureResources(loadTextureResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
+    public async loadTextures(loadTextureResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
         try {
             await this.loadTargetTypeResources(RESOURCE_TYPE.Texture, loadTextureResourceInfos);
         } catch (e) {
             throw e;
         }
     }
-    public async loadAudioResources(loadAudioResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
+    public async loadAudios(loadAudioResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
         try {
             await this.loadTargetTypeResources(RESOURCE_TYPE.Audio, loadAudioResourceInfos);
         } catch (e) {
@@ -165,14 +165,14 @@ export class ResourceSystem {
             throw e;
         }
     }
-    public async unloadTextureResources(names: string[]): Promise<void> {
+    public async unloadTextures(names: string[]): Promise<void> {
         try {
             await this.unloadTargetTypeResources(RESOURCE_TYPE.Texture, names);
         } catch (e) {
             throw e;
         }
     }
-    public async unloadAudioResources(names: string[]): Promise<void> {
+    public async unloadAudios(names: string[]): Promise<void> {
         try {
             await this.unloadTargetTypeResources(RESOURCE_TYPE.Audio, names);
         } catch (e) {
@@ -183,10 +183,10 @@ export class ResourceSystem {
     public getResource<T extends RESOURCE_TYPE>(type: T, name: string): IResourceTypeMap[T] | null {
         return (this._typeToNameToResourceMap.get(type)?.get(name) as IResourceTypeMap[T]) ?? null;
     }
-    public getTextureResource(name: string): TextureResource | null {
+    public getTexture(name: string): TextureResource | null {
         return this.getResource(RESOURCE_TYPE.Texture, name);
     }
-    public getAudioResource(name: string): AudioResource | null {
+    public getAudio(name: string): AudioResource | null {
         return this.getResource(RESOURCE_TYPE.Audio, name);
     }
 
@@ -196,10 +196,10 @@ export class ResourceSystem {
 
         return Array.from(nameToResourceMap.values()) as IResourceTypeMap[T][];
     }
-    public getTextureResources(): TextureResource[] {
+    public getAllTextures(): TextureResource[] {
         return this.getTargetTypeResources(RESOURCE_TYPE.Texture);
     }
-    public getAudioResources(): AudioResource[] {
+    public getAllAudios(): AudioResource[] {
         return this.getTargetTypeResources(RESOURCE_TYPE.Audio);
     }
 }

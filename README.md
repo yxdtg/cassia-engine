@@ -2,7 +2,7 @@
 
 目标：一个专注于 2D、易用性和高性能的 TypeScript 游戏引擎。
 
-版本：0.0.1
+版本：0.0.11
 
 # 安装
 
@@ -171,6 +171,26 @@ pnpm run build
 
 ### 文档正在编写中，请先自行探索...
 
+### -------------------------------------------------
+
+## 特别鸣谢 (以下是使用到的开源项目，排名不分先后)
+
+-   渲染/pixi.js https://pixijs.com/
+-   音频/howler https://howlerjs.com/
+-   物理/rapier2d https://rapier.rs/
+
+### 开发依赖
+
+-   fs-extra https://github.com/jprichardson/node-fs-extra
+-   madge https://github.com/pahen/madge
+-   nodemon https://nodemon.io/
+-   tsdown https://tsdown.dev/
+-   typedoc https://typedoc.org/
+-   typescript https://www.typescriptlang.org/
+-   vitest https://cn.vitest.dev/
+
+### -------------------------------------------------
+
 ### 交流
 
 github: https://github.com/yxdtg/cassia-engine
@@ -179,7 +199,7 @@ email: <EMAIL> 2430877819@qq.com
 
 ### 贡献
 
-欢迎提交 PR，共建 Cassia Engine！
+遇到问题或有好的建议，欢迎提交 issue 或 pr。
 
 ## 许可证
 
