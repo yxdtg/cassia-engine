@@ -18,6 +18,7 @@ import type { Scene } from "cassia-engine/scene";
 
 export interface INodeOptions {
     name?: string;
+    interactive?: boolean;
     parent?: Node | null;
 }
 
@@ -53,8 +54,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
         this._renderNode = new RenderNode(this);
 
-        this._name = options.name ?? "";
-        this.parent = options.parent ?? null;
+        this._name = options.name ?? this._name;
+        this._interactive = options.interactive ?? this._interactive;
+        this.parent = options.parent ?? this._parent;
 
         this.applySize();
         this.applyColor();
@@ -460,9 +462,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     /**
-     * @internal
      * @param child
-     * @returns
      */
     public addChild(child: Node): void {
         if (this._destroyed || child._parent === this) return;
@@ -477,9 +477,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.addChild(childRenderNode);
     }
     /**
-     * @internal
      * @param child
-     * @returns
      */
     public removeChild(child: Node): void {
         const index = this._children.indexOf(child);
@@ -732,17 +730,30 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._comp;
     }
 
-    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T;
-    public addComponent<T extends Component>(componentName: string): T;
-    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T;
-    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T {
+    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T | null;
+    public addComponent<T extends Component>(componentName: string): T | null;
+    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T | null;
+    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T | null {
         const componentClass =
             typeof componentClassOrName === "string"
                 ? ComponentManager.getComponentClass(componentClassOrName)
                 : componentClassOrName;
         if (!componentClass || !(componentClass.prototype as T | null)?.componentName) {
             console.error(`Component ${componentClassOrName} is not defined.`);
-            return null as any;
+            return null;
+        }
+
+        if ((componentClass.prototype as T).isRenderComponent) {
+            for (const component of this._components) {
+                if (component.isRenderComponent) {
+                    console.error(
+                        `添加组件 ${
+                            (componentClass.prototype as T).componentName
+                        } 失败，每个节点只可以拥有一个渲染组件.`
+                    );
+                    return null;
+                }
+            }
         }
 
         const component = new componentClass(this);
@@ -870,5 +881,13 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
 
         this._children.forEach((child) => child.addToHitNodes(worldPoint, hitNodes));
+    }
+
+    public dispatchPointerEvent(event: IPointerEvent): void {
+        this.emit(event.type, event);
+
+        if (this._parent && event.bubbling) {
+            this._parent.dispatchPointerEvent(event);
+        }
     }
 }

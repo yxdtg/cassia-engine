@@ -1,6 +1,7 @@
 import type { Node } from "cassia-engine/node";
 import { RenderScene } from "cassia-engine/render";
 import { SceneManager } from "./SceneManager";
+import { defineObjectGetter } from "cassia-engine/utils";
 
 export class Scene {
     private _renderScene: RenderScene;
@@ -107,9 +108,7 @@ export function defineScene<T extends Scene>(options: IDefineSceneOptions): Func
 
         if (sceneName.length === 0) throw new Error("sceneName is empty");
 
-        Object.defineProperty(sceneClassPrototype, "sceneName", {
-            get: (): string => sceneName,
-        });
+        defineObjectGetter(sceneClassPrototype, "sceneName", sceneName);
 
         SceneManager.defineScene(constructor);
     };

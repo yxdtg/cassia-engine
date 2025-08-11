@@ -138,7 +138,7 @@ export class InputSystem {
 
         this._pointerEvents.forEach((pointerEvent) => {
             if (pointerEvent.target) {
-                pointerEvent.target.emit(pointerEvent.type, pointerEvent);
+                pointerEvent.target.dispatchPointerEvent(pointerEvent);
             }
         });
         this._pointerEvents.length = 0;

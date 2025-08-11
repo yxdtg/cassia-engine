@@ -20,3 +20,9 @@ export const OS_TYPE = {
     Unknown: "unknown",
 } as const;
 export type OS_TYPE = (typeof OS_TYPE)[keyof typeof OS_TYPE];
+
+export function defineObjectGetter(obj: any, propertyName: string, value: any): void {
+    Object.defineProperty(obj, propertyName, {
+        get: () => value,
+    });
+}

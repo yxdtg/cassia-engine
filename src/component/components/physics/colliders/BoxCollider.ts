@@ -31,6 +31,14 @@ export class BoxCollider extends ColliderComponent {
         this.applySize();
     }
 
+    public setSize(size?: Size): void;
+    public setSize(width?: number, height?: number): void;
+    public setSize(sizeOrWidth?: Size | number, height?: number): void;
+    public setSize(...args: any[]): void {
+        this._size.set(...args);
+        this.applySize();
+    }
+
     /**
      * @internal
      */
