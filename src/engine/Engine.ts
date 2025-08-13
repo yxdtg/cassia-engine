@@ -7,6 +7,7 @@ import { RenderSystem } from "cassia-engine/render";
 import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
 import { TimeSystem } from "cassia-engine/time";
+import { updateTweens } from "cassia-engine/tween";
 
 export class Engine {
     private _renderSystem: RenderSystem;
@@ -108,8 +109,9 @@ export class Engine {
      * @internal
      */
     public update(): void {
-        this._deltaTime = (performance.now() - this._lastTime) / 1000;
-        this._lastTime = performance.now();
+        const now = performance.now();
+        this._deltaTime = (now - this._lastTime) / 1000;
+        this._lastTime = now;
 
         this._sceneManager.createNextScene();
 
@@ -133,6 +135,8 @@ export class Engine {
         }
 
         this._componentManager.callLateUpdateComponents(this._deltaTime);
+
+        updateTweens(now);
 
         this._physicsSystem.update();
 

@@ -35,6 +35,10 @@ export class TimeSystem {
         this._timers.length = 0;
     }
 
+    /**
+     * @internal
+     * @param deltaTime
+     */
     public updateTimers(deltaTime: number): void {
         this._updateFrameTimers();
 

@@ -178,6 +178,7 @@ pnpm run build
 -   渲染/pixi.js https://pixijs.com/
 -   音频/howler https://howlerjs.com/
 -   物理/rapier2d https://rapier.rs/
+-   缓动/tween.js https://github.com/tweenjs/tween.js
 
 ### 开发依赖
 

@@ -15,6 +15,7 @@ export const componentManager = engine.componentManager;
 
 export * from "./math";
 export * from "./utils";
+export * from "./tween";
 
 export * from "./engine";
 
