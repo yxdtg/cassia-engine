@@ -110,6 +110,6 @@ export class RenderNode {
         const flip = this._node.flip;
 
         this._renderContainer.scale.x = flip.x ? -1 : 1;
-        this._renderContainer.scale.y = flip.y ? -1 : 1;
+        this._renderContainer.scale.y = flip.y ? 1 : -1;
     }
 }
