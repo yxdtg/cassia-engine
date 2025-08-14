@@ -73,18 +73,16 @@ export class Engine {
         return this._started;
     }
 
+    private _now: number = 0;
     private _lastTime: number = 0;
     private _deltaTime: number = 0;
     public get deltaTime(): number {
         return this._deltaTime;
     }
-    public get dt(): number {
-        return this.deltaTime;
-    }
 
     private _fixedTime: number = 0;
 
-    private _fixedTimeStep: number = 1 / 50;
+    private _fixedTimeStep: number = 1000 / 50;
     public get fixedTimeStep(): number {
         return this._fixedTimeStep;
     }
@@ -109,9 +107,9 @@ export class Engine {
      * @internal
      */
     public update(): void {
-        const now = performance.now();
-        this._deltaTime = (now - this._lastTime) / 1000;
-        this._lastTime = now;
+        this._now = performance.now();
+        this._deltaTime = this._now - this._lastTime;
+        this._lastTime = this._now;
 
         this._sceneManager.createNextScene();
 
@@ -136,7 +134,7 @@ export class Engine {
 
         this._componentManager.callLateUpdateComponents(this._deltaTime);
 
-        updateTweens(now);
+        updateTweens(this._now);
 
         this._physicsSystem.update();
 

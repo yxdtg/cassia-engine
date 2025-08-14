@@ -1,12 +1,12 @@
 export class TimeSystem {
-    private _timers: ITimerInfo[] = [];
+    private _timers: ITimerData[] = [];
 
     public addTimer(callback: ITimerCallback, intervalTime: number = 0, options: Partial<IAddTimerOptions> = {}): void {
         const targetCount = options.targetCount ?? -1;
         const firstDelay = options.firstDelay ?? 0;
         const target = options.target ?? null;
 
-        const timer: ITimerInfo = {
+        const timer: ITimerData = {
             callback: callback,
             target: target,
 
@@ -42,7 +42,7 @@ export class TimeSystem {
     public updateTimers(deltaTime: number): void {
         this._updateFrameTimers();
 
-        const unremoveTimers: ITimerInfo[] = [];
+        const unremoveTimers: ITimerData[] = [];
 
         const timers = [...this._timers];
         timers.forEach((timer) => {
@@ -59,7 +59,7 @@ export class TimeSystem {
                 timer.currentCount++;
 
                 const isDone = timer.currentCount === timer.targetCount;
-                const options: IJzTimerCallbackOptions = {
+                const options: ITimerCallbackOptions = {
                     currentCount: timer.currentCount,
                     targetCount: timer.targetCount,
                     isDone: isDone,
@@ -85,9 +85,9 @@ export class TimeSystem {
         });
     }
 
-    private _frameTimers: IFrameTimerInfo[] = [];
+    private _frameTimers: IFrameTimerData[] = [];
     public addFrameTimer(callback: () => void, frame: number = 1, target: any = null): void {
-        const frameTimer: IFrameTimerInfo = {
+        const frameTimer: IFrameTimerData = {
             callback: callback,
             target: target,
 
@@ -98,7 +98,7 @@ export class TimeSystem {
     }
 
     private _updateFrameTimers(): void {
-        const unremoveFrameTimers: IFrameTimerInfo[] = [];
+        const unremoveFrameTimers: IFrameTimerData[] = [];
 
         const frameTimers = [...this._frameTimers];
 
@@ -124,7 +124,7 @@ export class TimeSystem {
     }
 }
 
-export interface IJzTimerCallbackOptions {
+export interface ITimerCallbackOptions {
     /**
      * 当前是第几次执行
      */
@@ -148,12 +148,12 @@ export interface IAddTimerOptions {
 /**
  * 计时器回调函数
  */
-export type ITimerCallback = (options: IJzTimerCallbackOptions) => void;
+export type ITimerCallback = (options: ITimerCallbackOptions) => void;
 
 /**
  * 计时器
  */
-export interface ITimerInfo {
+export interface ITimerData {
     callback: ITimerCallback;
     target?: any;
 
@@ -167,7 +167,7 @@ export interface ITimerInfo {
     isFirst: boolean;
 }
 
-export interface IFrameTimerInfo {
+export interface IFrameTimerData {
     callback: () => void;
     target?: any;
 
