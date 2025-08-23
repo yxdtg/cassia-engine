@@ -1,4 +1,4 @@
-import type { Node } from "cassia-engine/node";
+import type { Layer } from "cassia-engine/layer";
 import { RenderScene } from "cassia-engine/render";
 import { SceneManager } from "./SceneManager";
 import { defineObjectGetter } from "cassia-engine/utils";
@@ -15,78 +15,49 @@ export class Scene {
 
     public onInit(): void {}
 
-    private _nodes: Node[] = [];
-    public get nodes(): Node[] {
-        return this._nodes;
+    private _layers: Layer[] = [];
+    public get layers(): Layer[] {
+        return this._layers;
     }
 
-    public getFlatNodes(): Node[] {
-        const flatNodes: Node[] = [];
-        this._nodes.forEach((node) => this._addToFlatNodes(node, flatNodes));
-        return flatNodes;
-    }
-    private _addToFlatNodes(node: Node, flatNodes: Node[]): void {
-        flatNodes.push(node);
-        node.children.forEach((child) => this._addToFlatNodes(child, flatNodes));
+    public addLayer(layer: Layer): void {
+        if (this._layers.includes(layer)) return;
+        this._layers.push(layer);
+
+        const renderLayer = layer.renderLayer;
+        this._renderScene.addRenderLayer(renderLayer);
     }
 
-    /**
-     * @internal
-     * @param node
-     * @returns
-     */
-    public addNode(node: Node): void {
-        if (this._nodes.includes(node)) return;
-        this._nodes.push(node);
-
-        const renderNode = node.renderNode;
-        this._renderScene.addRenderNode(renderNode);
-    }
-    /**
-     * @internal
-     * @param node
-     * @returns
-     */
-    public removeNode(node: Node): void {
-        const index = this._nodes.indexOf(node);
+    public removeLayer(layer: Layer): void {
+        const index = this._layers.indexOf(layer);
         if (index === -1) return;
-        this._nodes.splice(index, 1);
+        this._layers.splice(index, 1);
 
-        const renderNode = node.renderNode;
-        this._renderScene.removeRenderNode(renderNode);
+        const renderLayer = layer.renderLayer;
+        this._renderScene.removeRenderLayer(renderLayer);
     }
 
-    /**
-     * @internal
-     * @param node
-     * @returns
-     */
-    public getNodeIndex(node: Node): number {
-        return this._nodes.indexOf(node);
+    public getLayerIndex(layer: Layer): number {
+        return this._layers.indexOf(layer);
     }
-    /**
-     * @internal
-     * @param node
-     * @param index
-     * @returns
-     */
-    public setNodeIndex(node: Node, index: number): void {
-        if (index < 0 || index >= this._nodes.length) return;
 
-        const currentIndex = this._nodes.indexOf(node);
+    public setLayerIndex(layer: Layer, index: number): void {
+        if (index < 0 || index >= this._layers.length) return;
+
+        const currentIndex = this._layers.indexOf(layer);
         if (currentIndex === -1 || currentIndex === index) return;
 
-        this._nodes.splice(currentIndex, 1);
-        this._nodes.splice(index, 0, node);
+        this._layers.splice(currentIndex, 1);
+        this._layers.splice(index, 0, layer);
 
-        const renderNode = node.renderNode;
-        this._renderScene.setRenderNodeIndex(renderNode, index);
+        const renderLayer = layer.renderLayer;
+        this._renderScene.setRenderLayerIndex(renderLayer, index);
     }
 
-    public destroyAllNodes(): void {
-        for (let i = this._nodes.length - 1; i >= 0; i--) {
-            const node = this._nodes[i];
-            node.destroy();
+    public destroyAllLayers(): void {
+        for (let i = this._layers.length - 1; i >= 0; i--) {
+            const layer = this._layers[i];
+            layer.destroy();
         }
     }
 }

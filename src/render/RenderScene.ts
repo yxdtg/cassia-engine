@@ -1,6 +1,6 @@
 import type { Scene } from "cassia-engine/scene";
 import { ContainerRenderer } from "./define";
-import type { RenderNode } from "./RenderNode";
+import type { RenderLayer } from "./RenderLayer";
 
 export class RenderScene {
     private _renderer: ContainerRenderer;
@@ -19,33 +19,33 @@ export class RenderScene {
         return this._scene;
     }
 
-    private _renderNodes: RenderNode[] = [];
+    private _renderLayers: RenderLayer[] = [];
 
-    public addRenderNode(renderNode: RenderNode): void {
-        if (this._renderNodes.includes(renderNode)) return;
-        this._renderNodes.push(renderNode);
+    public addRenderLayer(renderLayer: RenderLayer): void {
+        if (this._renderLayers.includes(renderLayer)) return;
+        this._renderLayers.push(renderLayer);
 
-        const nodeRenderer = renderNode.renderer;
-        this._renderer.addChild(nodeRenderer);
+        const layerRenderer = renderLayer.renderer;
+        this._renderer.addChild(layerRenderer);
     }
-    public removeRenderNode(renderNode: RenderNode): void {
-        const index = this._renderNodes.indexOf(renderNode);
+    public removeRenderLayer(renderLayer: RenderLayer): void {
+        const index = this._renderLayers.indexOf(renderLayer);
         if (index === -1) return;
-        this._renderNodes.splice(index, 1);
+        this._renderLayers.splice(index, 1);
 
-        const nodeRenderer = renderNode.renderer;
-        this._renderer.removeChild(nodeRenderer);
+        const layerRenderer = renderLayer.renderer;
+        this._renderer.removeChild(layerRenderer);
     }
 
-    public setRenderNodeIndex(renderNode: RenderNode, index: number): void {
-        const currentIndex = this._renderNodes.indexOf(renderNode);
+    public setRenderLayerIndex(renderLayer: RenderLayer, index: number): void {
+        const currentIndex = this._renderLayers.indexOf(renderLayer);
         if (currentIndex === -1 || currentIndex === index) return;
 
-        this._renderNodes.splice(currentIndex, 1);
-        this._renderNodes.splice(index, 0, renderNode);
+        this._renderLayers.splice(currentIndex, 1);
+        this._renderLayers.splice(index, 0, renderLayer);
 
-        const nodeRenderer = renderNode.renderer;
-        this._renderer.setChildIndex(nodeRenderer, index);
+        const layerRenderer = renderLayer.renderer;
+        this._renderer.setChildIndex(layerRenderer, index);
     }
 
     public destroy(): void {

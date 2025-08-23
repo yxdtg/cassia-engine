@@ -1,4 +1,4 @@
-import { componentManager, nodeManager, sceneManager } from "cassia-engine";
+import { componentManager, Layer, nodeManager, sceneManager } from "cassia-engine";
 import {
     type ColliderComponent,
     type Component,
@@ -437,22 +437,42 @@ export class Node extends EventObject<INodeEventTypeMap> {
         nodeManager.addDestroyedNode(this);
     }
 
+    private _layer: Layer | null = null;
+    public get layer(): Layer | null {
+        return this._layer;
+    }
+    public set layer(value: Layer | null) {
+        if (value === this._layer) return;
+
+        this._layer?.removeNode(this);
+        this._layer = value;
+        this._layer?.addNode(this);
+    }
+
+    public get currentLayer(): Layer | null {
+        if (this._layer) return this._layer;
+
+        let node: Node | null = this;
+        while (node?._parent) {
+            node = node._parent;
+        }
+
+        return node._layer;
+    }
+
     /*************************** parent ***************************/
     private _parent: Node | null = null;
     public get parent(): Node | null {
         return this._parent;
     }
     public set parent(value: Node | null) {
-        if (value) {
-            value.addChild(this);
-        } else {
-            if (this._parent) {
-                this._parent.removeChild(this);
-            } else {
-                this._parent = null;
-                this.scene?.addNode(this);
-            }
-        }
+        if (this._destroyed || value === this._parent) return;
+
+        this._layer?.removeNode(this);
+        this._layer = null;
+
+        this._parent?._removeChild(this);
+        this._parent?._addChild(this);
     }
 
     /*************************** children ***************************/
@@ -461,35 +481,31 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._children;
     }
 
-    /**
-     * @param child
-     */
-    public addChild(child: Node): void {
-        if (this._destroyed || child._parent === this) return;
-
-        child._parent?.removeChild(child);
-        this.scene?.removeNode(child);
-
+    private _addChild(child: Node): void {
         this._children.push(child);
         child._parent = this;
 
         const childRenderNode = child._renderNode;
         this._renderNode.addChild(childRenderNode);
     }
-    /**
-     * @param child
-     */
-    public removeChild(child: Node): void {
+    private _removeChild(child: Node): void {
         const index = this._children.indexOf(child);
-        if (this._destroyed || index === -1) return;
+        if (index === -1) return;
 
         this._children.splice(index, 1);
         child._parent = null;
 
         const childRenderNode = child._renderNode;
         this._renderNode.removeChild(childRenderNode);
+    }
 
-        this.scene?.addNode(child);
+    public addChild(child: Node): void {
+        if (child._parent === this) return;
+        child.parent = this;
+    }
+    public removeChild(child: Node): void {
+        if (child._parent !== this) return;
+        child.parent = null;
     }
 
     public getChildByName(name: string): Node | null {
@@ -517,15 +533,16 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     /*************************** siblingIndex ***************************/
     public getSiblingIndex(): number {
-        if (!this._parent) return this.scene?.getNodeIndex(this) ?? -1;
-        return this._parent._children.indexOf(this);
+        if (this._layer) return this._layer.getNodeIndex(this);
+        return this._parent?._children.indexOf(this) ?? -1;
     }
     public setSiblingIndex(index: number): void {
-        if (!this._parent) {
-            this.scene?.setNodeIndex(this, index);
+        if (this._layer) {
+            this._layer.setNodeIndex(this, index);
             return;
         }
 
+        if (!this._parent) return;
         if (index < 0 || index >= this._parent._children.length) return;
 
         const currentIndex = this._parent._children.indexOf(this);

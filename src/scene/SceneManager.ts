@@ -39,7 +39,7 @@ export class SceneManager {
             return console.error(`Scene "${sceneClassOrName}" is not defined.`);
         this._nextSceneClass = sceneClass;
 
-        this._currentScene?.destroyAllNodes();
+        this._currentScene?.destroyAllLayers();
     }
 
     /**

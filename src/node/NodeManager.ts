@@ -30,8 +30,8 @@ export class NodeManager {
     private _callNodeDestroy(node: Node): void {
         if (!node.destroyed) return;
 
+        node.layer?.removeNode(node);
         node.parent?.removeChild(node);
-        node.scene?.removeNode(node);
 
         const index = this._nodes.indexOf(node);
         this._nodes.splice(index, 1);
