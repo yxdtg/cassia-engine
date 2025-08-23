@@ -854,44 +854,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         componentManager.addDestroyedComponent(component);
     }
 
-    public getWorldVertices(): IVec2[] {
-        const selfWorldPosition = this.getLayerPosition();
-        const selfWorldScale = this.getLayerScale();
-        const selfWorldRotation = this.getLayerRotation();
-        const selfSize = this._size.clone();
-        const selfAnchor = this._anchor.clone();
+    public hitTest(layerPoint: Vec2): boolean;
+    public hitTest(layerX: number, layerY: number): boolean;
+    public hitTest(layerPointOrX: Vec2 | number, y?: number): boolean;
+    public hitTest(layerPointOrX: Vec2 | number, y?: number): boolean {
+        const layerPoint = typeof layerPointOrX === "object" ? layerPointOrX : vec2(layerPointOrX, y);
+        const layerVertices = Node.getNodeCurrentLayerVertices(this);
 
-        const vertices = Mathf.calculatePolygonVertices(
-            selfWorldPosition.x,
-            selfWorldPosition.y,
-            selfSize.width,
-            selfSize.height,
-            selfWorldScale.x,
-            selfWorldScale.y,
-            selfAnchor.x,
-            selfAnchor.y,
-            selfWorldRotation
-        );
-        return vertices;
-    }
-
-    public hitTest(worldPoint: Vec2): boolean;
-    public hitTest(x: number, y: number): boolean;
-    public hitTest(worldPointOrX: Vec2 | number, y?: number): boolean;
-    public hitTest(worldPointOrX: Vec2 | number, y?: number): boolean {
-        const worldPoint = typeof worldPointOrX === "object" ? worldPointOrX : vec2(worldPointOrX, y);
-        const worldVertices = this.getWorldVertices();
-        return Mathf.isPointInPolygon(worldPoint, worldVertices);
-    }
-
-    public addToHitNodes(worldPoint: Vec2, hitNodes: Node[]): void {
-        if (!this._active) return;
-
-        if (this._interactive && this.hitTest(worldPoint)) {
-            hitNodes.push(this);
-        }
-
-        this._children.forEach((child) => child.addToHitNodes(worldPoint, hitNodes));
+        return Mathf.isPointInPolygon(layerPoint, layerVertices);
     }
 
     public dispatchPointerEvent(event: IPointerEvent): void {

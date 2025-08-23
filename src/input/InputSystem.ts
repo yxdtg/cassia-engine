@@ -74,7 +74,7 @@ export class InputSystem {
             event.type as NATIVE_POINTER_EVENT
         );
 
-        const hitNode = this.getHitNode(eventPoint.worldPoint);
+        const hitNode = this.getHitNode(eventPoint.screenPoint);
 
         const globalPointerEvent: IGlobalPointerEvent = {
             pointerId: event.pointerId,
@@ -130,8 +130,10 @@ export class InputSystem {
 
         if (currentScene) {
             this._globalPointerEvents.forEach((globalPointerEvent) => {
-                const flatNodes = currentScene.getFlatNodes();
-                flatNodes.forEach((node) => node.emit(globalPointerEvent.type, globalPointerEvent));
+                currentScene.layers.forEach((layer) => {
+                    const layerFlatNodes = layer.getFlatNodes();
+                    layerFlatNodes.forEach((node) => node.emit(globalPointerEvent.type, globalPointerEvent));
+                });
             });
         }
         this._globalPointerEvents.length = 0;
@@ -217,31 +219,35 @@ export class InputSystem {
         this._keyboardCodeUpSet.clear();
     }
 
-    public getHitNode(worldPoint: Vec2): Node | null {
-        return this.getHitNodes(worldPoint).at(-1) ?? null;
+    public getHitNode(screenPoint: Vec2): Node | null {
+        return this.getHitNodes(screenPoint).at(-1) ?? null;
     }
-    public getHitNodes(worldPoint: Vec2): Node[] {
+    public getHitNodes(screenPoint: Vec2): Node[] {
         const currentScene = sceneManager.currentScene;
         if (!currentScene) return [];
 
+        const addToHitNodes = (node: Node, layerPoint: Vec2, hitNodes: Node[]): void => {
+            if (!node.active) return;
+
+            if (node.interactive && node.hitTest(layerPoint)) {
+                hitNodes.push(node);
+            }
+
+            node.children.forEach((child) => addToHitNodes(child, layerPoint, hitNodes));
+        };
+
         const hitNodes: Node[] = [];
-        currentScene.nodes.forEach((node) => node.addToHitNodes(worldPoint, hitNodes));
+
+        currentScene.layers.forEach((layer) => {
+            layer.nodes.forEach((node) => {
+                const layerPoint = node.currentLayer?.screenToLayer(screenPoint);
+                if (!layerPoint) return;
+
+                addToHitNodes(node, layerPoint, hitNodes);
+            });
+        });
 
         return hitNodes;
-    }
-
-    public screenToWorld(screenPoint: Vec2): Vec2;
-    public screenToWorld(x: number, y: number): Vec2;
-    public screenToWorld(screenPointOrX: Vec2 | number, y?: number): Vec2 {
-        const screenPoint = typeof screenPointOrX === "object" ? screenPointOrX : vec2(screenPointOrX, y);
-        return renderSystem.screenToWorld(screenPoint);
-    }
-
-    public worldToScreen(worldPoint: Vec2): Vec2;
-    public worldToScreen(x: number, y: number): Vec2;
-    public worldToScreen(worldPointOrX: Vec2 | number, y?: number): Vec2 {
-        const worldPoint = typeof worldPointOrX === "object" ? worldPointOrX : vec2(worldPointOrX, y);
-        return renderSystem.worldToScreen(worldPoint);
     }
 
     /**
@@ -251,16 +257,11 @@ export class InputSystem {
      */
     public getEventPointByNativeEvent(event: PointerEvent): IEventPoint {
         const screenPointer = this.getScreenPointByNativeEvent(event);
-        const worldPoint = this.getWorldPointByNativeEvent(event);
 
         const eventPoint: IEventPoint = {
             screenPoint: screenPointer,
             screenX: screenPointer.x,
             screenY: screenPointer.y,
-
-            worldPoint: worldPoint,
-            worldX: worldPoint.x,
-            worldY: worldPoint.y,
         };
         return eventPoint;
     }
@@ -272,15 +273,6 @@ export class InputSystem {
      */
     public getScreenPointByNativeEvent(event: PointerEvent): Vec2 {
         return vec2(event.clientX, event.clientY);
-    }
-    /**
-     * @internal
-     * @param event
-     * @returns
-     */
-    public getWorldPointByNativeEvent(event: PointerEvent): Vec2 {
-        const screenPoint = this.getScreenPointByNativeEvent(event);
-        return this.screenToWorld(screenPoint);
     }
 }
 
@@ -303,9 +295,9 @@ export interface IEventPoint {
     screenX: number;
     screenY: number;
 
-    worldPoint: Vec2;
-    worldX: number;
-    worldY: number;
+    // worldPoint: Vec2;
+    // worldX: number;
+    // worldY: number;
 }
 
 export interface IPointerEvent extends IEventPoint {
