@@ -555,12 +555,12 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     /*************************** transform ***************************/
-    public toLocalPosition(worldPosition: Vec2): Vec2;
-    public toLocalPosition(x: number, y: number): Vec2;
-    public toLocalPosition(worldPositionOrX: Vec2 | number, y?: number): Vec2;
-    public toLocalPosition(worldPositionOrX: Vec2 | number, y?: number): Vec2 {
+    public toLocalPosition(layerPosition: Vec2): Vec2;
+    public toLocalPosition(layerX: number, layerY: number): Vec2;
+    public toLocalPosition(layerPositionOrX: Vec2 | number, y?: number): Vec2;
+    public toLocalPosition(layerPositionOrX: Vec2 | number, y?: number): Vec2 {
         const localPosition =
-            typeof worldPositionOrX === "object" ? worldPositionOrX.clone() : vec2(worldPositionOrX, y);
+            typeof layerPositionOrX === "object" ? layerPositionOrX.clone() : vec2(layerPositionOrX, y);
 
         const parents: Node[] = [];
         let parent = this._parent;
@@ -587,50 +587,50 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return localPosition;
     }
 
-    public toWorldPosition(localPosition: Vec2): Vec2;
-    public toWorldPosition(x: number, y: number): Vec2;
-    public toWorldPosition(localPositionOrX: Vec2 | number, y?: number): Vec2;
-    public toWorldPosition(localPositionOrX: Vec2 | number, y?: number): Vec2 {
-        const worldPosition =
+    public toLayerPosition(localPosition: Vec2): Vec2;
+    public toLayerPosition(localX: number, localY: number): Vec2;
+    public toLayerPosition(localPositionOrX: Vec2 | number, y?: number): Vec2;
+    public toLayerPosition(localPositionOrX: Vec2 | number, y?: number): Vec2 {
+        const layerPosition =
             typeof localPositionOrX === "object" ? localPositionOrX.clone() : vec2(localPositionOrX, y);
 
-        worldPosition.multiplySelf(this._scale);
-        worldPosition.rotateSelf(this._rotation);
-        worldPosition.addSelf(this._position);
+        layerPosition.multiplySelf(this._scale);
+        layerPosition.rotateSelf(this._rotation);
+        layerPosition.addSelf(this._position);
 
-        return worldPosition;
+        return layerPosition;
     }
 
-    public getWorldPosition(): Vec2 {
-        const worldPosition = this._position.clone();
+    public getLayerPosition(): Vec2 {
+        const layerPosition = this._position.clone();
 
         let parent = this._parent;
 
         while (parent) {
-            worldPosition.multiplySelf(parent._scale);
-            worldPosition.rotateSelf(parent._rotation);
-            worldPosition.addSelf(parent._position);
+            layerPosition.multiplySelf(parent._scale);
+            layerPosition.rotateSelf(parent._rotation);
+            layerPosition.addSelf(parent._position);
 
             parent = parent._parent;
         }
-        return worldPosition;
+        return layerPosition;
     }
-    public setWorldPosition(worldPosition?: Vec2): void;
-    public setWorldPosition(x: number, y: number): void;
-    public setWorldPosition(worldPositionOrX?: Vec2 | number, y?: number): void;
-    public setWorldPosition(worldPositionOrX?: Vec2 | number, y?: number): void {
-        const worldPosition = typeof worldPositionOrX === "object" ? worldPositionOrX : vec2(worldPositionOrX, y);
+    public setLayerPosition(layerPosition?: Vec2): void;
+    public setLayerPosition(layerX: number, layerY: number): void;
+    public setLayerPosition(layerPositionOrX?: Vec2 | number, y?: number): void;
+    public setLayerPosition(layerPositionOrX?: Vec2 | number, y?: number): void {
+        const layerPosition = typeof layerPositionOrX === "object" ? layerPositionOrX : vec2(layerPositionOrX, y);
 
         if (this._parent) {
-            const localPosition = this._parent.toLocalPosition(worldPosition);
+            const localPosition = this._parent.toLocalPosition(layerPosition);
             this.setPosition(localPosition);
         } else {
-            this.setPosition(worldPosition);
+            this.setPosition(layerPosition);
         }
     }
 
-    public toLocalRotation(worldRotation: number): number {
-        let localRotation = worldRotation;
+    public toLocalRotation(layerRotation: number): number {
+        let localRotation = layerRotation;
 
         const parents: Node[] = [];
         let parent = this._parent;
@@ -647,45 +647,45 @@ export class Node extends EventObject<INodeEventTypeMap> {
         localRotation -= this._rotation;
         return localRotation;
     }
-    public toWorldRotation(localRotation: number): number {
-        let worldRotation = localRotation;
-        worldRotation += this._rotation;
+    public toLayerRotation(localRotation: number): number {
+        let layerRotation = localRotation;
+        layerRotation += this._rotation;
 
-        return worldRotation;
+        return layerRotation;
     }
 
-    public getWorldRotation(): number {
-        let worldRotation = this._rotation;
+    public getLayerRotation(): number {
+        let layerRotation = this._rotation;
 
         let parent = this._parent;
         while (parent) {
-            worldRotation += parent._rotation;
+            layerRotation += parent._rotation;
             parent = parent._parent;
         }
 
-        return worldRotation;
+        return layerRotation;
     }
-    public setWorldRotation(worldRotation: number): void {
+    public setLayerRotation(layerRotation: number): void {
         if (this._parent) {
-            const localRotation = this._parent.toLocalRotation(worldRotation);
+            const localRotation = this._parent.toLocalRotation(layerRotation);
             this.rotation = localRotation;
         } else {
-            this.rotation = worldRotation;
+            this.rotation = layerRotation;
         }
     }
 
-    public getWorldAngle(): number {
-        return Mathf.radiansToDegrees(this.getWorldRotation());
+    public getLayerAngle(): number {
+        return Mathf.radiansToDegrees(this.getLayerRotation());
     }
-    public setWorldAngle(worldAngle: number): void {
-        this.setWorldRotation(Mathf.degreesToRadians(worldAngle));
+    public setLayerAngle(layerAngle: number): void {
+        this.setLayerRotation(Mathf.degreesToRadians(layerAngle));
     }
 
-    public toLocalScale(worldScale: Vec2): Vec2;
-    public toLocalScale(x: number, y: number): Vec2;
-    public toLocalScale(worldScaleOrX: Vec2 | number, y?: number): Vec2;
-    public toLocalScale(worldScaleOrX: Vec2 | number, y?: number): Vec2 {
-        const localScale = typeof worldScaleOrX === "object" ? worldScaleOrX.clone() : vec2(worldScaleOrX, y);
+    public toLocalScale(layerScale: Vec2): Vec2;
+    public toLocalScale(layerScaleX: number, layerScaleY: number): Vec2;
+    public toLocalScale(layerScaleOrX: Vec2 | number, y?: number): Vec2;
+    public toLocalScale(layerScaleOrX: Vec2 | number, y?: number): Vec2 {
+        const localScale = typeof layerScaleOrX === "object" ? layerScaleOrX.clone() : vec2(layerScaleOrX, y);
 
         const parents: Node[] = [];
         let parent = this._parent;
@@ -702,37 +702,37 @@ export class Node extends EventObject<INodeEventTypeMap> {
         localScale.divideSelf(this._scale);
         return localScale;
     }
-    public toWorldScale(localScale: Vec2): Vec2;
-    public toWorldScale(x: number, y: number): Vec2;
-    public toWorldScale(localScaleOrX: Vec2 | number, y?: number): Vec2;
-    public toWorldScale(localScaleOrX: Vec2 | number, y?: number): Vec2 {
-        const worldScale = typeof localScaleOrX === "object" ? localScaleOrX.clone() : vec2(localScaleOrX, y);
-        worldScale.multiplySelf(this._scale);
-        return worldScale;
+    public toLayerScale(localScale: Vec2): Vec2;
+    public toLayerScale(localScaleX: number, localScaleY: number): Vec2;
+    public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2;
+    public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2 {
+        const layerScale = typeof localScaleOrX === "object" ? localScaleOrX.clone() : vec2(localScaleOrX, y);
+        layerScale.multiplySelf(this._scale);
+        return layerScale;
     }
 
-    public getWorldScale(): Vec2 {
-        const worldScale = this._scale.clone();
+    public getLayerScale(): Vec2 {
+        const layerScale = this._scale.clone();
 
         let parent = this._parent;
         while (parent) {
-            worldScale.multiplySelf(parent._scale);
+            layerScale.multiplySelf(parent._scale);
             parent = parent._parent;
         }
 
-        return worldScale;
+        return layerScale;
     }
-    public setWorldScale(worldScale: Vec2): void;
-    public setWorldScale(x: number, y: number): void;
-    public setWorldScale(worldScaleOrX: Vec2 | number, y?: number): void;
-    public setWorldScale(worldScaleOrX: Vec2 | number, y?: number): void {
-        const worldScale = typeof worldScaleOrX === "object" ? worldScaleOrX : vec2(worldScaleOrX, y);
+    public setLayerScale(layerScale: Vec2): void;
+    public setLayerScale(layerScaleX: number, layerScaleY: number): void;
+    public setLayerScale(layerScaleOrX: Vec2 | number, y?: number): void;
+    public setLayerScale(layerScaleOrX: Vec2 | number, y?: number): void {
+        const layerScale = typeof layerScaleOrX === "object" ? layerScaleOrX : vec2(layerScaleOrX, y);
 
         if (this._parent) {
-            const localScale = this._parent.toLocalScale(worldScale);
+            const localScale = this._parent.toLocalScale(layerScale);
             this.setScale(localScale);
         } else {
-            this.setScale(worldScale);
+            this.setScale(layerScale);
         }
     }
 
@@ -855,9 +855,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     public getWorldVertices(): IVec2[] {
-        const selfWorldPosition = this.getWorldPosition();
-        const selfWorldScale = this.getWorldScale();
-        const selfWorldRotation = this.getWorldRotation();
+        const selfWorldPosition = this.getLayerPosition();
+        const selfWorldScale = this.getLayerScale();
+        const selfWorldRotation = this.getLayerRotation();
         const selfSize = this._size.clone();
         const selfAnchor = this._anchor.clone();
 
@@ -884,12 +884,6 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return Mathf.isPointInPolygon(worldPoint, worldVertices);
     }
 
-    /**
-     * @internal
-     * @param worldPoint
-     * @param hitNodes
-     * @returns
-     */
     public addToHitNodes(worldPoint: Vec2, hitNodes: Node[]): void {
         if (!this._active) return;
 
@@ -906,5 +900,26 @@ export class Node extends EventObject<INodeEventTypeMap> {
         if (this._parent && event.bubbling) {
             this._parent.dispatchPointerEvent(event);
         }
+    }
+
+    public static getNodeCurrentLayerVertices(node: Node): IVec2[] {
+        const layerPosition = node.getLayerPosition();
+        const layerScale = node.getLayerScale();
+        const layerRotation = node.getLayerRotation();
+        const nodeSize = node._size.clone();
+        const nodeAnchor = node._anchor.clone();
+
+        const vertices = Mathf.calculatePolygonVertices(
+            layerPosition.x,
+            layerPosition.y,
+            nodeSize.width,
+            nodeSize.height,
+            layerScale.x,
+            layerScale.y,
+            nodeAnchor.x,
+            nodeAnchor.y,
+            layerRotation
+        );
+        return vertices;
     }
 }

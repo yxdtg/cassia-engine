@@ -30,7 +30,7 @@ export class CapsuleCollider extends ColliderComponent {
     public applySize(): void {
         if (!this._collider) return;
 
-        const nodeWorldScale = this.node.getWorldScale();
+        const nodeWorldScale = this.node.getLayerScale();
 
         const halfHeight = (this._height / 2) * nodeWorldScale.y;
 

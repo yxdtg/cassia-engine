@@ -45,7 +45,7 @@ export class BoxCollider extends ColliderComponent {
     public applySize(): void {
         if (!this._collider) return;
 
-        const nodeWorldScale = this.node.getWorldScale();
+        const nodeWorldScale = this.node.getLayerScale();
 
         const halfWidth = (this._size.width / 2) * nodeWorldScale.x;
         const halfHeight = (this._size.height / 2) * nodeWorldScale.y;

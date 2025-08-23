@@ -114,8 +114,8 @@ export class PhysicsSystem {
             colliderComponent._onUpdateSize();
 
             const node = colliderComponent.node;
-            const nodeWorldPosition = node.getWorldPosition();
-            const nodeWorldRotation = node.getWorldRotation();
+            const nodeWorldPosition = node.getLayerPosition();
+            const nodeWorldRotation = node.getLayerRotation();
 
             const offset = colliderComponent.offset;
 
@@ -136,8 +136,8 @@ export class PhysicsSystem {
             if (!body) continue;
 
             const node = rigidBodyComponent.node;
-            const nodeWorldPosition = node.getWorldPosition();
-            const nodeWorldRotation = node.getWorldRotation();
+            const nodeWorldPosition = node.getLayerPosition();
+            const nodeWorldRotation = node.getLayerRotation();
 
             body.setTranslation({ x: nodeWorldPosition.x, y: nodeWorldPosition.y }, true);
             body.setRotation(nodeWorldRotation, true);
@@ -158,8 +158,8 @@ export class PhysicsSystem {
                 const colliderPosition = collider.translation();
                 const colliderRotation = collider.rotation();
 
-                node.setWorldPosition(colliderPosition.x - offset.x, colliderPosition.y - offset.y);
-                node.setWorldRotation(colliderRotation);
+                node.setLayerPosition(colliderPosition.x - offset.x, colliderPosition.y - offset.y);
+                node.setLayerRotation(colliderRotation);
             }
         }
 
@@ -171,8 +171,8 @@ export class PhysicsSystem {
             const bodyRotation = body.rotation();
 
             const node = rigidBodyComponent.node;
-            node.setWorldPosition(bodyPosition.x, bodyPosition.y);
-            node.setWorldRotation(bodyRotation);
+            node.setLayerPosition(bodyPosition.x, bodyPosition.y);
+            node.setLayerRotation(bodyRotation);
         }
     }
 

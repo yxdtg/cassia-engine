@@ -36,10 +36,10 @@ export class Draggable extends Component {
         const offset = event.worldPoint.subtract(this._lastDragPoint);
 
         if (this.horizontal) {
-            this.node.setWorldPosition(this.node.getWorldPosition().x + offset.x, this.node.getWorldPosition().y);
+            this.node.setLayerPosition(this.node.getLayerPosition().x + offset.x, this.node.getLayerPosition().y);
         }
         if (this.vertical) {
-            this.node.setWorldPosition(this.node.getWorldPosition().x, this.node.getWorldPosition().y + offset.y);
+            this.node.setLayerPosition(this.node.getLayerPosition().x, this.node.getLayerPosition().y + offset.y);
         }
 
         this._lastPointerId = event.pointerId;

@@ -56,7 +56,7 @@ export class Joystick extends Component {
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
         this._isDragging = true;
 
-        const nodeWorldPosition = this.node.getWorldPosition();
+        const nodeWorldPosition = this.node.getLayerPosition();
 
         const offset = event.worldPoint.subtract(nodeWorldPosition);
         const normalizedOffset = offset.normalized();

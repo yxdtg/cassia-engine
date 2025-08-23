@@ -20,7 +20,7 @@ export class CircleCollider extends ColliderComponent {
     public applyRadius(): void {
         if (!this._collider) return;
 
-        const nodeWorldScale = this.node.getWorldScale();
+        const nodeWorldScale = this.node.getLayerScale();
 
         const radius = this._radius * nodeWorldScale.x;
         this._collider.setRadius(radius);
