@@ -23,17 +23,19 @@ export class Draggable extends Component {
     private _lastDragPoint: Vec2 = Vec2.zero;
 
     public onPointerDown(event: IPointerEvent): void {
+        if (!this.node.currentLayer) return;
         this._isDown = true;
 
         this._lastPointerId = event.pointerId;
-        this._lastDragPoint.set(event.worldPoint);
+        this._lastDragPoint.set(this.node.currentLayer.screenToLayer(event.screenPoint));
     }
 
     public onGlobalPointerMove(event: IGlobalPointerEvent): void {
+        if (!this.node.currentLayer) return;
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
         this._isDragging = true;
 
-        const offset = event.worldPoint.subtract(this._lastDragPoint);
+        const offset = this.node.currentLayer.screenToLayer(event.screenPoint).subtract(this._lastDragPoint);
 
         if (this.horizontal) {
             this.node.setLayerPosition(this.node.getLayerPosition().x + offset.x, this.node.getLayerPosition().y);
@@ -43,7 +45,7 @@ export class Draggable extends Component {
         }
 
         this._lastPointerId = event.pointerId;
-        this._lastDragPoint.set(event.worldPoint);
+        this._lastDragPoint.set(this.node.currentLayer.screenToLayer(event.screenPoint));
     }
 
     public onGlobalPointerUp(event: IGlobalPointerEvent): void {

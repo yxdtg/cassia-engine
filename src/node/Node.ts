@@ -19,6 +19,8 @@ import type { Scene } from "cassia-engine/scene";
 export interface INodeOptions {
     name?: string;
     interactive?: boolean;
+
+    layer?: Layer | null;
     parent?: Node | null;
 }
 
@@ -56,6 +58,8 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
         this._name = options.name ?? this._name;
         this._interactive = options.interactive ?? this._interactive;
+
+        this.layer = options.layer ?? this._layer;
         this.parent = options.parent ?? this._parent;
 
         this.applySize();
@@ -442,7 +446,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._layer;
     }
     public set layer(value: Layer | null) {
-        if (value === this._layer) return;
+        if (this._destroyed || value === this._layer) return;
+
+        this._parent?._removeChild(this);
 
         this._layer?.removeNode(this);
         this._layer = value;
@@ -472,7 +478,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._layer = null;
 
         this._parent?._removeChild(this);
-        this._parent?._addChild(this);
+        value?._addChild(this);
     }
 
     /*************************** children ***************************/

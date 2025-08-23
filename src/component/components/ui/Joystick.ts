@@ -52,15 +52,19 @@ export class Joystick extends Component {
 
     public onGlobalPointerMove(event: IGlobalPointerEvent): void {
         if (!this._rockerNode) return;
+        if (!this.node.currentLayer) return;
 
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
         this._isDragging = true;
 
-        const nodeWorldPosition = this.node.getLayerPosition();
+        const nodeLayerPosition = this.node.getLayerPosition();
 
-        const offset = event.worldPoint.subtract(nodeWorldPosition);
+        const offset = this.node.currentLayer.screenToLayer(event.screenPoint).subtract(nodeLayerPosition);
         const normalizedOffset = offset.normalized();
-        const distance = Math.min(Vec2.distance(event.worldPoint, nodeWorldPosition), this.node.width / 2);
+        const distance = Math.min(
+            Vec2.distance(this.node.currentLayer.screenToLayer(event.screenPoint), nodeLayerPosition),
+            this.node.width / 2
+        );
 
         this._vector.set(normalizedOffset);
         this._angle = this._vector.toDegrees();
