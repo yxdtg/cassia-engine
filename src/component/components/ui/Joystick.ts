@@ -56,9 +56,11 @@ export class Joystick extends Component {
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
         this._isDragging = true;
 
-        const offset = event.worldPoint.subtract(this.node.position);
+        const nodeWorldPosition = this.node.getWorldPosition();
+
+        const offset = event.worldPoint.subtract(nodeWorldPosition);
         const normalizedOffset = offset.normalized();
-        const distance = Math.min(Vec2.distance(event.worldPoint, this.node.position), this.node.width / 2);
+        const distance = Math.min(Vec2.distance(event.worldPoint, nodeWorldPosition), this.node.width / 2);
 
         this._vector.set(normalizedOffset);
         this._angle = this._vector.toDegrees();
