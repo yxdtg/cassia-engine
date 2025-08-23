@@ -29,6 +29,28 @@ export class RenderLayer {
         return vec2(screenPoint.x, screenPoint.y);
     }
 
+    public applyCameraPosition(): void {
+        const cameraZoom = this._layer.cameraZoom;
+        const cameraRotation = this._layer.cameraRotation;
+        const cameraPosition = this._layer.cameraPosition.multiplyScalar(cameraZoom).rotate(cameraRotation);
+
+        this._renderer.position.set(-cameraPosition.x, -cameraPosition.y);
+    }
+
+    public applyCameraZoom(): void {
+        const cameraZoom = this._layer.cameraZoom;
+        this._renderer.scale.set(cameraZoom, cameraZoom);
+
+        this.applyCameraPosition();
+    }
+
+    public applyCameraRotation(): void {
+        const cameraRotation = this._layer.cameraRotation;
+        this._renderer.rotation = cameraRotation;
+
+        this.applyCameraPosition();
+    }
+
     private _renderNodes: RenderNode[] = [];
 
     public addRenderNode(renderNode: RenderNode): void {

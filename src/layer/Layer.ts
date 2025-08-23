@@ -1,4 +1,4 @@
-import { Vec2 } from "cassia-engine/math";
+import { Mathf, Vec2 } from "cassia-engine/math";
 import { Node } from "cassia-engine/node";
 import { RenderLayer } from "cassia-engine/render";
 
@@ -35,6 +35,84 @@ export class Layer {
     }
     public layerToScreen(layerPoint: Vec2): Vec2 {
         return this._renderLayer.layerToScreen(layerPoint);
+    }
+
+    private _cameraPosition: Vec2 = Vec2.zero;
+    public get cameraPosition(): Vec2 {
+        return this._cameraPosition;
+    }
+    public set cameraPosition(value: Vec2) {
+        this._cameraPosition.set(value);
+        this.applyCameraPosition();
+    }
+
+    public get cameraX(): number {
+        return this._cameraPosition.x;
+    }
+    public set cameraX(value: number) {
+        this._cameraPosition.x = value;
+        this.applyCameraPosition();
+    }
+
+    public get cameraY(): number {
+        return this._cameraPosition.y;
+    }
+    public set cameraY(value: number) {
+        this._cameraPosition.y = value;
+        this.applyCameraPosition();
+    }
+
+    public setCameraPosition(vec2?: Vec2): void;
+    public setCameraPosition(x?: number, y?: number): void;
+    public setCameraPosition(vec2OrX?: Vec2 | number, y?: number): void;
+    public setCameraPosition(...args: any[]): void {
+        this._cameraPosition.set(...args);
+        this.applyCameraPosition();
+    }
+
+    /**
+     * @internal
+     */
+    public applyCameraPosition(): void {
+        this._renderLayer.applyCameraPosition();
+    }
+
+    private _cameraZoom: number = 1;
+    public get cameraZoom(): number {
+        return this._cameraZoom;
+    }
+    public set cameraZoom(value: number) {
+        this._cameraZoom = Math.max(0.001, value);
+        this.applyCameraZoom();
+    }
+    /**
+     * @internal
+     */
+    public applyCameraZoom(): void {
+        this._renderLayer.applyCameraZoom();
+    }
+
+    private _cameraRotation: number = 0;
+    public get cameraRotation(): number {
+        return this._cameraRotation;
+    }
+    public set cameraRotation(value: number) {
+        this._cameraRotation = value;
+        this.applyCameraRotation();
+    }
+
+    /**
+     * @internal
+     */
+    public applyCameraRotation(): void {
+        this._renderLayer.applyCameraRotation();
+    }
+
+    public get cameraAngle(): number {
+        return Mathf.radiansToDegrees(this._cameraRotation);
+    }
+    public set cameraAngle(value: number) {
+        this.cameraRotation = Mathf.degreesToRadians(value);
     }
 
     /**
