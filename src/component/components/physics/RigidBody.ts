@@ -30,7 +30,7 @@ export class RigidBody extends Component {
         return components;
     }
 
-    public onInit(): void {
+    protected onInit(): void {
         const bodyDesc = RAPIER.RigidBodyDesc.dynamic();
         this._body = physicsSystem.createBody(this, bodyDesc);
 
@@ -38,7 +38,7 @@ export class RigidBody extends Component {
         this.colliderComponents.forEach((colliderComponent) => colliderComponent.reCreateCollider());
     }
 
-    public onDestroy(): void {
+    protected onDestroy(): void {
         if (!this._body) return;
 
         // 刚体准备销毁了，重新创建Collider

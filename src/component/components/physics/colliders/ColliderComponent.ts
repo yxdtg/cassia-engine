@@ -111,10 +111,10 @@ export class ColliderComponent extends Component {
         throw new Error("not implemented");
     }
 
-    public onInit(): void {
+    protected onInit(): void {
         this._createCollider();
     }
-    public onDestroy(): void {
+    protected onDestroy(): void {
         this._destroyCollider();
     }
 

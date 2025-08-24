@@ -16,7 +16,7 @@ export class Scene {
         this._renderScene = new RenderScene(this);
     }
 
-    public onInit(): void {}
+    protected onInit(): void {}
 
     private _layers: Layer[] = [];
     public get layers(): Layer[] {

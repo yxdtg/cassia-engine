@@ -22,7 +22,7 @@ export class Draggable extends Component {
     private _lastPointerId: number = -1;
     private _lastDragPoint: Vec2 = Vec2.zero;
 
-    public onPointerDown(event: IPointerEvent): void {
+    protected onPointerDown(event: IPointerEvent): void {
         if (!this.node.currentLayer) return;
         this._isDown = true;
 
@@ -30,7 +30,7 @@ export class Draggable extends Component {
         this._lastDragPoint.set(this.node.currentLayer.screenToLayer(event.screenPoint));
     }
 
-    public onGlobalPointerMove(event: IGlobalPointerEvent): void {
+    protected onGlobalPointerMove(event: IGlobalPointerEvent): void {
         if (!this.node.currentLayer) return;
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
         this._isDragging = true;
@@ -48,7 +48,7 @@ export class Draggable extends Component {
         this._lastDragPoint.set(this.node.currentLayer.screenToLayer(event.screenPoint));
     }
 
-    public onGlobalPointerUp(event: IGlobalPointerEvent): void {
+    protected onGlobalPointerUp(event: IGlobalPointerEvent): void {
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
 
         this._isDown = false;

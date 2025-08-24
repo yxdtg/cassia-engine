@@ -46,7 +46,7 @@ export class ComponentManager {
     public callStartComponents(): void {
         this._unStartedComponents.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component.onStart();
+                component["onStart"]();
             }
         });
 
@@ -61,7 +61,7 @@ export class ComponentManager {
     public callUpdateComponents(deltaTime: number): void {
         this._components.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component.onUpdate(deltaTime);
+                component["onUpdate"](deltaTime);
             }
         });
     }
@@ -72,7 +72,7 @@ export class ComponentManager {
     public callFixedUpdateComponents(fixedTimeStep: number): void {
         this._components.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component.onFixedUpdate(fixedTimeStep);
+                component["onFixedUpdate"](fixedTimeStep);
             }
         });
     }
@@ -83,7 +83,7 @@ export class ComponentManager {
     public callLateUpdateComponents(deltaTime: number): void {
         this._components.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component.onLateUpdate(deltaTime);
+                component["onLateUpdate"](deltaTime);
             }
         });
     }
@@ -108,38 +108,46 @@ export class ComponentManager {
                 // off Use onPointerDown, onPointerMove, onPointerUp
                 {
                     if (component.useOnPointerDown) {
-                        component.node.off(NODE_EVENT_TYPE.PointerDown, component.onPointerDown, component);
+                        component.node.off(NODE_EVENT_TYPE.PointerDown, component["onPointerDown"], component);
                     }
                     if (component.useOnPointerMove) {
-                        component.node.off(NODE_EVENT_TYPE.PointerMove, component.onPointerMove, component);
+                        component.node.off(NODE_EVENT_TYPE.PointerMove, component["onPointerMove"], component);
                     }
                     if (component.useOnPointerUp) {
-                        component.node.off(NODE_EVENT_TYPE.PointerUp, component.onPointerUp, component);
+                        component.node.off(NODE_EVENT_TYPE.PointerUp, component["onPointerUp"], component);
                     }
                 }
                 // off Use onGlobalPointerDown, onGlobalPointerMove, onGlobalPointerUp
                 {
                     if (component.useOnGlobalPointerDown) {
-                        component.node.off(NODE_EVENT_TYPE.GlobalPointerDown, component.onGlobalPointerDown, component);
+                        component.node.off(
+                            NODE_EVENT_TYPE.GlobalPointerDown,
+                            component["onGlobalPointerDown"],
+                            component
+                        );
                     }
                     if (component.useOnGlobalPointerMove) {
-                        component.node.off(NODE_EVENT_TYPE.GlobalPointerMove, component.onGlobalPointerMove, component);
+                        component.node.off(
+                            NODE_EVENT_TYPE.GlobalPointerMove,
+                            component["onGlobalPointerMove"],
+                            component
+                        );
                     }
                     if (component.useOnGlobalPointerUp) {
-                        component.node.off(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
+                        component.node.off(NODE_EVENT_TYPE.GlobalPointerUp, component["onGlobalPointerUp"], component);
                     }
                 }
                 // off Use onCollisionEnter, onCollisionExit
                 {
                     if (component.useOnCollisionEnter) {
-                        component.node.off(NODE_EVENT_TYPE.CollisionEnter, component.onCollisionEnter, component);
+                        component.node.off(NODE_EVENT_TYPE.CollisionEnter, component["onCollisionEnter"], component);
                     }
                     if (component.useOnCollisionExit) {
-                        component.node.off(NODE_EVENT_TYPE.CollisionExit, component.onCollisionExit, component);
+                        component.node.off(NODE_EVENT_TYPE.CollisionExit, component["onCollisionExit"], component);
                     }
                 }
 
-                component.onDestroy();
+                component["onDestroy"]();
 
                 delete (component.node.comp as any)[component.componentName];
 

@@ -22,7 +22,7 @@ export class Layer {
         this._renderLayer = new RenderLayer(this);
     }
 
-    public onInit(): void {}
+    protected onInit(): void {}
 
     private _nodes: Node[] = [];
     public get nodes(): Node[] {

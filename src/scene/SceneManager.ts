@@ -54,7 +54,7 @@ export class SceneManager {
         const renderScene = this._currentScene.renderScene;
         renderSystem.setRenderScene(renderScene);
 
-        this._currentScene.onInit();
+        this._currentScene["onInit"]();
 
         this._nextSceneClass = null;
     }

@@ -45,63 +45,63 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
         this._destroyed = true;
     }
 
-    public onInit(): void {}
+    protected onInit(): void {}
 
-    public onStart(): void {}
-    public onDestroy(): void {}
+    protected onStart(): void {}
+    protected onDestroy(): void {}
 
-    public onEnable(): void {}
-    public onDisable(): void {}
+    protected onEnable(): void {}
+    protected onDisable(): void {}
 
-    public onFixedUpdate(dt: number): void {}
+    protected onFixedUpdate(dt: number): void {}
 
-    public onUpdate(dt: number): void {}
-    public onLateUpdate(dt: number): void {}
+    protected onUpdate(dt: number): void {}
+    protected onLateUpdate(dt: number): void {}
 
     /**
      * defineComponent useOnPointerDown: true
      * @param event
      */
-    public onPointerDown(event: IPointerEvent): void {}
+    protected onPointerDown(event: IPointerEvent): void {}
     /**
      * defineComponent useOnPointerMove: true
      * @param event
      */
-    public onPointerMove(event: IPointerEvent): void {}
+    protected onPointerMove(event: IPointerEvent): void {}
     /**
      * defineComponent useOnPointerUp: true
      * @param event
      */
-    public onPointerUp(event: IPointerEvent): void {}
+    protected onPointerUp(event: IPointerEvent): void {}
 
     /**
      * defineComponent useOnGlobalPointerDown: true
      * @param event
      */
-    public onGlobalPointerDown(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerDown(event: IGlobalPointerEvent): void {}
     /**
      * defineComponent useOnGlobalPointerMove: true
      * @param event
      */
-    public onGlobalPointerMove(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerMove(event: IGlobalPointerEvent): void {}
     /**
      * defineComponent useOnGlobalPointerUp: true
      * @param event
      */
-    public onGlobalPointerUp(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerUp(event: IGlobalPointerEvent): void {}
 
     /**
      * defineComponent useOnCollisionEnter: true
      * @param selfCollider
      * @param otherCollider
      */
-    public onCollisionEnter(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
+    protected onCollisionEnter(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
     /**
      * defineComponent useOnCollisionExit: true
      * @param selfCollider
      * @param otherCollider
      */
-    public onCollisionExit(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
+    protected onCollisionExit(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
 }
 
 export interface Component {

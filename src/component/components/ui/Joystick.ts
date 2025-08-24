@@ -27,7 +27,7 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
         this._rockerNode.on(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
     }
 
-    public onDestroy(): void {
+    protected onDestroy(): void {
         if (this._rockerNode) {
             this._rockerNode.off(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
         }
@@ -65,7 +65,7 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
         this.emit(JOYSTICK_EVENT_TYPE.Down);
     }
 
-    public onGlobalPointerMove(event: IGlobalPointerEvent): void {
+    protected onGlobalPointerMove(event: IGlobalPointerEvent): void {
         if (!this._rockerNode) return;
         if (!this.node.currentLayer) return;
 
@@ -95,7 +95,7 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
 
         this.emit(JOYSTICK_EVENT_TYPE.Move, this.vector, this.angle);
     }
-    public onGlobalPointerUp(event: IGlobalPointerEvent): void {
+    protected onGlobalPointerUp(event: IGlobalPointerEvent): void {
         if (!this._rockerNode) return;
 
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;

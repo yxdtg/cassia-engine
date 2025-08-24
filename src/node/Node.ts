@@ -88,11 +88,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
         if (isChanged) {
             if (this._active) {
                 for (const component of this._components) {
-                    component.onEnable();
+                    component["onEnable"]();
                 }
             } else {
                 for (const component of this._components) {
-                    component.onDisable();
+                    component["onDisable"]();
                 }
             }
         }
@@ -792,38 +792,38 @@ export class Node extends EventObject<INodeEventTypeMap> {
         // on Use onPointerDown, onPointerMove, onPointerUp
         {
             if (component.useOnPointerDown) {
-                component.node.on(NODE_EVENT_TYPE.PointerDown, component.onPointerDown, component);
+                component.node.on(NODE_EVENT_TYPE.PointerDown, component["onPointerDown"], component);
             }
             if (component.useOnPointerMove) {
-                component.node.on(NODE_EVENT_TYPE.PointerMove, component.onPointerMove, component);
+                component.node.on(NODE_EVENT_TYPE.PointerMove, component["onPointerMove"], component);
             }
             if (component.useOnPointerUp) {
-                component.node.on(NODE_EVENT_TYPE.PointerUp, component.onPointerUp, component);
+                component.node.on(NODE_EVENT_TYPE.PointerUp, component["onPointerUp"], component);
             }
         }
         // on Use onGlobalPointerDown, onGlobalPointerMove, onGlobalPointerUp
         {
             if (component.useOnGlobalPointerDown) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerDown, component.onGlobalPointerDown, component);
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerDown, component["onGlobalPointerDown"], component);
             }
             if (component.useOnGlobalPointerMove) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerMove, component.onGlobalPointerMove, component);
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerMove, component["onGlobalPointerMove"], component);
             }
             if (component.useOnGlobalPointerUp) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerUp, component.onGlobalPointerUp, component);
+                component.node.on(NODE_EVENT_TYPE.GlobalPointerUp, component["onGlobalPointerUp"], component);
             }
         }
         // on Use onCollisionEnter, onCollisionExit
         {
             if (component.useOnCollisionEnter) {
-                component.node.on(NODE_EVENT_TYPE.CollisionEnter, component.onCollisionEnter, component);
+                component.node.on(NODE_EVENT_TYPE.CollisionEnter, component["onCollisionEnter"], component);
             }
             if (component.useOnCollisionExit) {
-                component.node.on(NODE_EVENT_TYPE.CollisionExit, component.onCollisionExit, component);
+                component.node.on(NODE_EVENT_TYPE.CollisionExit, component["onCollisionExit"], component);
             }
         }
 
-        component.onInit();
+        component["onInit"]();
 
         return component as T;
     }

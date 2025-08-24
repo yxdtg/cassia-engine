@@ -90,7 +90,7 @@ export class Text extends RenderComponent<RenderText> {
         this.applyWordWrap();
     }
 
-    public _wrapWidth: number = 200;
+    private _wrapWidth: number = 200;
     public get wrapWidth(): number {
         return this._wrapWidth;
     }

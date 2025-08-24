@@ -81,7 +81,7 @@ export class SpriteAnimation extends Component {
         this._loop = false;
     }
 
-    public onLateUpdate(dt: number): void {
+    protected onLateUpdate(dt: number): void {
         if (this._paused) return;
         if (!this._currentAnimation) return;
 
