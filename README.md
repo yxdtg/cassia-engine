@@ -2,7 +2,7 @@
 
 目标：一个专注于 2D、易用性和高性能的 TypeScript 游戏引擎。
 
-版本：0.0.15
+版本：0.0.16
 
 # 安装
 
@@ -24,75 +24,19 @@ pnpm
 pnpm add cassia-engine
 ```
 
-# 快速开始
+## 使用 create-cassia-engine 创建项目
 
-```typescript
-import {
-    engine,
-    resourceSystem,
-    sceneManager,
-    Scene,
-    defineScene,
-    Node,
-    Component,
-    defineComponent,
-    Sprite,
-    Text,
-    Layer,
-} from "cassia-engine";
+# [create-cassia-engine](https://www.npmjs.com/package/create-cassia-engine)
 
-await engine.start();
+## 引擎打包
 
-await resourceSystem.loadTextures([
-    {
-        name: "circle",
-        src: "./circle.png",
-    },
-    {
-        name: "square",
-        src: "./square.png",
-    },
-]);
-
-@defineScene({ sceneName: "GameScene" })
-export class GameScene extends Scene {
-    public mainLayer: Layer = null!;
-
-    protected onInit(): void {
-        this.mainLayer = new Layer("Main");
-        this.addLayer(this.mainLayer);
-
-        const squareNode = new Node({ layer: this.mainLayer });
-        squareNode.addComponent(Sprite)!.texture = resourceSystem.getTexture("square");
-        squareNode.setPosition(-200, 0);
-
-        const circleNode = new Node({ layer: this.mainLayer });
-        circleNode.addComponent(Sprite)!.texture = resourceSystem.getTexture("circle");
-        circleNode.x = 200;
-
-        const textNode = new Node({ layer: this.mainLayer });
-        textNode.addComponent(Text)!.text = "Hello, Cassia Engine!";
-        textNode.addComponent(MyComponent);
-    }
-}
-
-@defineComponent({ componentName: "MyComponent" })
-export class MyComponent extends Component {
-    protected onStart(): void {
-        console.log("MyComponent started");
-    }
-}
-
-sceneManager.loadScene(GameScene);
-```
-
-## 开发打包
+### 开发环境
 
 ```bash
 pnpm run dev
 ```
 
-## 生产打包
+### 生产环境
 
 ```bash
 pnpm run build
