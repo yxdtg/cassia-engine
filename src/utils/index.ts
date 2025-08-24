@@ -43,3 +43,11 @@ export function formatMsToTime(ms: number): string {
 
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
+
+export function callAnyMethod(obj: any, method: string, ...args: any[]): any {
+    if (obj[method] && typeof obj[method] === "function") {
+        return obj[method](...args);
+    } else {
+        console.error(`Method ${method} not found on object ${obj}`);
+    }
+}

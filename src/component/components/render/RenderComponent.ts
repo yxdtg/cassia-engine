@@ -3,12 +3,17 @@ import type { RenderObject } from "cassia-engine/render";
 
 @defineComponent({ componentName: "RenderComponent", isRenderComponent: true })
 export class RenderComponent<T extends RenderObject = any> extends Component {
-    protected _renderObject: T = null!;
+    private _renderObject: T = null!;
+    public get renderObject(): T {
+        return this._renderObject;
+    }
 
     public onInit(): void {
-        this._onRenderCreate();
+        this._renderObject = this.onRenderCreate();
     }
-    protected _onRenderCreate(): void {}
+    protected onRenderCreate(): T {
+        throw new Error("onRenderCreate method not implemented");
+    }
 
     public onDestroy(): void {
         this._renderObject.destroy();

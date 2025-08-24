@@ -18,12 +18,12 @@ export interface RenderMask {
 }
 
 export class RenderMask extends RenderObject<Mask> {
-    protected _onRenderCreate(): void {
+    protected onRenderCreate(): void {
         this._maskRenderer = new GraphicsRenderer();
-        this._renderContainer.addChild(this._maskRenderer);
+        this.renderContainer.addChild(this._maskRenderer);
 
-        this._renderNode.applySize = (): void => {
-            const size = this._node.size;
+        this.renderNode.applySize = (): void => {
+            const size = this.node.size;
             this._maskRenderer.setSize(size.width, size.height);
 
             this.applyMask();
@@ -31,20 +31,20 @@ export class RenderMask extends RenderObject<Mask> {
     }
 
     public applyMask(): void {
-        const nodeRenderer = this._renderNode.renderer;
+        const nodeRenderer = this.renderNode.renderer;
         if (!nodeRenderer) return;
 
-        if (this._component.maskType === MASK_TYPE.Texture) {
+        if (this.component.maskType === MASK_TYPE.Texture) {
             if (!this._maskRenderer || !isSpriteRenderer(this._maskRenderer)) {
                 this._maskRenderer?.destroy();
                 this._maskRenderer = null!;
 
                 this._maskRenderer = new SpriteRenderer();
-                this._renderContainer.addChild(this._maskRenderer);
+                this.renderContainer.addChild(this._maskRenderer);
 
                 nodeRenderer.setMask({
                     mask: this._maskRenderer,
-                    inverse: this._component.inverse,
+                    inverse: this.component.inverse,
                 });
             }
         } else {
@@ -53,11 +53,11 @@ export class RenderMask extends RenderObject<Mask> {
                 this._maskRenderer = null!;
 
                 this._maskRenderer = new GraphicsRenderer();
-                this._renderContainer.addChild(this._maskRenderer);
+                this.renderContainer.addChild(this._maskRenderer);
 
                 nodeRenderer.setMask({
                     mask: this._maskRenderer,
-                    inverse: this._component.inverse,
+                    inverse: this.component.inverse,
                 });
             }
         }
@@ -66,15 +66,15 @@ export class RenderMask extends RenderObject<Mask> {
             const renderer = this._maskRenderer as GraphicsRenderer;
             renderer.clear();
 
-            const size = this._node.size;
+            const size = this.node.size;
 
-            if (this._component.maskType === MASK_TYPE.Rect) {
+            if (this.component.maskType === MASK_TYPE.Rect) {
                 renderer.rect(0, 0, size.width, size.height).fill({
                     color: color(255, 255, 255).toHex(),
                     alpha: 0,
                 });
             } else {
-                if (this._component.maskType === MASK_TYPE.Ellipse) {
+                if (this.component.maskType === MASK_TYPE.Ellipse) {
                     renderer.ellipse(size.width * 0.5, size.height * 0.5, size.width * 0.5, size.height * 0.5).fill({
                         color: color(255, 255, 255).toHex(),
                         alpha: 0,
@@ -84,22 +84,22 @@ export class RenderMask extends RenderObject<Mask> {
         } else {
             if (isSpriteRenderer(this._maskRenderer)) {
                 const renderer = this._maskRenderer as SpriteRenderer;
-                const texture = this._component.maskTexture?.data ?? null!;
+                const texture = this.component.maskTexture?.data ?? null!;
                 renderer.texture = texture;
             }
         }
 
-        const size = this._node.size;
+        const size = this.node.size;
         this._maskRenderer.setSize(size.width, size.height);
 
         nodeRenderer.setMask({
             mask: this._maskRenderer,
-            inverse: this._component.inverse,
+            inverse: this.component.inverse,
         });
     }
 
     public clearMask(): void {
-        const nodeRenderer = this._renderNode.renderer;
+        const nodeRenderer = this.renderNode.renderer;
         if (!nodeRenderer) return;
         nodeRenderer.mask = null;
     }

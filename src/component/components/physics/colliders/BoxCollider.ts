@@ -43,14 +43,14 @@ export class BoxCollider extends ColliderComponent {
      * @internal
      */
     public applySize(): void {
-        if (!this._collider) return;
+        if (!this.collider) return;
 
         const nodeWorldScale = this.node.getLayerScale();
 
         const halfWidth = (this._size.width / 2) * nodeWorldScale.x;
         const halfHeight = (this._size.height / 2) * nodeWorldScale.y;
 
-        this._collider.setHalfExtents({ x: halfWidth, y: halfHeight });
+        this.collider.setHalfExtents({ x: halfWidth, y: halfHeight });
     }
 
     /**
@@ -60,7 +60,7 @@ export class BoxCollider extends ColliderComponent {
         this.applySize();
     }
 
-    protected _onCreateCollider(): RAPIER.Collider | null {
+    protected onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.cuboid(0, 0);
         return physicsSystem.createCollider(this, colliderDesc);
     }

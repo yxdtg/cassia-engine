@@ -25,8 +25,8 @@ export type TEXT_VERTICAL_ALIGN = (typeof TEXT_VERTICAL_ALIGN)[keyof typeof TEXT
 
 @defineComponent({ componentName: "Text" })
 export class Text extends RenderComponent<RenderText> {
-    protected _onRenderCreate(): void {
-        this._renderObject = new RenderText(this);
+    protected onRenderCreate(): RenderText {
+        return new RenderText(this);
     }
 
     /*************************** overflow ***************************/
@@ -43,7 +43,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyOverflow(): void {
-        this._renderObject?.applyOverflow();
+        this.renderObject?.applyOverflow();
     }
 
     /*************************** horizontalAlign ***************************/
@@ -60,7 +60,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyHorizontalAlign(): void {
-        this._renderObject?.applyHorizontalAlign();
+        this.renderObject?.applyHorizontalAlign();
     }
 
     /*************************** verticalAlign ***************************/
@@ -77,7 +77,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyVerticalAlign(): void {
-        this._renderObject?.applyVerticalAlign();
+        this.renderObject?.applyVerticalAlign();
     }
 
     /*************************** wordWrap ***************************/
@@ -103,7 +103,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyWordWrap(): void {
-        this._renderObject?.applyWordWrap();
+        this.renderObject?.applyWordWrap();
     }
 
     /*************************** text ***************************/
@@ -120,7 +120,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyText(): void {
-        this._renderObject?.applyText();
+        this.renderObject?.applyText();
     }
 
     /*************************** fontSize ***************************/
@@ -137,7 +137,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyFontSize(): void {
-        this._renderObject?.applyFontSize();
+        this.renderObject?.applyFontSize();
         this.applyLineHeight();
     }
 
@@ -155,7 +155,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyLineHeight(): void {
-        this._renderObject?.applyLineHeight();
+        this.renderObject?.applyLineHeight();
     }
 
     /*************************** fontFamily ***************************/
@@ -172,7 +172,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyFontFamily(): void {
-        this._renderObject?.applyFontFamily();
+        this.renderObject?.applyFontFamily();
     }
 
     /*************************** isBold ***************************/
@@ -189,7 +189,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyBlod(): void {
-        this._renderObject?.applyBlod();
+        this.renderObject?.applyBlod();
     }
 
     /*************************** isItalic ***************************/
@@ -206,7 +206,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyIsItalic(): void {
-        this._renderObject?.applyItalic();
+        this.renderObject?.applyItalic();
     }
 
     /*************************** outline ***************************/
@@ -241,7 +241,7 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyOutline(): void {
-        this._renderObject?.applyOutline();
+        this.renderObject?.applyOutline();
     }
 
     /*************************** shadow ***************************/
@@ -301,6 +301,6 @@ export class Text extends RenderComponent<RenderText> {
      * @internal
      */
     public applyShadow(): void {
-        this._renderObject?.applyShadow();
+        this.renderObject?.applyShadow();
     }
 }

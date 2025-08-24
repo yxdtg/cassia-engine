@@ -15,7 +15,7 @@ export class ColliderComponent extends Component {
         return null;
     }
 
-    protected _collider: RAPIER.Collider | null = null;
+    private _collider: RAPIER.Collider | null = null;
     public get collider(): RAPIER.Collider | null {
         return this._collider;
     }
@@ -118,12 +118,12 @@ export class ColliderComponent extends Component {
         this._destroyCollider();
     }
 
-    protected _onCreateCollider(): RAPIER.Collider | null {
+    protected onCreateCollider(): RAPIER.Collider | null {
         throw new Error("not implemented");
     }
 
     private _createCollider(): void {
-        const collider = this._onCreateCollider();
+        const collider = this.onCreateCollider();
         if (!collider) return console.warn("Failed to create collider");
 
         this._collider = collider;

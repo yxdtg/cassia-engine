@@ -28,14 +28,14 @@ export class CapsuleCollider extends ColliderComponent {
      * @internal
      */
     public applySize(): void {
-        if (!this._collider) return;
+        if (!this.collider) return;
 
         const nodeWorldScale = this.node.getLayerScale();
 
         const halfHeight = (this._height / 2) * nodeWorldScale.y;
 
-        this._collider.setRadius(this._radius);
-        this._collider.setHalfHeight(halfHeight);
+        this.collider.setRadius(this._radius);
+        this.collider.setHalfHeight(halfHeight);
     }
 
     /**
@@ -45,7 +45,7 @@ export class CapsuleCollider extends ColliderComponent {
         this.applySize();
     }
 
-    protected _onCreateCollider(): RAPIER.Collider | null {
+    protected onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.capsule(0, 0);
         return physicsSystem.createCollider(this, colliderDesc);
     }

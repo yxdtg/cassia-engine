@@ -35,30 +35,30 @@ export interface RenderText {
 }
 
 export class RenderText extends RenderObject<Text> {
-    protected _onRenderCreate(): void {
+    protected onRenderCreate(): void {
         this._textRenderer = new TextRenderer();
-        this._renderContainer.addChild(this._textRenderer);
+        this.renderContainer.addChild(this._textRenderer);
 
         this._maskRenderer = new GraphicsRenderer();
-        this._renderContainer.addChild(this._maskRenderer);
+        this.renderContainer.addChild(this._maskRenderer);
 
-        this._renderNode.applySize = (): void => {
-            const overflow = this._component.overflow;
+        this.renderNode.applySize = (): void => {
+            const overflow = this.component.overflow;
             if (overflow === TEXT_OVER_FLOW.None) {
                 // 更新文本尺寸 到 节点尺寸
                 const textSize = this._textRenderer.getSize();
-                this._node.size.set(textSize.width, textSize.height);
+                this.node.size.set(textSize.width, textSize.height);
 
                 this._textRenderer.x = 0;
                 this._textRenderer.y = 0;
 
-                this._node.applyAnchor();
+                this.node.applyAnchor();
                 return;
             }
             if (overflow === TEXT_OVER_FLOW.Clamp) {
                 // 更新节点尺寸 到 mask尺寸
-                const size = this._node.size;
-                const anchor = this._node.anchor;
+                const size = this.node.size;
+                const anchor = this.node.anchor;
 
                 this._maskRenderer.clear();
                 this._maskRenderer.setSize(size.width, size.height);
@@ -72,9 +72,9 @@ export class RenderText extends RenderObject<Text> {
                 return;
             }
         };
-        this._renderNode.applyColor = (): void => {
-            const color = this._node.color.toDecimal();
-            const alpha = this._node.color.a / 255;
+        this.renderNode.applyColor = (): void => {
+            const color = this.node.color.toDecimal();
+            const alpha = this.node.color.a / 255;
 
             this._textRenderer.style.fill = color;
             this._textRenderer.alpha = alpha;
@@ -85,27 +85,27 @@ export class RenderText extends RenderObject<Text> {
     }
 
     public applyOverflow(): void {
-        const overflow = this._component.overflow;
+        const overflow = this.component.overflow;
 
         if (overflow === TEXT_OVER_FLOW.None) {
             this._textRenderer.mask = null;
             this._maskRenderer.visible = false;
-            this._node.applySize();
+            this.node.applySize();
             return;
         }
         if (overflow === TEXT_OVER_FLOW.Clamp) {
             this._textRenderer.mask = this._maskRenderer;
             this._maskRenderer.visible = true;
-            this._node.applySize();
+            this.node.applySize();
             return;
         }
     }
 
     public applyHorizontalAlign(): void {
-        if (this._component.overflow !== TEXT_OVER_FLOW.Clamp) return;
+        if (this.component.overflow !== TEXT_OVER_FLOW.Clamp) return;
 
-        const horizontalAlign = this._component.horizontalAlign;
-        const size = this._node.size;
+        const horizontalAlign = this.component.horizontalAlign;
+        const size = this.node.size;
 
         if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Left) {
             this._textRenderer.x = 0;
@@ -122,10 +122,10 @@ export class RenderText extends RenderObject<Text> {
     }
 
     public applyVerticalAlign(): void {
-        if (this._component.overflow !== TEXT_OVER_FLOW.Clamp) return;
+        if (this.component.overflow !== TEXT_OVER_FLOW.Clamp) return;
 
-        const verticalAlign = this._component.verticalAlign;
-        const size = this._node.size;
+        const verticalAlign = this.component.verticalAlign;
+        const size = this.node.size;
 
         if (verticalAlign === TEXT_VERTICAL_ALIGN.Top) {
             this._textRenderer.y = 0;
@@ -142,52 +142,52 @@ export class RenderText extends RenderObject<Text> {
     }
 
     public applyWordWrap(): void {
-        this._textRenderer.style.wordWrap = this._component.wordWrap;
-        this._textRenderer.style.breakWords = this._component.wordWrap;
+        this._textRenderer.style.wordWrap = this.component.wordWrap;
+        this._textRenderer.style.breakWords = this.component.wordWrap;
 
-        if (this._component.wordWrap) {
-            if (this._component.overflow === TEXT_OVER_FLOW.Clamp) {
-                this._component.wrapWidth = this._node.width;
+        if (this.component.wordWrap) {
+            if (this.component.overflow === TEXT_OVER_FLOW.Clamp) {
+                this.component.wrapWidth = this.node.width;
             }
         }
 
-        this._textRenderer.style.wordWrapWidth = this._component.wrapWidth;
+        this._textRenderer.style.wordWrapWidth = this.component.wrapWidth;
     }
 
     public applyText(): void {
-        this._textRenderer.text = this._component.text;
-        this._node.applySize();
+        this._textRenderer.text = this.component.text;
+        this.node.applySize();
     }
 
     public applyFontSize(): void {
-        this._textRenderer.style.fontSize = this._component.fontSize;
+        this._textRenderer.style.fontSize = this.component.fontSize;
         this.applyLineHeight();
     }
 
     public applyLineHeight(): void {
-        this._textRenderer.style.lineHeight = this._component.fontSize * this._component.lineHeight;
-        this._node.applySize();
+        this._textRenderer.style.lineHeight = this.component.fontSize * this.component.lineHeight;
+        this.node.applySize();
     }
 
     public applyFontFamily(): void {
-        this._textRenderer.style.fontFamily = this._component.fontFamily;
-        this._node.applySize();
+        this._textRenderer.style.fontFamily = this.component.fontFamily;
+        this.node.applySize();
     }
 
     public applyBlod(): void {
-        this._textRenderer.style.fontWeight = this._component.isBold ? "bold" : "normal";
-        this._node.applySize();
+        this._textRenderer.style.fontWeight = this.component.isBold ? "bold" : "normal";
+        this.node.applySize();
     }
 
     public applyItalic(): void {
-        this._textRenderer.style.fontStyle = this._component.isItalic ? "italic" : "normal";
-        this._node.applySize();
+        this._textRenderer.style.fontStyle = this.component.isItalic ? "italic" : "normal";
+        this.node.applySize();
     }
 
     public applyOutline(): void {
-        if (this._component.outlineEnabled) {
-            const outlineColor = this._component.outlineColor.toHex();
-            const outlineWidth = (this._component.outlineWidth * this._component.fontSize) / 32;
+        if (this.component.outlineEnabled) {
+            const outlineColor = this.component.outlineColor.toHex();
+            const outlineWidth = (this.component.outlineWidth * this.component.fontSize) / 32;
 
             this._textRenderer.style.stroke = {
                 color: outlineColor,
@@ -201,17 +201,17 @@ export class RenderText extends RenderObject<Text> {
     }
 
     public applyShadow(): void {
-        if (this._component.shadowEnabled) {
-            const shadowColor = this._component.shadowColor.toHex();
-            const shadowAngle = this._component.shadowOffset.toRadians();
-            const shadowDistance = this._component.shadowOffset.length();
+        if (this.component.shadowEnabled) {
+            const shadowColor = this.component.shadowColor.toHex();
+            const shadowAngle = this.component.shadowOffset.toRadians();
+            const shadowDistance = this.component.shadowOffset.length();
 
             this._textRenderer.style.dropShadow = {
                 color: shadowColor,
                 alpha: 1,
                 angle: shadowAngle,
                 distance: shadowDistance,
-                blur: this._component.shadowBlur,
+                blur: this.component.shadowBlur,
             };
         } else {
             this._textRenderer.style.dropShadow = false;

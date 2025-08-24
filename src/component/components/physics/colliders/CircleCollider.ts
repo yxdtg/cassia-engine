@@ -18,12 +18,12 @@ export class CircleCollider extends ColliderComponent {
      * @internal
      */
     public applyRadius(): void {
-        if (!this._collider) return;
+        if (!this.collider) return;
 
         const nodeWorldScale = this.node.getLayerScale();
 
         const radius = this._radius * nodeWorldScale.x;
-        this._collider.setRadius(radius);
+        this.collider.setRadius(radius);
     }
 
     /**
@@ -33,7 +33,7 @@ export class CircleCollider extends ColliderComponent {
         this.applyRadius();
     }
 
-    protected _onCreateCollider(): RAPIER.Collider | null {
+    protected onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.ball(this._radius);
         return physicsSystem.createCollider(this, colliderDesc);
     }

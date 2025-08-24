@@ -4,18 +4,25 @@ import type { ContainerRenderer } from "../define";
 import type { RenderNode } from "../RenderNode";
 
 export class RenderObject<T extends RenderComponent = any> {
-    protected _component: T;
+    private _component: T;
     public get component(): T {
         return this._component;
     }
 
-    protected _node: Node;
+    private _node: Node;
     public get node(): Node {
         return this._node;
     }
 
-    protected _renderNode: RenderNode;
-    protected _renderContainer: ContainerRenderer;
+    private _renderNode: RenderNode;
+    public get renderNode(): RenderNode {
+        return this._renderNode;
+    }
+
+    private _renderContainer: ContainerRenderer;
+    public get renderContainer(): ContainerRenderer {
+        return this._renderContainer;
+    }
 
     constructor(component: T) {
         this._component = component;
@@ -24,18 +31,18 @@ export class RenderObject<T extends RenderComponent = any> {
         this._renderNode = this._node.renderNode;
         this._renderContainer = this._renderNode.renderContainer;
 
-        this._onRenderCreate();
+        this.onRenderCreate();
 
-        this._applySizeAndColor();
+        this.applySizeAndColor();
     }
-    protected _onRenderCreate(): void {}
+    protected onRenderCreate(): void {}
 
     public applyEnabled(): void {
         const enabled = this._component.enabled;
         this._renderContainer.visible = enabled;
     }
 
-    protected _applySizeAndColor(): void {
+    protected applySizeAndColor(): void {
         this._renderNode.applySize();
         this._renderNode.applyColor();
     }

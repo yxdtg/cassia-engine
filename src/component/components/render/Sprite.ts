@@ -6,8 +6,8 @@ import type { TextureResource } from "cassia-engine/resource";
 
 @defineComponent({ componentName: "Sprite" })
 export class Sprite extends RenderComponent<RenderSprite> {
-    protected _onRenderCreate(): void {
-        this._renderObject = new RenderSprite(this);
+    protected onRenderCreate(): RenderSprite {
+        return new RenderSprite(this);
     }
 
     private _spriteType: SPRITE_TYPE = SPRITE_TYPE.Simple;
@@ -23,7 +23,7 @@ export class Sprite extends RenderComponent<RenderSprite> {
      * @internal
      */
     public applySpriteType(): void {
-        this._renderObject.applySpriteType();
+        this.renderObject.applySpriteType();
     }
 
     private _texture: TextureResource | null = null;
@@ -39,7 +39,7 @@ export class Sprite extends RenderComponent<RenderSprite> {
      * @internal
      */
     public applyTexture(): void {
-        this._renderObject.applyTexture();
+        this.renderObject.applyTexture();
     }
 
     private _nineSliceBounds: Bounds = Bounds.zero;
@@ -95,6 +95,6 @@ export class Sprite extends RenderComponent<RenderSprite> {
      * @internal
      */
     public applyNineSliceBounds(): void {
-        this._renderObject.applyNineSliceBounds();
+        this.renderObject.applyNineSliceBounds();
     }
 }

@@ -5,8 +5,8 @@ import { TextureResource } from "cassia-engine/resource";
 
 @defineComponent({ componentName: "Mask" })
 export class Mask extends RenderComponent<RenderMask> {
-    protected _onRenderCreate(): void {
-        this._renderObject = new RenderMask(this);
+    protected onRenderCreate(): RenderMask {
+        return new RenderMask(this);
     }
 
     private _maskType: MASK_TYPE = MASK_TYPE.Rect;
@@ -40,11 +40,11 @@ export class Mask extends RenderComponent<RenderMask> {
      * @internal
      */
     public applyMask(): void {
-        this._renderObject.applyMask();
+        this.renderObject.applyMask();
     }
 
     public override onDestroy(): void {
-        this._renderObject.clearMask();
+        this.renderObject.clearMask();
 
         super.onDestroy();
     }

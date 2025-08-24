@@ -24,21 +24,21 @@ export interface RenderSprite {
 }
 
 export class RenderSprite extends RenderObject<Sprite> {
-    protected _onRenderCreate(): void {
+    protected onRenderCreate(): void {
         this._spriteRenderer = new SpriteRenderer();
-        this._renderContainer.addChild(this._spriteRenderer);
+        this.renderContainer.addChild(this._spriteRenderer);
 
-        this._renderNode.applySize = (): void => {
+        this.renderNode.applySize = (): void => {
             if (!this._spriteRenderer) return;
 
-            const size = this._node.size;
+            const size = this.node.size;
             this._spriteRenderer.setSize(size.width, size.height);
         };
-        this._renderNode.applyColor = (): void => {
+        this.renderNode.applyColor = (): void => {
             if (!this._spriteRenderer) return;
 
-            const color = this._node.color.toDecimal();
-            const alpha = this._node.color.a / 255;
+            const color = this.node.color.toDecimal();
+            const alpha = this.node.color.a / 255;
 
             this._spriteRenderer.tint = color;
             this._spriteRenderer.alpha = alpha;
@@ -46,39 +46,39 @@ export class RenderSprite extends RenderObject<Sprite> {
     }
 
     public applySpriteType(): void {
-        const texture = this._component.texture;
+        const texture = this.component.texture;
 
-        if (this._component.spriteType === SPRITE_TYPE.Simple) {
+        if (this.component.spriteType === SPRITE_TYPE.Simple) {
             if (!this._spriteRenderer || !isSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
 
                 this._spriteRenderer = new SpriteRenderer();
-                this._renderContainer.addChild(this._spriteRenderer);
+                this.renderContainer.addChild(this._spriteRenderer);
             }
         }
 
-        if (this._component.spriteType === SPRITE_TYPE.NineSlice) {
+        if (this.component.spriteType === SPRITE_TYPE.NineSlice) {
             if (!this._spriteRenderer || !isNineSliceSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
 
                 if (texture) {
                     this._spriteRenderer = new NineSliceSpriteRenderer(texture.data);
-                    this._renderContainer.addChild(this._spriteRenderer);
+                    this.renderContainer.addChild(this._spriteRenderer);
 
                     this.applyNineSliceBounds();
                 }
             }
         }
 
-        if (this._component.spriteType === SPRITE_TYPE.Tiling) {
+        if (this.component.spriteType === SPRITE_TYPE.Tiling) {
             if (!this._spriteRenderer || !isTilingSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
 
                 this._spriteRenderer = new TilingSpriteRenderer();
-                this._renderContainer.addChild(this._spriteRenderer);
+                this.renderContainer.addChild(this._spriteRenderer);
             }
         }
 
@@ -86,13 +86,13 @@ export class RenderSprite extends RenderObject<Sprite> {
     }
 
     public applyTexture(): void {
-        const texture = this._component.texture;
+        const texture = this.component.texture;
 
-        if (this._component.spriteType === SPRITE_TYPE.NineSlice && !this._spriteRenderer) {
+        if (this.component.spriteType === SPRITE_TYPE.NineSlice && !this._spriteRenderer) {
             if (!texture) return;
 
             this._spriteRenderer = new NineSliceSpriteRenderer(texture.data);
-            this._renderContainer.addChild(this._spriteRenderer);
+            this.renderContainer.addChild(this._spriteRenderer);
 
             this.applyNineSliceBounds();
         }
@@ -100,14 +100,14 @@ export class RenderSprite extends RenderObject<Sprite> {
         if (!this._spriteRenderer) return;
 
         this._spriteRenderer.texture = texture?.data!;
-        this._applySizeAndColor();
+        this.applySizeAndColor();
     }
 
     public applyNineSliceBounds(): void {
-        if (this._component.spriteType !== SPRITE_TYPE.NineSlice) return;
+        if (this.component.spriteType !== SPRITE_TYPE.NineSlice) return;
         if (!this._spriteRenderer) return;
 
-        const bounds = this._component.nineSliceBounds;
+        const bounds = this.component.nineSliceBounds;
 
         const renderer = this._spriteRenderer as NineSliceSpriteRenderer;
         renderer.topHeight = bounds.top;
