@@ -11,7 +11,14 @@ export class Layer {
         return this._renderLayer;
     }
 
-    constructor() {
+    private _layerName: string;
+    public get layerName(): string {
+        return this._layerName;
+    }
+
+    constructor(layerName: string) {
+        this._layerName = layerName;
+
         this._renderLayer = new RenderLayer(this);
     }
 
@@ -177,6 +184,4 @@ export class Layer {
             node.destroy();
         }
     }
-
-    public destroy(): void {}
 }

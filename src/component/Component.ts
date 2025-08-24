@@ -3,14 +3,17 @@ import type { Node } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
 import type { ColliderComponent } from "./components";
 import { defineObjectGetter } from "cassia-engine/utils";
+import { EventObject } from "cassia-engine/event";
 
-export class Component {
+export class Component<M extends Record<keyof M, any> = any> extends EventObject<M> {
     private _node: Node;
     public get node(): Node {
         return this._node;
     }
 
     constructor(node: Node) {
+        super();
+
         this._node = node;
     }
 

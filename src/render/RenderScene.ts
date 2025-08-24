@@ -52,6 +52,9 @@ export class RenderScene {
     }
 
     public destroy(): void {
+        this._renderLayers.forEach((renderLayer) => renderLayer.destroy());
+        this._renderLayers.length = 0;
+
         this._renderer.destroy();
         this._renderer = null!;
     }

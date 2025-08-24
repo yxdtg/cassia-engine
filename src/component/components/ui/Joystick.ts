@@ -3,8 +3,21 @@ import type { IGlobalPointerEvent, IPointerEvent } from "cassia-engine/input";
 import { Vec2 } from "cassia-engine/math";
 import { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 
+export const JOYSTICK_EVENT_TYPE = {
+    Down: "down",
+    Move: "move",
+    Up: "up",
+} as const;
+export type JOYSTICK_EVENT_TYPE = (typeof JOYSTICK_EVENT_TYPE)[keyof typeof JOYSTICK_EVENT_TYPE];
+
+interface IJoystickEventTypeMap {
+    [JOYSTICK_EVENT_TYPE.Down]: () => void;
+    [JOYSTICK_EVENT_TYPE.Move]: (vector: Vec2, angle: number) => void;
+    [JOYSTICK_EVENT_TYPE.Up]: () => void;
+}
+
 @defineComponent({ componentName: "Joystick", useOnGlobalPointerMove: true, useOnGlobalPointerUp: true })
-export class Joystick extends Component {
+export class Joystick extends Component<IJoystickEventTypeMap> {
     private _rockerNode: Node | null = null;
     public get rockerNode(): Node | null {
         return this._rockerNode;
@@ -48,6 +61,8 @@ export class Joystick extends Component {
         this._isDown = true;
 
         this._lastPointerId = event.pointerId;
+
+        this.emit(JOYSTICK_EVENT_TYPE.Down);
     }
 
     public onGlobalPointerMove(event: IGlobalPointerEvent): void {
@@ -66,9 +81,6 @@ export class Joystick extends Component {
             this.node.width / 2
         );
 
-        this._vector.set(normalizedOffset);
-        this._angle = this._vector.toDegrees();
-
         if (this.horizontal) {
             this._rockerNode.x = normalizedOffset.x * distance;
         }
@@ -77,6 +89,11 @@ export class Joystick extends Component {
         }
 
         this._lastPointerId = event.pointerId;
+
+        this._vector.set(normalizedOffset);
+        this._angle = this._vector.toDegrees();
+
+        this.emit(JOYSTICK_EVENT_TYPE.Move, this.vector, this.angle);
     }
     public onGlobalPointerUp(event: IGlobalPointerEvent): void {
         if (!this._rockerNode) return;
@@ -87,5 +104,7 @@ export class Joystick extends Component {
 
         this._isDown = false;
         this._isDragging = false;
+
+        this.emit(JOYSTICK_EVENT_TYPE.Up);
     }
 }

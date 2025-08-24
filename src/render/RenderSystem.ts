@@ -125,21 +125,6 @@ export class RenderSystem {
         this._sceneContainer.addChild(sceneRenderer);
     }
 
-    public screenToWorld(screenPoint: Vec2): Vec2 {
-        const worldPoint = this._rootContainer.toLocal({
-            x: screenPoint.x,
-            y: screenPoint.y,
-        });
-        return vec2(worldPoint.x, worldPoint.y);
-    }
-    public worldToScreen(worldPoint: Vec2): Vec2 {
-        const screenPoint = this._rootContainer.toGlobal({
-            x: worldPoint.x,
-            y: worldPoint.y,
-        });
-        return vec2(screenPoint.x, screenPoint.y);
-    }
-
     /**
      * 获取屏幕尺寸
      */

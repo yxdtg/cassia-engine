@@ -40,6 +40,18 @@ export class Scene {
         this._renderScene.removeRenderLayer(renderLayer);
     }
 
+    public getLayer(layerName: string): Layer | null;
+    public getLayer(layerIndex: number): Layer | null;
+    public getLayer(layerNameOrIndex: string | number): Layer | null;
+    public getLayer(layerNameOrIndex: string | number): Layer | null {
+        if (typeof layerNameOrIndex === "string")
+            return this._layers.find((layer) => layer.layerName === layerNameOrIndex) ?? null;
+
+        if (typeof layerNameOrIndex === "number") return this._layers[layerNameOrIndex] ?? null;
+
+        return null;
+    }
+
     public getLayerIndex(layer: Layer): number {
         return this._layers.indexOf(layer);
     }
@@ -60,7 +72,7 @@ export class Scene {
     public destroyAllLayers(): void {
         for (let i = this._layers.length - 1; i >= 0; i--) {
             const layer = this._layers[i];
-            layer.destroy();
+            layer.destroyAllNodes();
         }
     }
 }
