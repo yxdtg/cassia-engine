@@ -4,6 +4,9 @@ import { RenderLayer } from "cassia-engine/render";
 
 export class Layer {
     private _renderLayer: RenderLayer;
+    /**
+     * @internal
+     */
     public get renderLayer(): RenderLayer {
         return this._renderLayer;
     }

@@ -47,6 +47,9 @@ interface INodeEventTypeMap {
 
 export class Node extends EventObject<INodeEventTypeMap> {
     private _renderNode: RenderNode;
+    /**
+     * @internal
+     */
     public get renderNode(): RenderNode {
         return this._renderNode;
     }

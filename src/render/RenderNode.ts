@@ -3,11 +3,17 @@ import { ContainerRenderer } from "./define";
 
 export class RenderNode {
     private _renderer: ContainerRenderer;
+    /**
+     * @internal
+     */
     public get renderer(): ContainerRenderer {
         return this._renderer;
     }
 
     private _renderContainer: ContainerRenderer;
+    /**
+     * @internal
+     */
     public get renderContainer(): ContainerRenderer {
         return this._renderContainer;
     }
@@ -28,11 +34,17 @@ export class RenderNode {
     }
 
     private _parent: RenderNode | null = null;
+    /**
+     * @internal
+     */
     public get parent(): RenderNode | null {
         return this._parent;
     }
 
     private _children: RenderNode[] = [];
+    /**
+     * @internal
+     */
     public get children(): RenderNode[] {
         return this._children;
     }

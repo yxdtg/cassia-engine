@@ -5,6 +5,9 @@ import { defineObjectGetter } from "cassia-engine/utils";
 
 export class Scene {
     private _renderScene: RenderScene;
+    /**
+     * @internal
+     */
     public get renderScene(): RenderScene {
         return this._renderScene;
     }

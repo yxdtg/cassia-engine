@@ -4,6 +4,9 @@ import type { RenderLayer } from "./RenderLayer";
 
 export class RenderScene {
     private _renderer: ContainerRenderer;
+    /**
+     * @internal
+     */
     public get renderer(): ContainerRenderer {
         return this._renderer;
     }

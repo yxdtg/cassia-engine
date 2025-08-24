@@ -5,6 +5,9 @@ import { vec2, Vec2 } from "cassia-engine/math";
 
 export class RenderLayer {
     private _renderer: ContainerRenderer;
+    /**
+     * @internal
+     */
     public get renderer(): ContainerRenderer {
         return this._renderer;
     }
