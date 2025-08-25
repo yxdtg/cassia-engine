@@ -18,8 +18,8 @@ export type ALIGN_VERTICAL_TYPE = (typeof ALIGN_VERTICAL_TYPE)[keyof typeof ALIG
 
 @defineComponent({ componentName: "Align" })
 export class Align extends Component {
-    public alignHorizontalType: ALIGN_HORIZONTAL_TYPE = ALIGN_HORIZONTAL_TYPE.Center;
-    public alignVerticalType: ALIGN_VERTICAL_TYPE = ALIGN_VERTICAL_TYPE.Center;
+    public horizontalType: ALIGN_HORIZONTAL_TYPE = ALIGN_HORIZONTAL_TYPE.Center;
+    public verticalType: ALIGN_VERTICAL_TYPE = ALIGN_VERTICAL_TYPE.Center;
 
     public offset: Vec2 = Vec2.zero;
 
@@ -70,23 +70,23 @@ export class Align extends Component {
         let x = 0;
         let y = 0;
 
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Left) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Left) {
             x = -gameViewSize.width / 2 + w;
         }
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Center) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Center) {
             x = nodeSize.width * nodeScale.x * (nodeAnchor.x - 0.5);
         }
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Right) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Right) {
             x = gameViewSize.width / 2 - w;
         }
 
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Top) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Top) {
             y = gameViewSize.height / 2 - h;
         }
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Center) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Center) {
             y = nodeSize.height * nodeScale.y * (nodeAnchor.y - 0.5);
         }
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Bottom) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Bottom) {
             y = -gameViewSize.height / 2 + h;
         }
 
@@ -115,23 +115,23 @@ export class Align extends Component {
         let x = 0;
         let y = 0;
 
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Left) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Left) {
             x = -parentW + w;
         }
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Center) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Center) {
             x = nodeSize.width * nodeScale.x * (nodeAnchor.x - 0.5);
         }
-        if (this.alignHorizontalType === ALIGN_HORIZONTAL_TYPE.Right) {
+        if (this.horizontalType === ALIGN_HORIZONTAL_TYPE.Right) {
             x = parentW - w;
         }
 
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Top) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Top) {
             y = parentH - h;
         }
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Center) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Center) {
             y = nodeSize.height * nodeScale.y * (nodeAnchor.y - 0.5);
         }
-        if (this.alignVerticalType === ALIGN_VERTICAL_TYPE.Bottom) {
+        if (this.verticalType === ALIGN_VERTICAL_TYPE.Bottom) {
             y = -parentH + h;
         }
 

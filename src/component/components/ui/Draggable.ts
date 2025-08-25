@@ -9,8 +9,8 @@ import { Vec2 } from "cassia-engine/math";
     useOnGlobalPointerUp: true,
 })
 export class Draggable extends Component {
-    public horizontal: boolean = true;
-    public vertical: boolean = true;
+    public horizontalEnabled: boolean = true;
+    public verticalEnabled: boolean = true;
 
     private _isDown: boolean = false;
 
@@ -37,10 +37,10 @@ export class Draggable extends Component {
 
         const offset = this.node.currentLayer.screenToLayer(event.screenPoint).subtract(this._lastDragPoint);
 
-        if (this.horizontal) {
+        if (this.horizontalEnabled) {
             this.node.setLayerPosition(this.node.getLayerPosition().x + offset.x, this.node.getLayerPosition().y);
         }
-        if (this.vertical) {
+        if (this.verticalEnabled) {
             this.node.setLayerPosition(this.node.getLayerPosition().x, this.node.getLayerPosition().y + offset.y);
         }
 
