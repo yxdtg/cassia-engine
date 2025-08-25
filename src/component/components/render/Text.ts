@@ -1,27 +1,12 @@
 import { defineComponent } from "cassia-engine/component";
 import { Color, vec2, type Vec2 } from "cassia-engine/math";
-import { RenderText } from "cassia-engine/render";
+import {
+    RenderText,
+    TEXT_OVER_FLOW_TYPE,
+    TEXT_ALIGN_HORIZONTAL_TYPE,
+    TEXT_ALIGN_VERTICAL_TYPE,
+} from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
-
-export const TEXT_OVER_FLOW = {
-    None: "none",
-    Clamp: "clamp",
-} as const;
-export type TEXT_OVER_FLOW = (typeof TEXT_OVER_FLOW)[keyof typeof TEXT_OVER_FLOW];
-
-export const TEXT_HORIZONTAL_ALIGN = {
-    Left: "left",
-    Center: "center",
-    Right: "right",
-} as const;
-export type TEXT_HORIZONTAL_ALIGN = (typeof TEXT_HORIZONTAL_ALIGN)[keyof typeof TEXT_HORIZONTAL_ALIGN];
-
-export const TEXT_VERTICAL_ALIGN = {
-    Top: "top",
-    Center: "center",
-    Bottom: "bottom",
-} as const;
-export type TEXT_VERTICAL_ALIGN = (typeof TEXT_VERTICAL_ALIGN)[keyof typeof TEXT_VERTICAL_ALIGN];
 
 @defineComponent({ componentName: "Text" })
 export class Text extends RenderComponent<RenderText> {
@@ -30,54 +15,54 @@ export class Text extends RenderComponent<RenderText> {
     }
 
     /*************************** overflow ***************************/
-    private _overflow: TEXT_OVER_FLOW = TEXT_OVER_FLOW.None;
-    public get overflow(): TEXT_OVER_FLOW {
-        return this._overflow;
+    private _overflowType: TEXT_OVER_FLOW_TYPE = TEXT_OVER_FLOW_TYPE.None;
+    public get overflowType(): TEXT_OVER_FLOW_TYPE {
+        return this._overflowType;
     }
-    public set overflow(value: TEXT_OVER_FLOW) {
-        this._overflow = value;
-        this.applyOverflow();
+    public set overflowType(value: TEXT_OVER_FLOW_TYPE) {
+        this._overflowType = value;
+        this.applyOverflowType();
     }
 
     /**
      * @internal
      */
-    public applyOverflow(): void {
-        this.renderObject?.applyOverflow();
+    public applyOverflowType(): void {
+        this.renderObject?.applyOverflowType();
     }
 
     /*************************** horizontalAlign ***************************/
-    private _horizontalAlign: TEXT_HORIZONTAL_ALIGN = TEXT_HORIZONTAL_ALIGN.Center;
-    public get horizontalAlign(): TEXT_HORIZONTAL_ALIGN {
-        return this._horizontalAlign;
+    private _alignHorizontalType: TEXT_ALIGN_HORIZONTAL_TYPE = TEXT_ALIGN_HORIZONTAL_TYPE.Center;
+    public get alignHorizontalType(): TEXT_ALIGN_HORIZONTAL_TYPE {
+        return this._alignHorizontalType;
     }
-    public set horizontalAlign(value: TEXT_HORIZONTAL_ALIGN) {
-        this._horizontalAlign = value;
-        this.applyHorizontalAlign();
+    public set alignHorizontalType(value: TEXT_ALIGN_HORIZONTAL_TYPE) {
+        this._alignHorizontalType = value;
+        this.applyAlignHorizontalType();
     }
 
     /**
      * @internal
      */
-    public applyHorizontalAlign(): void {
-        this.renderObject?.applyHorizontalAlign();
+    public applyAlignHorizontalType(): void {
+        this.renderObject?.applyAlignHorizontalType();
     }
 
     /*************************** verticalAlign ***************************/
-    private _verticalAlign: TEXT_VERTICAL_ALIGN = TEXT_VERTICAL_ALIGN.Center;
-    public get verticalAlign(): TEXT_VERTICAL_ALIGN {
-        return this._verticalAlign;
+    private _alignVerticalType: TEXT_ALIGN_VERTICAL_TYPE = TEXT_ALIGN_VERTICAL_TYPE.Center;
+    public get alignVerticalType(): TEXT_ALIGN_VERTICAL_TYPE {
+        return this._alignVerticalType;
     }
-    public set verticalAlign(value: TEXT_VERTICAL_ALIGN) {
-        this._verticalAlign = value;
-        this.applyVerticalAlign();
+    public set alignVerticalType(value: TEXT_ALIGN_VERTICAL_TYPE) {
+        this._alignVerticalType = value;
+        this.applyAlignVerticalType();
     }
 
     /**
      * @internal
      */
-    public applyVerticalAlign(): void {
-        this.renderObject?.applyVerticalAlign();
+    public applyAlignVerticalType(): void {
+        this.renderObject?.applyAlignVerticalType();
     }
 
     /*************************** wordWrap ***************************/

@@ -1,6 +1,6 @@
 import { defineComponent } from "cassia-engine/component";
 import { Bounds } from "cassia-engine/math";
-import { RenderSprite, SPRITE_TYPE } from "cassia-engine/render";
+import { RenderSprite, SPRITE_RENDER_TYPE } from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
 import type { TextureResource } from "cassia-engine/resource";
 
@@ -10,20 +10,20 @@ export class Sprite extends RenderComponent<RenderSprite> {
         return new RenderSprite(this);
     }
 
-    private _spriteType: SPRITE_TYPE = SPRITE_TYPE.Simple;
-    public get spriteType(): SPRITE_TYPE {
-        return this._spriteType;
+    private _renderType: SPRITE_RENDER_TYPE = SPRITE_RENDER_TYPE.Simple;
+    public get renderType(): SPRITE_RENDER_TYPE {
+        return this._renderType;
     }
-    public set spriteType(value: SPRITE_TYPE) {
-        this._spriteType = value;
-        this.applySpriteType();
+    public set renderType(value: SPRITE_RENDER_TYPE) {
+        this._renderType = value;
+        this.applyRenderType();
     }
 
     /**
      * @internal
      */
-    public applySpriteType(): void {
-        this.renderObject.applySpriteType();
+    public applyRenderType(): void {
+        this.renderObject.applyRenderType();
     }
 
     private _texture: TextureResource | null = null;

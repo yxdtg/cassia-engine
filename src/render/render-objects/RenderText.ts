@@ -3,25 +3,25 @@ import { Color } from "cassia-engine/math";
 import { GraphicsRenderer, TextRenderer } from "../define";
 import { RenderObject } from "./RenderObject";
 
-export const TEXT_OVER_FLOW = {
+export const TEXT_OVER_FLOW_TYPE = {
     None: "none",
     Clamp: "clamp",
 } as const;
-export type TEXT_OVER_FLOW = (typeof TEXT_OVER_FLOW)[keyof typeof TEXT_OVER_FLOW];
+export type TEXT_OVER_FLOW_TYPE = (typeof TEXT_OVER_FLOW_TYPE)[keyof typeof TEXT_OVER_FLOW_TYPE];
 
-export const TEXT_HORIZONTAL_ALIGN = {
+export const TEXT_ALIGN_HORIZONTAL_TYPE = {
     Left: "left",
     Center: "center",
     Right: "right",
 } as const;
-export type TEXT_HORIZONTAL_ALIGN = (typeof TEXT_HORIZONTAL_ALIGN)[keyof typeof TEXT_HORIZONTAL_ALIGN];
+export type TEXT_ALIGN_HORIZONTAL_TYPE = (typeof TEXT_ALIGN_HORIZONTAL_TYPE)[keyof typeof TEXT_ALIGN_HORIZONTAL_TYPE];
 
-export const TEXT_VERTICAL_ALIGN = {
+export const TEXT_ALIGN_VERTICAL_TYPE = {
     Top: "top",
     Center: "center",
     Bottom: "bottom",
 } as const;
-export type TEXT_VERTICAL_ALIGN = (typeof TEXT_VERTICAL_ALIGN)[keyof typeof TEXT_VERTICAL_ALIGN];
+export type TEXT_ALIGN_VERTICAL_TYPE = (typeof TEXT_ALIGN_VERTICAL_TYPE)[keyof typeof TEXT_ALIGN_VERTICAL_TYPE];
 
 export interface RenderText {
     /**
@@ -43,8 +43,8 @@ export class RenderText extends RenderObject<Text> {
         this.renderContainer.addChild(this._maskRenderer);
 
         this.renderNode.applySize = (): void => {
-            const overflow = this.component.overflow;
-            if (overflow === TEXT_OVER_FLOW.None) {
+            const overflow = this.component.overflowType;
+            if (overflow === TEXT_OVER_FLOW_TYPE.None) {
                 // 更新文本尺寸 到 节点尺寸
                 const textSize = this._textRenderer.getSize();
                 this.node.size.set(textSize.width, textSize.height);
@@ -55,7 +55,7 @@ export class RenderText extends RenderObject<Text> {
                 this.node.applyAnchor();
                 return;
             }
-            if (overflow === TEXT_OVER_FLOW.Clamp) {
+            if (overflow === TEXT_OVER_FLOW_TYPE.Clamp) {
                 // 更新节点尺寸 到 mask尺寸
                 const size = this.node.size;
                 const anchor = this.node.anchor;
@@ -67,8 +67,8 @@ export class RenderText extends RenderObject<Text> {
                     .rect(-anchor.x * size.width, -anchor.y * size.height, size.width, size.height)
                     .fill({ color: Color.white.toHex() });
 
-                this.applyHorizontalAlign();
-                this.applyVerticalAlign();
+                this.applyAlignHorizontalType();
+                this.applyAlignVerticalType();
                 return;
             }
         };
@@ -84,16 +84,16 @@ export class RenderText extends RenderObject<Text> {
         this.applyFontFamily();
     }
 
-    public applyOverflow(): void {
-        const overflow = this.component.overflow;
+    public applyOverflowType(): void {
+        const overflowType = this.component.overflowType;
 
-        if (overflow === TEXT_OVER_FLOW.None) {
+        if (overflowType === TEXT_OVER_FLOW_TYPE.None) {
             this._textRenderer.mask = null;
             this._maskRenderer.visible = false;
             this.node.applySize();
             return;
         }
-        if (overflow === TEXT_OVER_FLOW.Clamp) {
+        if (overflowType === TEXT_OVER_FLOW_TYPE.Clamp) {
             this._textRenderer.mask = this._maskRenderer;
             this._maskRenderer.visible = true;
             this.node.applySize();
@@ -101,41 +101,41 @@ export class RenderText extends RenderObject<Text> {
         }
     }
 
-    public applyHorizontalAlign(): void {
-        if (this.component.overflow !== TEXT_OVER_FLOW.Clamp) return;
+    public applyAlignHorizontalType(): void {
+        if (this.component.overflowType !== TEXT_OVER_FLOW_TYPE.Clamp) return;
 
-        const horizontalAlign = this.component.horizontalAlign;
+        const alignHorizontalType = this.component.alignHorizontalType;
         const size = this.node.size;
 
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Left) {
+        if (alignHorizontalType === TEXT_ALIGN_HORIZONTAL_TYPE.Left) {
             this._textRenderer.x = 0;
             return;
         }
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Center) {
+        if (alignHorizontalType === TEXT_ALIGN_HORIZONTAL_TYPE.Center) {
             this._textRenderer.x = (size.width - this._textRenderer.width) / 2;
             return;
         }
-        if (horizontalAlign === TEXT_HORIZONTAL_ALIGN.Right) {
+        if (alignHorizontalType === TEXT_ALIGN_HORIZONTAL_TYPE.Right) {
             this._textRenderer.x = size.width - this._textRenderer.width;
             return;
         }
     }
 
-    public applyVerticalAlign(): void {
-        if (this.component.overflow !== TEXT_OVER_FLOW.Clamp) return;
+    public applyAlignVerticalType(): void {
+        if (this.component.overflowType !== TEXT_OVER_FLOW_TYPE.Clamp) return;
 
-        const verticalAlign = this.component.verticalAlign;
+        const alignVerticalType = this.component.alignVerticalType;
         const size = this.node.size;
 
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Top) {
+        if (alignVerticalType === TEXT_ALIGN_VERTICAL_TYPE.Top) {
             this._textRenderer.y = 0;
             return;
         }
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Center) {
+        if (alignVerticalType === TEXT_ALIGN_VERTICAL_TYPE.Center) {
             this._textRenderer.y = (size.height - this._textRenderer.height) / 2;
             return;
         }
-        if (verticalAlign === TEXT_VERTICAL_ALIGN.Bottom) {
+        if (alignVerticalType === TEXT_ALIGN_VERTICAL_TYPE.Bottom) {
             this._textRenderer.y = size.height - this._textRenderer.height;
             return;
         }
@@ -146,7 +146,7 @@ export class RenderText extends RenderObject<Text> {
         this._textRenderer.style.breakWords = this.component.wordWrap;
 
         if (this.component.wordWrap) {
-            if (this.component.overflow === TEXT_OVER_FLOW.Clamp) {
+            if (this.component.overflowType === TEXT_OVER_FLOW_TYPE.Clamp) {
                 this.component.wrapWidth = this.node.width;
             }
         }

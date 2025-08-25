@@ -9,12 +9,12 @@ import {
     TilingSpriteRenderer,
 } from "../define";
 
-export const SPRITE_TYPE = {
+export const SPRITE_RENDER_TYPE = {
     Simple: "simple",
     NineSlice: "nine-slice",
     Tiling: "tiling",
 } as const;
-export type SPRITE_TYPE = (typeof SPRITE_TYPE)[keyof typeof SPRITE_TYPE];
+export type SPRITE_RENDER_TYPE = (typeof SPRITE_RENDER_TYPE)[keyof typeof SPRITE_RENDER_TYPE];
 
 export interface RenderSprite {
     /**
@@ -45,10 +45,11 @@ export class RenderSprite extends RenderObject<Sprite> {
         };
     }
 
-    public applySpriteType(): void {
+    public applyRenderType(): void {
         const texture = this.component.texture;
+        const renderType = this.component.renderType;
 
-        if (this.component.spriteType === SPRITE_TYPE.Simple) {
+        if (renderType === SPRITE_RENDER_TYPE.Simple) {
             if (!this._spriteRenderer || !isSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
@@ -58,7 +59,7 @@ export class RenderSprite extends RenderObject<Sprite> {
             }
         }
 
-        if (this.component.spriteType === SPRITE_TYPE.NineSlice) {
+        if (renderType === SPRITE_RENDER_TYPE.NineSlice) {
             if (!this._spriteRenderer || !isNineSliceSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
@@ -72,7 +73,7 @@ export class RenderSprite extends RenderObject<Sprite> {
             }
         }
 
-        if (this.component.spriteType === SPRITE_TYPE.Tiling) {
+        if (renderType === SPRITE_RENDER_TYPE.Tiling) {
             if (!this._spriteRenderer || !isTilingSpriteRenderer(this._spriteRenderer)) {
                 this._spriteRenderer?.destroy();
                 this._spriteRenderer = null;
@@ -88,7 +89,7 @@ export class RenderSprite extends RenderObject<Sprite> {
     public applyTexture(): void {
         const texture = this.component.texture;
 
-        if (this.component.spriteType === SPRITE_TYPE.NineSlice && !this._spriteRenderer) {
+        if (this.component.renderType === SPRITE_RENDER_TYPE.NineSlice && !this._spriteRenderer) {
             if (!texture) return;
 
             this._spriteRenderer = new NineSliceSpriteRenderer(texture.data);
@@ -104,7 +105,7 @@ export class RenderSprite extends RenderObject<Sprite> {
     }
 
     public applyNineSliceBounds(): void {
-        if (this.component.spriteType !== SPRITE_TYPE.NineSlice) return;
+        if (this.component.renderType !== SPRITE_RENDER_TYPE.NineSlice) return;
         if (!this._spriteRenderer) return;
 
         const bounds = this.component.nineSliceBounds;
