@@ -107,7 +107,7 @@ export class ColliderComponent extends Component {
     /**
      * @internal
      */
-    public _onUpdateSize(): void {
+    public updateSize(): void {
         throw new Error("not implemented");
     }
 

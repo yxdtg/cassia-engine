@@ -106,12 +106,12 @@ export class PhysicsSystem {
         this._world.removeCollider(collider, true);
     }
 
-    private _syncToBodys(): void {
+    private _syncNodeToBody(): void {
         for (const colliderComponent of this._colliderComponents) {
             const collider = colliderComponent.collider;
             if (!collider) continue;
 
-            colliderComponent._onUpdateSize();
+            colliderComponent.updateSize();
 
             const node = colliderComponent.node;
             const nodeWorldPosition = node.getLayerPosition();
@@ -144,7 +144,7 @@ export class PhysicsSystem {
         }
     }
 
-    private _syncToNodes(): void {
+    private _syncBodyToNode(): void {
         for (const colliderComponent of this._colliderComponents) {
             const node = colliderComponent.node;
 
@@ -191,7 +191,7 @@ export class PhysicsSystem {
      * @internal
      */
     public update(): void {
-        this._syncToBodys();
+        this._syncNodeToBody();
 
         const eventQueue = new RAPIER.EventQueue(true);
         this._world.step(eventQueue);
@@ -220,7 +220,7 @@ export class PhysicsSystem {
             }
         });
 
-        this._syncToNodes();
+        this._syncBodyToNode();
 
         if (this.debug) {
             this._drawDebug();

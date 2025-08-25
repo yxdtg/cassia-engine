@@ -32,16 +32,21 @@ export class CapsuleCollider extends ColliderComponent {
 
         const nodeWorldScale = this.node.getLayerScale();
 
+        const radius = this._radius * nodeWorldScale.x;
         const halfHeight = (this._height / 2) * nodeWorldScale.y;
 
-        this.collider.setRadius(this._radius);
-        this.collider.setHalfHeight(halfHeight);
+        if (this.collider.radius() !== radius) {
+            this.collider.setRadius(radius);
+        }
+        if (this.collider.halfHeight() !== halfHeight) {
+            this.collider.setHalfHeight(halfHeight);
+        }
     }
 
     /**
      * @internal
      */
-    public _onUpdateSize(): void {
+    public updateSize(): void {
         this.applySize();
     }
 

@@ -50,13 +50,16 @@ export class BoxCollider extends ColliderComponent {
         const halfWidth = (this._size.width / 2) * nodeWorldScale.x;
         const halfHeight = (this._size.height / 2) * nodeWorldScale.y;
 
-        this.collider.setHalfExtents({ x: halfWidth, y: halfHeight });
+        const halfExtents = this.collider.halfExtents();
+        if (halfExtents.x !== halfWidth || halfExtents.y !== halfHeight) {
+            this.collider.setHalfExtents({ x: halfWidth, y: halfHeight });
+        }
     }
 
     /**
      * @internal
      */
-    public _onUpdateSize(): void {
+    public updateSize(): void {
         this.applySize();
     }
 
