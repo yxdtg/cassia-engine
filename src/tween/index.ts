@@ -1,6 +1,6 @@
 import { Tween as _Tween, Group, Easing } from "@tweenjs/tween.js";
 
-class Tween<T extends object> extends _Tween<T> {
+class Tween<T extends object = any> extends _Tween<T> {
     to(target: Partial<T>, duration?: number): this {
         return super.to(target, duration);
     }

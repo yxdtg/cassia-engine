@@ -170,6 +170,10 @@ export class RenderSystem {
         return this._viewScale;
     }
 
+    public setBackgroundColor(color: Color): void {
+        this._app.renderer.background.color = color.toDecimal();
+    }
+
     private async _createApp(canvas: HTMLCanvasElement): Promise<Application> {
         try {
             const app = new Application();
