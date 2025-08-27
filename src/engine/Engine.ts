@@ -3,13 +3,19 @@ import { ComponentManager } from "cassia-engine/component";
 import { InputSystem } from "cassia-engine/input";
 import { NodeManager } from "cassia-engine/node";
 import { PhysicsSystem } from "cassia-engine/physics";
-import { RenderSystem } from "cassia-engine/render";
+import { type IRenderSystemInitOptions, RenderSystem } from "cassia-engine/render";
 import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
+import { StorageSystem } from "cassia-engine/storage";
 import { TimeSystem } from "cassia-engine/time";
 import { updateTweens } from "cassia-engine/tween";
 
 export class Engine {
+    private _storageSystem: StorageSystem;
+    public get storageSystem(): StorageSystem {
+        return this._storageSystem;
+    }
+
     private _renderSystem: RenderSystem;
     public get renderSystem(): RenderSystem {
         return this._renderSystem;
@@ -56,6 +62,7 @@ export class Engine {
     }
 
     constructor() {
+        this._storageSystem = new StorageSystem();
         this._renderSystem = new RenderSystem();
         this._resourceSystem = new ResourceSystem();
         this._audioSystem = new AudioSystem();
@@ -87,13 +94,21 @@ export class Engine {
         return this._fixedTimeStep;
     }
 
-    public async start(): Promise<void> {
+    public async start(options: Partial<IEngineStartOptions> = {}): Promise<void> {
         if (this._started) return;
         this._started = true;
 
         try {
-            await this._renderSystem.init();
+            this._storageSystem.init(options.storageId);
+
+            await this._renderSystem.init({
+                canvas: options.canvas,
+                designSize: options.designSize,
+                backgroundColor: options.backgroundColor,
+            });
+
             this._inputSystem.init();
+
             await this._physicsSystem.init();
 
             this._lastTime = performance.now();
@@ -149,4 +164,8 @@ export class Engine {
 
         requestAnimationFrame(this.update.bind(this));
     }
+}
+
+export interface IEngineStartOptions extends IRenderSystemInitOptions {
+    storageId: string;
 }

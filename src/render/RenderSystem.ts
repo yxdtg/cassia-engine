@@ -1,7 +1,7 @@
-import { type Color, type IVec2, type Size, size, type Vec2, vec2 } from "cassia-engine/math";
+import { createBuiltinCanvas } from "cassia-engine/canvas";
+import { type Color, type IVec2, type Size, size, vec2 } from "cassia-engine/math";
 import { Application, Container, Graphics } from "pixi.js";
 import type { RenderScene } from "./RenderScene";
-import { createBuiltinCanvas } from "cassia-engine/canvas";
 
 export class RenderSystem {
     private _app!: Application;
@@ -54,9 +54,9 @@ export class RenderSystem {
         stage.scale.set(this._viewScale, -this._viewScale);
     }
 
-    public async init(canvas?: HTMLCanvasElement): Promise<void> {
+    public async init(options: Partial<IRenderSystemInitOptions>): Promise<void> {
         try {
-            this._app = await this._createApp(canvas ?? createBuiltinCanvas());
+            this._app = await this._createApp(options.canvas ?? createBuiltinCanvas());
             this._stage = this._app.stage;
             this._canvas = this._app.canvas;
 
@@ -83,6 +83,13 @@ export class RenderSystem {
             window.addEventListener("resize", () => {
                 this._resize();
             });
+
+            if (options.designSize) {
+                this.setDesignSize(options.designSize);
+            }
+            if (options.backgroundColor) {
+                this.setBackgroundColor(options.backgroundColor);
+            }
         } catch (e) {
             throw e;
         }
@@ -205,4 +212,10 @@ export class RenderSystem {
             throw e;
         }
     }
+}
+
+export interface IRenderSystemInitOptions {
+    canvas: HTMLCanvasElement;
+    backgroundColor: Color;
+    designSize: Size;
 }

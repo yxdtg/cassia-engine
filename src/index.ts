@@ -8,6 +8,7 @@ export const audioSystem = engine.audioSystem;
 export const inputSystem = engine.inputSystem;
 export const physicsSystem = engine.physicsSystem;
 export const timeSystem = engine.timeSystem;
+export const storageSystem = engine.storageSystem;
 
 export const sceneManager = engine.sceneManager;
 export const nodeManager = engine.nodeManager;
@@ -16,6 +17,7 @@ export const componentManager = engine.componentManager;
 export * from "./math";
 export * from "./utils";
 export * from "./tween";
+export * from "./storage";
 
 export * from "./engine";
 
