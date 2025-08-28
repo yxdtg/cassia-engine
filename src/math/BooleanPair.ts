@@ -44,7 +44,3 @@ export interface IBooleanPair {
     x: boolean;
     y: boolean;
 }
-
-export function iBooleanPair(x: boolean = false, y: boolean = false): IBooleanPair {
-    return { x, y };
-}

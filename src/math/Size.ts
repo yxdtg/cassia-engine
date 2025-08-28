@@ -94,7 +94,3 @@ export interface ISize {
     width: number;
     height: number;
 }
-
-export function iSize(width: number = 0, height: number = 0): ISize {
-    return { width, height };
-}

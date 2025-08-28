@@ -1,6 +1,7 @@
 import { renderSystem, sceneManager } from "cassia-engine";
 import { vec2, Vec2 } from "cassia-engine/math";
-import { Node } from "cassia-engine/node";
+import type { Node } from "cassia-engine/node";
+import { isPointInElement } from "cassia-engine/utils";
 
 /**
  * 原生指针事件
@@ -294,10 +295,6 @@ export interface IEventPoint {
     screenPoint: Vec2;
     screenX: number;
     screenY: number;
-
-    // worldPoint: Vec2;
-    // worldX: number;
-    // worldY: number;
 }
 
 export interface IPointerEvent extends IEventPoint {
@@ -470,20 +467,3 @@ export const KEYBOARD_CODE = {
     Quote: "Quote",
 } as const;
 export type KEYBOARD_CODE = (typeof KEYBOARD_CODE)[keyof typeof KEYBOARD_CODE];
-
-/**
- * 注意如果是event 则必须要 event.x 和 event.y 而不是 event.clientX 和 event.clientY 特别注意
- * @param x 如果是event 必须要event.x
- * @param y 如果是event 必须要event.y
- * @param element
- * @returns
- */
-export function isPointInElement(x: number, y: number, element: Element): boolean {
-    const rect = element.getBoundingClientRect();
-    return (
-        x >= rect.left + window.scrollX &&
-        x <= rect.right + window.scrollX &&
-        y >= rect.top + window.scrollY &&
-        y <= rect.bottom + window.scrollY
-    );
-}

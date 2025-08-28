@@ -166,7 +166,3 @@ export interface IVec2 {
     x: number;
     y: number;
 }
-
-export function iVec2(x: number = 0, y: number = 0): IVec2 {
-    return { x, y };
-}

@@ -127,7 +127,3 @@ export interface IColor {
     b: number;
     a: number;
 }
-
-export function iColor(r: number = 255, g: number = 255, b: number = 255, a: number = 255): IColor {
-    return { r, g, b, a };
-}

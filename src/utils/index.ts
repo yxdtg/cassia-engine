@@ -79,3 +79,20 @@ export function callAnyMethod(obj: any, method: string, ...args: any[]): any {
         console.error(`Method ${method} not found on object ${obj}`);
     }
 }
+
+/**
+ * 注意如果是event 则必须要 event.x 和 event.y 而不是 event.clientX 和 event.clientY 特别注意
+ * @param x 如果是event 必须要event.x
+ * @param y 如果是event 必须要event.y
+ * @param element
+ * @returns 是否在元素内
+ */
+export function isPointInElement(x: number, y: number, element: Element): boolean {
+    const rect = element.getBoundingClientRect();
+    return (
+        x >= rect.left + window.scrollX &&
+        x <= rect.right + window.scrollX &&
+        y >= rect.top + window.scrollY &&
+        y <= rect.bottom + window.scrollY
+    );
+}
