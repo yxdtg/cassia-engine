@@ -1,4 +1,4 @@
-import { Node } from "./Node";
+import type { Node } from "./Node";
 
 export class NodeManager {
     constructor() {}
@@ -31,7 +31,7 @@ export class NodeManager {
         if (!node.destroyed) return;
 
         node.layer?.removeNode(node);
-        node.parent?.removeChild(node);
+        node.parent = null;
 
         const index = this._nodes.indexOf(node);
         this._nodes.splice(index, 1);

@@ -33,8 +33,8 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
         }
     }
 
-    public horizontal: boolean = true;
-    public vertical: boolean = true;
+    public horizontalEnabled: boolean = true;
+    public verticalEnabled: boolean = true;
 
     private _isDown: boolean = false;
 
@@ -81,10 +81,10 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
             this.node.width / 2
         );
 
-        if (this.horizontal) {
+        if (this.horizontalEnabled) {
             this._rockerNode.x = normalizedOffset.x * distance;
         }
-        if (this.vertical) {
+        if (this.verticalEnabled) {
             this._rockerNode.y = normalizedOffset.y * distance;
         }
 

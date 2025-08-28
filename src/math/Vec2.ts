@@ -1,5 +1,4 @@
 import { Mathf } from "./Mathf";
-import type { IVec2 } from "./define";
 
 export class Vec2 {
     public static get zero(): Vec2 {
@@ -26,13 +25,12 @@ export class Vec2 {
         return Vec2.radiansToVector(Mathf.degreesToRadians(degrees));
     }
 
-    public static from(ivec2: IVec2): Vec2;
+    public static from(iVec2: IVec2): Vec2;
     public static from(array: [number, number]): Vec2;
-    public static from(ivec2OrArray: IVec2 | [number, number]): Vec2 {
-        if (Array.isArray(ivec2OrArray)) {
-            return new Vec2(ivec2OrArray[0], ivec2OrArray[1]);
-        }
-        return new Vec2(ivec2OrArray.x, ivec2OrArray.y);
+    public static from(iVec2OrArray: IVec2 | [number, number]): Vec2;
+    public static from(iVec2OrArray: IVec2 | [number, number]): Vec2 {
+        if (Array.isArray(iVec2OrArray)) return new Vec2(...iVec2OrArray);
+        return new Vec2(iVec2OrArray.x, iVec2OrArray.y);
     }
 
     public static lerp(a: Vec2, b: Vec2, t: number): Vec2 {
@@ -125,6 +123,15 @@ export class Vec2 {
         return this.clone().divideSelf(value);
     }
 
+    public divideScalarSelf(value: number): Vec2 {
+        this.x /= value;
+        this.y /= value;
+        return this;
+    }
+    public divideScalar(value: number): Vec2 {
+        return this.clone().divideScalarSelf(value);
+    }
+
     public equals(value: Vec2): boolean {
         return this.x === value.x && this.y === value.y;
     }
@@ -153,4 +160,13 @@ export class Vec2 {
 
 export function vec2(x: number = 0, y: number = 0): Vec2 {
     return new Vec2(x, y);
+}
+
+export interface IVec2 {
+    x: number;
+    y: number;
+}
+
+export function iVec2(x: number = 0, y: number = 0): IVec2 {
+    return { x, y };
 }

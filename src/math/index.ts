@@ -1,4 +1,4 @@
-export * from "./define";
+// export * from "./define";
 
 export * from "./Vec2";
 export * from "./Size";

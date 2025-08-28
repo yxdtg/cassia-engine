@@ -1,12 +1,8 @@
-import type { IVec2 } from "./define";
-
-function ivec2(x: number, y: number): IVec2 {
-    return { x, y };
-}
+import { vec2, type Vec2 } from "./Vec2";
 
 export class Mathf {
-    public static Rad2Deg: number = 180 / Math.PI;
-    public static Deg2Rad: number = Math.PI / 180;
+    public static readonly RAD_2_DEG = 180 / Math.PI;
+    public static readonly DEG_2_RAD = Math.PI / 180;
 
     /**
      * 线性插值
@@ -79,7 +75,7 @@ export class Mathf {
      * @returns 角度
      */
     public static radiansToDegrees(radians: number): number {
-        return radians * this.Rad2Deg;
+        return radians * this.RAD_2_DEG;
     }
     /**
      * 角度转弧度
@@ -87,7 +83,7 @@ export class Mathf {
      * @returns 弧度
      */
     public static degreesToRadians(degrees: number): number {
-        return degrees * this.Deg2Rad;
+        return degrees * this.DEG_2_RAD;
     }
 
     /**
@@ -126,12 +122,12 @@ export class Mathf {
         return Math.floor(Mathf.randomRange(min, max));
     }
 
-    public static createRectangleVertices(startPosition: IVec2, endPosition: IVec2): IVec2[] {
+    public static createRectangleVertices(startPosition: Vec2, endPosition: Vec2): Vec2[] {
         return [
-            ivec2(startPosition.x, startPosition.y),
-            ivec2(endPosition.x, startPosition.y),
-            ivec2(endPosition.x, endPosition.y),
-            ivec2(startPosition.x, endPosition.y),
+            vec2(startPosition.x, startPosition.y),
+            vec2(endPosition.x, startPosition.y),
+            vec2(endPosition.x, endPosition.y),
+            vec2(startPosition.x, endPosition.y),
         ];
     }
 
@@ -145,20 +141,20 @@ export class Mathf {
         anchorX: number,
         anchorY: number,
         radians: number
-    ): IVec2[] {
+    ): Vec2[] {
         const offsetX = width * anchorX;
         const offsetY = height * anchorY;
 
         // 获取四个顶点
-        let vertices: IVec2[] = [
-            ivec2(-offsetX, -offsetY),
-            ivec2(width - offsetX, -offsetY),
-            ivec2(width - offsetX, height - offsetY),
-            ivec2(-offsetX, height - offsetY),
+        let vertices: Vec2[] = [
+            vec2(-offsetX, -offsetY),
+            vec2(width - offsetX, -offsetY),
+            vec2(width - offsetX, height - offsetY),
+            vec2(-offsetX, height - offsetY),
         ];
 
         // 应用缩放
-        vertices = vertices.map((v) => ivec2(v.x * scaleX, v.y * scaleY));
+        vertices = vertices.map((v) => vec2(v.x * scaleX, v.y * scaleY));
 
         // 应用旋转
         const cos = Math.cos(radians);
@@ -167,13 +163,13 @@ export class Mathf {
             const rotatedX = v.x * cos - v.y * sin;
             const rotatedY = v.x * sin + v.y * cos;
 
-            return ivec2(rotatedX + x, rotatedY + y);
+            return vec2(rotatedX + x, rotatedY + y);
         });
 
         return vertices;
     }
 
-    public static isPointInPolygon(point: IVec2, polygon: IVec2[]): boolean {
+    public static isPointInPolygon(point: Vec2, polygon: Vec2[]): boolean {
         let x = point.x;
         let y = point.y;
 
@@ -191,7 +187,7 @@ export class Mathf {
         return inside;
     }
 
-    public static isPolygonContained(outer: IVec2[], inner: IVec2[]): boolean {
+    public static isPolygonContained(outer: Vec2[], inner: Vec2[]): boolean {
         for (let point of inner) {
             if (!this.isPointInPolygon(point, outer)) {
                 return false;
@@ -208,10 +204,10 @@ export class Mathf {
 
         return true;
     }
-    private static _doLineSegmentsIntersect(a: IVec2, b: IVec2, c: IVec2, d: IVec2): boolean {
+    private static _doLineSegmentsIntersect(a: Vec2, b: Vec2, c: Vec2, d: Vec2): boolean {
         return this._ccw(a, c, d) !== this._ccw(b, c, d) && this._ccw(a, b, c) !== this._ccw(a, b, d);
     }
-    private static _ccw(a: IVec2, b: IVec2, c: IVec2) {
+    private static _ccw(a: Vec2, b: Vec2, c: Vec2) {
         return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
     }
 }

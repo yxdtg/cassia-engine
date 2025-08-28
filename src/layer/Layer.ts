@@ -1,5 +1,5 @@
 import { Mathf, Vec2 } from "cassia-engine/math";
-import { Node } from "cassia-engine/node";
+import type { Node } from "cassia-engine/node";
 import { RenderLayer } from "cassia-engine/render";
 
 export class Layer {

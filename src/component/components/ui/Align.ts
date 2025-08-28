@@ -23,20 +23,6 @@ export class Align extends Component {
 
     public offset: Vec2 = Vec2.zero;
 
-    public get offsetX(): number {
-        return this.offset.x;
-    }
-    public set offsetX(value: number) {
-        this.offset.x = value;
-    }
-
-    public get offsetY(): number {
-        return this.offset.y;
-    }
-    public set offsetY(value: number) {
-        this.offset.y = value;
-    }
-
     protected onLateUpdate(dt: number): void {
         this.applyAlign();
     }

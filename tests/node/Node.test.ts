@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import { Draggable, Node } from "../../dist";
 
 test("Node add component", () => {
+
     const myNode = new Node();
     const draggable = myNode.addComponent(Draggable);
 
@@ -28,8 +29,8 @@ test("Node transform", () => {
     child3.parent = child2;
     child3.setPosition(99, 100);
 
-    const child3WorldPosition = child3.getWorldPosition();
-    const child3LocalPosition = child3.parent.toLocalPosition(child3WorldPosition);
+    const child3LayerPosition = child3.getLayerPosition();
+    const child3LocalPosition = child3.parent.toLocalPosition(child3LayerPosition);
 
     expect(child3LocalPosition).toEqual(child3.position);
 });

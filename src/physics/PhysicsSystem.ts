@@ -1,12 +1,12 @@
 import RAPIER from "@dimforge/rapier2d-compat";
 import { NODE_EVENT_TYPE, renderSystem } from "cassia-engine";
 import { ColliderComponent, RigidBody } from "cassia-engine/component";
-import { color, type IVec2, vec2, Vec2 } from "cassia-engine/math";
+import { color, iVec2, vec2, Vec2 } from "cassia-engine/math";
 
 export class PhysicsSystem {
     public debug: boolean = false;
 
-    private _gravity: IVec2 = { x: 0, y: -98.1 };
+    private _gravity = iVec2(0, -98.1);
     private _world: RAPIER.World = null!;
 
     /**

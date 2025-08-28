@@ -8,11 +8,11 @@ import {
 import { EventObject } from "cassia-engine/event";
 import {
     GLOBAL_POINTER_EVENT_TYPE,
-    IGlobalPointerEvent,
+    type IGlobalPointerEvent,
     type IPointerEvent,
     POINTER_EVENT_TYPE,
 } from "cassia-engine/input";
-import { BooleanPair, Color, IVec2, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
+import { BooleanPair, Color, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
 
@@ -508,15 +508,6 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._renderNode.removeChild(childRenderNode);
     }
 
-    public addChild(child: Node): void {
-        if (child._parent === this) return;
-        child.parent = this;
-    }
-    public removeChild(child: Node): void {
-        if (child._parent !== this) return;
-        child.parent = null;
-    }
-
     public getChildByName(name: string): Node | null {
         for (const child of this._children) {
             if (child.name === name) return child;
@@ -873,6 +864,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return Mathf.isPointInPolygon(layerPoint, layerVertices);
     }
 
+    /**
+     * @internal
+     */
     public dispatchPointerEvent(event: IPointerEvent): void {
         this.emit(event.type, event);
 
@@ -881,7 +875,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
     }
 
-    public static getNodeCurrentLayerVertices(node: Node): IVec2[] {
+    public static getNodeCurrentLayerVertices(node: Node): Vec2[] {
         const layerPosition = node.getLayerPosition();
         const layerScale = node.getLayerScale();
         const layerRotation = node.getLayerRotation();

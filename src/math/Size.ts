@@ -1,4 +1,4 @@
-import { Vec2 } from "./Vec2";
+import type { Vec2 } from "./Vec2";
 
 export class Size {
     public static readonly defaultWidth: number = 64;
@@ -10,6 +10,14 @@ export class Size {
 
     public static get default(): Size {
         return new Size(Size.defaultWidth, Size.defaultHeight);
+    }
+
+    public static from(iSize: ISize): Size;
+    public static from(array: [number, number]): Size;
+    public static from(iSizeOrArray: ISize | [number, number]): Size;
+    public static from(iSizeOrArray: ISize | [number, number]): Size {
+        if (Array.isArray(iSizeOrArray)) return new Size(...iSizeOrArray);
+        return new Size(iSizeOrArray.width, iSizeOrArray.height);
     }
 
     public width: number;
@@ -50,6 +58,15 @@ export class Size {
         return this.clone().multiplySelf(vec2);
     }
 
+    public multiplyScalarSelf(value: number): Size {
+        this.width *= value;
+        this.height *= value;
+        return this;
+    }
+    public multiplyScalar(value: number): Size {
+        return this.clone().multiplyScalarSelf(value);
+    }
+
     public divideSelf(vec2: Vec2): Size {
         this.width /= vec2.x;
         this.height /= vec2.y;
@@ -58,8 +75,26 @@ export class Size {
     public divide(vec2: Vec2): Size {
         return this.clone().divideSelf(vec2);
     }
+
+    public divideScalarSelf(value: number): Size {
+        this.width /= value;
+        this.height /= value;
+        return this;
+    }
+    public divideScalar(value: number): Size {
+        return this.clone().divideScalarSelf(value);
+    }
 }
 
 export function size(width: number = 0, height: number = 0): Size {
     return new Size(width, height);
+}
+
+export interface ISize {
+    width: number;
+    height: number;
+}
+
+export function iSize(width: number = 0, height: number = 0): ISize {
+    return { width, height };
 }

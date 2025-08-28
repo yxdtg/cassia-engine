@@ -1,5 +1,5 @@
 import { createBuiltinCanvas } from "cassia-engine/canvas";
-import { type Color, type IVec2, type Size, size, vec2 } from "cassia-engine/math";
+import { type Color, type Size, size, type Vec2, vec2 } from "cassia-engine/math";
 import { Application, Container, Graphics } from "pixi.js";
 import type { RenderScene } from "./RenderScene";
 
@@ -99,7 +99,7 @@ export class RenderSystem {
         this._app.render();
     }
 
-    public drawPolygon(vertices: IVec2[], color: Color): void {
+    public drawPolygon(vertices: Vec2[], color: Color): void {
         if (!this._drawGraphics) return;
 
         this._drawGraphics.poly(vertices).stroke({
@@ -107,7 +107,7 @@ export class RenderSystem {
             pixelLine: true,
         });
     }
-    public drawRect(position: IVec2, size: Size, color: Color): void {
+    public drawRect(position: Vec2, size: Size, color: Color): void {
         if (!this._drawGraphics) return;
 
         this._drawGraphics.rect(position.x, position.y, size.width, size.height).stroke({

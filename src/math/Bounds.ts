@@ -3,6 +3,14 @@ export class Bounds {
         return new Bounds(0, 0, 0, 0);
     }
 
+    public static from(iBounds: IBounds): Bounds;
+    public static from(array: [number, number, number, number]): Bounds;
+    public static from(iBoundsOrArray: IBounds | [number, number, number, number]): Bounds;
+    public static from(iBoundsOrArray: IBounds | [number, number, number, number]): Bounds {
+        if (Array.isArray(iBoundsOrArray)) return new Bounds(...iBoundsOrArray);
+        return new Bounds(iBoundsOrArray.top, iBoundsOrArray.bottom, iBoundsOrArray.left, iBoundsOrArray.right);
+    }
+
     public top: number = 0;
     public bottom: number = 0;
     public left: number = 0;
@@ -48,4 +56,15 @@ export class Bounds {
 
 export function bounds(top: number = 0, bottom: number = 0, left: number = 0, right: number = 0): Bounds {
     return new Bounds(top, bottom, left, right);
+}
+
+export interface IBounds {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+}
+
+export function iBounds(top: number = 0, bottom: number = 0, left: number = 0, right: number = 0): IBounds {
+    return { top, bottom, left, right };
 }

@@ -27,6 +27,10 @@ export class SpriteAnimation extends Component {
         return this._currentAnimation;
     }
 
+    public get isPlaying(): boolean {
+        return this._currentAnimation !== null;
+    }
+
     private _currentFrameIndex: number = 0;
     public get currentFrameIndex(): number {
         return this._currentFrameIndex;

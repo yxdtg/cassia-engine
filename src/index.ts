@@ -21,6 +21,7 @@ export * from "./storage";
 
 export * from "./engine";
 
+export * from "./render";
 export * from "./input";
 export * from "./resource";
 export * from "./audio";

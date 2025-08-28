@@ -1,3 +1,5 @@
+import { Mathf } from "./Mathf";
+
 export class Color {
     public static get white(): Color {
         return new Color(255, 255, 255);
@@ -24,6 +26,27 @@ export class Color {
     }
     public static get magenta(): Color {
         return new Color(255, 0, 255);
+    }
+
+    public static get transparent(): Color {
+        return new Color(0, 0, 0, 0);
+    }
+
+    public static get random(): Color {
+        const max = 255 + 1;
+        return new Color(Mathf.randomInt(max), Mathf.randomInt(max), Mathf.randomInt(max), 255);
+    }
+    public static get randomWithAlpha(): Color {
+        const max = 255 + 1;
+        return new Color(Mathf.randomInt(max), Mathf.randomInt(max), Mathf.randomInt(max), Mathf.randomInt(max));
+    }
+
+    public static from(iColor: IColor): Color;
+    public static from(array: [number, number, number, number]): Color;
+    public static from(iColorOrArray: IColor | [number, number, number, number]): Color;
+    public static from(iColorOrArray: IColor | [number, number, number, number]): Color {
+        if (Array.isArray(iColorOrArray)) return new Color(...iColorOrArray);
+        return new Color(iColorOrArray.r, iColorOrArray.g, iColorOrArray.b, iColorOrArray.a);
     }
 
     public r: number;
@@ -96,4 +119,15 @@ export class Color {
 
 export function color(r: number = 255, g: number = 255, b: number = 255, a: number = 255): Color {
     return new Color(r, g, b, a);
+}
+
+export interface IColor {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+}
+
+export function iColor(r: number = 255, g: number = 255, b: number = 255, a: number = 255): IColor {
+    return { r, g, b, a };
 }

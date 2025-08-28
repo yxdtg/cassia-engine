@@ -39,3 +39,12 @@ export class BooleanPair {
 export function booleanPair(x: boolean, y: boolean): BooleanPair {
     return new BooleanPair(x, y);
 }
+
+export interface IBooleanPair {
+    x: boolean;
+    y: boolean;
+}
+
+export function iBooleanPair(x: boolean = false, y: boolean = false): IBooleanPair {
+    return { x, y };
+}
