@@ -11,7 +11,7 @@
     ],
     "scripts": {
         "dev": "pnpm exec nodemon --watch src --ext ts --exec pnpm exec tsdown",
-        "build": "pnpm exec tsdown --minify --clean",
+        "build": "pnpm exec tsdown --minify --clean --sourcemap",
         "madge": "node ./scripts/madge.cjs",
         "docs": "pnpm typedoc --options typedoc.json",
         "test": "vitest"
