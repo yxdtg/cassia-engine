@@ -15,7 +15,7 @@ export class RenderLayer {
     constructor(layer: Layer) {
         this._layer = layer;
 
-        this._renderer = new ContainerRenderer();
+        this._renderer = new ContainerRenderer({ isRenderGroup: true });
     }
 
     private _layer: Layer;

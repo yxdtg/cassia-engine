@@ -1,6 +1,6 @@
 import {
     type ILoadResourceInfo,
-    ILoadTargetTypeResourceInfo,
+    type ILoadTargetTypeResourceInfo,
     type IUnloadResourceInfo,
     loadAudio,
     loadTexture,

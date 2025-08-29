@@ -16,14 +16,6 @@ import { BooleanPair, Color, type IVec2, Mathf, Size, vec2, Vec2 } from "cassia-
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
 
-export interface INodeOptions {
-    name?: string;
-    interactive?: boolean;
-
-    layer?: Layer | null;
-    parent?: Node | null;
-}
-
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
     ...GLOBAL_POINTER_EVENT_TYPE,
@@ -54,16 +46,16 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._renderNode;
     }
 
-    constructor(options: INodeOptions = {}) {
+    constructor(options?: Partial<WritablePropertiesOnly<Node>>) {
         super();
 
         this._renderNode = new RenderNode(this);
 
-        this._name = options.name ?? this._name;
-        this._interactive = options.interactive ?? this._interactive;
-
-        this.layer = options.layer ?? this._layer;
-        this.parent = options.parent ?? this._parent;
+        if (options) {
+            for (const key in options) {
+                (this as any)[key] = (options as any)[key];
+            }
+        }
 
         this.applySize();
         this.applyColor();
@@ -486,7 +478,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     /*************************** children ***************************/
     private _children: Node[] = [];
-    public get children(): Node[] {
+    public get children(): Readonly<Node[]> {
         return this._children;
     }
 
@@ -747,10 +739,22 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._comp;
     }
 
-    public addComponent<T extends Component>(componentClass: IComponentConstructor<T>): T | null;
-    public addComponent<T extends Component>(componentName: string): T | null;
-    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T | null;
-    public addComponent<T extends Component>(componentClassOrName: IComponentConstructor<T> | string): T | null {
+    public addComponent<T extends Component>(
+        componentClass: IComponentConstructor<T>,
+        options?: Partial<WritablePropertiesOnly<T>>
+    ): T | null;
+    public addComponent<T extends Component>(
+        componentName: string,
+        options?: Partial<WritablePropertiesOnly<T>>
+    ): T | null;
+    public addComponent<T extends Component>(
+        componentClassOrName: IComponentConstructor<T> | string,
+        options?: Partial<WritablePropertiesOnly<T>>
+    ): T | null;
+    public addComponent<T extends Component>(
+        componentClassOrName: IComponentConstructor<T> | string,
+        options?: Partial<WritablePropertiesOnly<T>>
+    ): T | null {
         const componentClass =
             typeof componentClassOrName === "string"
                 ? ComponentManager.getComponentClass(componentClassOrName)
@@ -811,6 +815,12 @@ export class Node extends EventObject<INodeEventTypeMap> {
             }
             if (component.useOnCollisionExit) {
                 component.node.on(NODE_EVENT_TYPE.CollisionExit, component["onCollisionExit"], component);
+            }
+        }
+
+        if (options) {
+            for (const key in options) {
+                (component as any)[key] = (options as any)[key];
             }
         }
 
@@ -896,3 +906,44 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return vertices;
     }
 }
+
+// 辅助类型：检查属性是否为只读
+type IsReadonly<T, K extends keyof T> = (<P>() => P extends { [Q in K]: T[K] } ? 1 : 2) extends <P>() => P extends {
+    -readonly [Q in K]: T[K];
+}
+    ? 1
+    : 2
+    ? false
+    : true;
+
+// 辅助类型：检查属性是否只有 getter（没有 setter）
+type HasOnlyGetter<T, K extends keyof T> =
+    // 如果是函数，直接返回false（因为函数不是访问器属性）
+    T[K] extends (...args: any[]) => any
+        ? false
+        : // 检查类型是否同时包含getter和setter
+        {
+              get(): T[K];
+              set(value: T[K]): any;
+          } extends Pick<T, K>
+        ? false
+        : // 检查类型是否只有getter
+        {
+              get(): T[K];
+          } extends Pick<T, K>
+        ? true
+        : false;
+
+// 最终类型：过滤掉函数、只读属性和只有 getter 的属性
+type WritablePropertiesOnly<T> = Pick<
+    T,
+    {
+        [K in keyof T]: T[K] extends Function
+            ? never
+            : IsReadonly<T, K> extends true
+            ? never
+            : HasOnlyGetter<T, K> extends true
+            ? never
+            : K;
+    }[keyof T]
+>;

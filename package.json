@@ -1,6 +1,6 @@
 {
     "name": "cassia-engine",
-    "version": "0.0.16",
+    "version": "0.0.17",
     "description": "A TypeScript game engine focused on 2D, ease of use, and high performance.",
     "main": "./dist/index.js",
     "files": [
