@@ -1,4 +1,5 @@
 import { Container, Graphics, NineSliceSprite, Sprite, Text, TilingSprite } from "pixi.js";
+import { Spine } from "@esotericsoftware/spine-pixi-v8";
 
 function defineRenderer(rendererName: string): Function {
     return function (constructor: any) {
@@ -28,6 +29,9 @@ export class NineSliceSpriteRenderer extends NineSliceSprite {}
 @defineRenderer("TilingSpriteRenderer")
 export class TilingSpriteRenderer extends TilingSprite {}
 
+@defineRenderer("SpineRenderer")
+export class SpineRenderer extends Spine {}
+
 export function isContainerRenderer(renderer: any): boolean {
     return renderer.rendererName === "ContainerRenderer";
 }
@@ -50,4 +54,8 @@ export function isTilingSpriteRenderer(renderer: any): boolean {
 
 export function isTextRenderer(renderer: any): boolean {
     return renderer.rendererName === "TextRenderer";
+}
+
+export function isSpineRenderer(renderer: any): boolean {
+    return renderer.rendererName === "SpineRenderer";
 }

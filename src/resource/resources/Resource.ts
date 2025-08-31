@@ -15,6 +15,9 @@ export class Resource<T = any> {
     public get src(): string {
         return this._resourceInfo.src;
     }
+    public get options() {
+        return this._resourceInfo.options;
+    }
 
     private _data: T;
     public get data(): T {

@@ -11,6 +11,9 @@ importers:
       '@dimforge/rapier2d-compat':
         specifier: ^0.18.0
         version: 0.18.0
+      '@esotericsoftware/spine-pixi-v8':
+        specifier: ^4.2.90
+        version: 4.2.90(pixi.js@8.12.0)
       '@tweenjs/tween.js':
         specifier: ^25.0.0
         version: 25.0.0
@@ -240,6 +243,14 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@esotericsoftware/spine-core@4.2.90':
+    resolution: {integrity: sha512-4pR2r7ujN9lm1nYLpDMHV6D078EAo/Ks6Ut3n3B/Lx9HdmkEAoZ01s+zB3xK88QWCkCbLu5UHe/AZbbwNXnc8Q==}
+
+  '@esotericsoftware/spine-pixi-v8@4.2.90':
+    resolution: {integrity: sha512-wtrbdHs6jC9SO+uj9gYBs0YwKU4iFCNfZi+Cr8I3QBr8f2JdCEeV3F2J961YUp4OFfWUZfuxQL2pyHXr5L+0Xw==}
+    peerDependencies:
+      pixi.js: ^8.12.0
 
   '@gerrit0/mini-shiki@3.9.2':
     resolution: {integrity: sha512-Tvsj+AOO4Z8xLRJK900WkyfxHsZQu+Zm1//oT1w443PO6RiYMoq/4NGOhaNuZoUMYsjKIAPVQ6eOFMddj6yphQ==}
@@ -1680,6 +1691,13 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.8':
     optional: true
+
+  '@esotericsoftware/spine-core@4.2.90': {}
+
+  '@esotericsoftware/spine-pixi-v8@4.2.90(pixi.js@8.12.0)':
+    dependencies:
+      '@esotericsoftware/spine-core': 4.2.90
+      pixi.js: 8.12.0
 
   '@gerrit0/mini-shiki@3.9.2':
     dependencies:

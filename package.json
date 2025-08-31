@@ -39,6 +39,7 @@
     },
     "dependencies": {
         "@dimforge/rapier2d-compat": "^0.18.0",
+        "@esotericsoftware/spine-pixi-v8": "^4.2.90",
         "@tweenjs/tween.js": "^25.0.0",
         "howler": "^2.2.4",
         "pixi.js": "^8.12.0"

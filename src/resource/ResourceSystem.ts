@@ -3,12 +3,14 @@ import {
     type ILoadTargetTypeResourceInfo,
     type IUnloadResourceInfo,
     loadAudio,
+    loadSpineSkeleton,
     loadTexture,
     RESOURCE_TYPE,
     unloadAudio,
+    unloadSpineSkeleton,
     unloadTexture,
 } from "./define";
-import { AudioResource, Resource, TextureResource } from "./resources";
+import { AudioResource, Resource, SpineSkeletonResource, TextureResource } from "./resources";
 
 export class ResourceSystem {
     constructor() {}
@@ -17,7 +19,7 @@ export class ResourceSystem {
 
     public async loadResource(loadResourceInfo: ILoadResourceInfo): Promise<void> {
         try {
-            const { name, type, src } = loadResourceInfo;
+            const { name, type, src, options } = loadResourceInfo;
 
             const fnMap = {
                 [RESOURCE_TYPE.Texture]: async (): Promise<TextureResource> => {
@@ -33,6 +35,20 @@ export class ResourceSystem {
                     try {
                         const audio = await loadAudio(src);
                         const resource = new AudioResource(loadResourceInfo, audio);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.SpineSkeleton]: async (): Promise<SpineSkeletonResource> => {
+                    try {
+                        const atlasUrl = options?.atlasUrl;
+                        const textureNames = options?.textureNames;
+                        if (!atlasUrl || !textureNames || textureNames.length === 0)
+                            throw new Error("Invalid options for SpineSkeletonResource");
+
+                        const spineSkeleton = await loadSpineSkeleton(src, atlasUrl, textureNames);
+                        const resource = new SpineSkeletonResource(loadResourceInfo, spineSkeleton);
                         return resource;
                     } catch (e) {
                         throw e;
@@ -104,6 +120,14 @@ export class ResourceSystem {
         }
     }
 
+    public async loadSpineSkeletons(loadSpineSkeletonResourceInfos: ILoadTargetTypeResourceInfo[]): Promise<void> {
+        try {
+            await this.loadTypeResources(RESOURCE_TYPE.SpineSkeleton, loadSpineSkeletonResourceInfos);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     public async unloadResource(unloadResourceInfo: IUnloadResourceInfo): Promise<void> {
         try {
             const { name, type } = unloadResourceInfo;
@@ -124,7 +148,14 @@ export class ResourceSystem {
                 },
                 [RESOURCE_TYPE.Audio]: async (): Promise<void> => {
                     try {
-                        unloadAudio(resource.data);
+                        await unloadAudio(resource.data);
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.SpineSkeleton]: async (): Promise<void> => {
+                    try {
+                        await unloadSpineSkeleton(resource.src, resource.options!.atlasUrl!);
                     } catch (e) {
                         throw e;
                     }
@@ -185,6 +216,14 @@ export class ResourceSystem {
         }
     }
 
+    public async unloadSpineSkeletons(names: string[]): Promise<void> {
+        try {
+            await this.unloadTypeResources(RESOURCE_TYPE.SpineSkeleton, names);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     public getResource<T extends RESOURCE_TYPE>(type: T, name: string): IResourceTypeMap[T] | null {
         return (this._typeToNameToResourceMap.get(type)?.get(name) as IResourceTypeMap[T]) ?? null;
     }
@@ -197,21 +236,32 @@ export class ResourceSystem {
         return this.getResource(RESOURCE_TYPE.Audio, name);
     }
 
-    public getTypeResources<T extends RESOURCE_TYPE>(type: T): IResourceTypeMap[T][] {
+    public getSpineSkeleton(name: string): SpineSkeletonResource | null {
+        return this.getResource(RESOURCE_TYPE.SpineSkeleton, name);
+    }
+
+    public getTypeAllResources<T extends RESOURCE_TYPE>(type: T): IResourceTypeMap[T][] {
         const nameToResourceMap = this._typeToNameToResourceMap.get(type);
         if (!nameToResourceMap) return [];
 
         return Array.from(nameToResourceMap.values()) as IResourceTypeMap[T][];
     }
-    public getTextures(): TextureResource[] {
-        return this.getTypeResources(RESOURCE_TYPE.Texture);
+
+    public getAllTextures(): TextureResource[] {
+        return this.getTypeAllResources(RESOURCE_TYPE.Texture);
     }
-    public getAudios(): AudioResource[] {
-        return this.getTypeResources(RESOURCE_TYPE.Audio);
+
+    public getAllAudios(): AudioResource[] {
+        return this.getTypeAllResources(RESOURCE_TYPE.Audio);
+    }
+
+    public getAllSpineSkeletons(): SpineSkeletonResource[] {
+        return this.getTypeAllResources(RESOURCE_TYPE.SpineSkeleton);
     }
 }
 
 interface IResourceTypeMap {
     [RESOURCE_TYPE.Texture]: TextureResource;
     [RESOURCE_TYPE.Audio]: AudioResource;
+    [RESOURCE_TYPE.SpineSkeleton]: SpineSkeletonResource;
 }
