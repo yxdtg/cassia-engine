@@ -4,13 +4,13 @@ import type { ColliderComponent } from "./colliders";
 import { vec2, Vec2 } from "cassia-engine/math";
 import { physicsSystem } from "cassia-engine";
 
-export const RIGIDBODY_TYPE = {
-    Dynamic: RAPIER.RigidBodyType.Dynamic,
-    Fixed: RAPIER.RigidBodyType.Fixed,
-    KinematicPositionBased: RAPIER.RigidBodyType.KinematicPositionBased,
-    KinematicVelocityBased: RAPIER.RigidBodyType.KinematicVelocityBased,
+export const RIGID_BODY_TYPE = {
+    Dynamic: "dynamic",
+    Fixed: "fixed",
+    KinematicPositionBased: "kinematic-position-based",
+    KinematicVelocityBased: "kinematic-velocity-based",
 } as const;
-export type RIGIDBODY_TYPE = (typeof RIGIDBODY_TYPE)[keyof typeof RIGIDBODY_TYPE];
+export type RIGID_BODY_TYPE = (typeof RIGID_BODY_TYPE)[keyof typeof RIGID_BODY_TYPE];
 
 @defineComponent({ componentName: "RigidBody" })
 export class RigidBody extends Component {
@@ -31,7 +31,7 @@ export class RigidBody extends Component {
     }
 
     protected onInit(): void {
-        const bodyDesc = RAPIER.RigidBodyDesc.dynamic();
+        const bodyDesc = this._getRigidBodyTypeDesc(this._bodyType);
         this._body = physicsSystem.createBody(this, bodyDesc);
 
         // 如果Collider在RigidBody之前创建，那么需要重新创建Collider
@@ -49,11 +49,11 @@ export class RigidBody extends Component {
         this._body = null;
     }
 
-    private _bodyType: RIGIDBODY_TYPE = RIGIDBODY_TYPE.Dynamic;
-    public get bodyType(): RIGIDBODY_TYPE {
+    private _bodyType: RIGID_BODY_TYPE = RIGID_BODY_TYPE.Dynamic;
+    public get bodyType(): RIGID_BODY_TYPE {
         return this._bodyType;
     }
-    public set bodyType(value: RIGIDBODY_TYPE) {
+    public set bodyType(value: RIGID_BODY_TYPE) {
         this._bodyType = value;
         this.applyBodyType();
     }
@@ -63,7 +63,8 @@ export class RigidBody extends Component {
      */
     public applyBodyType(): void {
         if (!this._body) return console.warn("Body not found");
-        this._body.setBodyType(this._bodyType, true);
+        const bodyType = this._getRigidBodyType(this._bodyType);
+        this._body.setBodyType(bodyType, true);
     }
 
     private _gravityScale: number = 1;
@@ -212,5 +213,20 @@ export class RigidBody extends Component {
     public applyImpulseAtPoint(impulse: Vec2, point: Vec2, wakeUp: boolean = true): void {
         if (!this._body) return;
         this._body.applyImpulseAtPoint({ x: impulse.x, y: impulse.y }, { x: point.x, y: point.y }, wakeUp);
+    }
+
+    private _getRigidBodyType(bodyType: RIGID_BODY_TYPE) {
+        if (bodyType === RIGID_BODY_TYPE.Dynamic) return RAPIER.RigidBodyType.Dynamic;
+        if (bodyType === RIGID_BODY_TYPE.Fixed) return RAPIER.RigidBodyType.Fixed;
+        if (bodyType === RIGID_BODY_TYPE.KinematicPositionBased) return RAPIER.RigidBodyType.KinematicPositionBased;
+        if (bodyType === RIGID_BODY_TYPE.KinematicVelocityBased) return RAPIER.RigidBodyType.KinematicVelocityBased;
+        throw new Error(`Invalid body type ${bodyType}`);
+    }
+    private _getRigidBodyTypeDesc(bodyType: RIGID_BODY_TYPE): RAPIER.RigidBodyDesc {
+        if (bodyType === RIGID_BODY_TYPE.Dynamic) return RAPIER.RigidBodyDesc.dynamic();
+        if (bodyType === RIGID_BODY_TYPE.Fixed) return RAPIER.RigidBodyDesc.fixed();
+        if (bodyType === RIGID_BODY_TYPE.KinematicPositionBased) return RAPIER.RigidBodyDesc.kinematicPositionBased();
+        if (bodyType === RIGID_BODY_TYPE.KinematicVelocityBased) return RAPIER.RigidBodyDesc.kinematicVelocityBased();
+        throw new Error(`Invalid body type ${bodyType}`);
     }
 }
