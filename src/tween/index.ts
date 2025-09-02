@@ -14,8 +14,12 @@ const tweenGroup = new Group();
  * @internal
  * @param time
  */
-export function updateTweens(time: number): void {
+export function updateAllTweens(time: number): void {
     tweenGroup.update(time);
+}
+
+export function clearAllTweens(): void {
+    tweenGroup.removeAll();
 }
 
 export function tween<T extends object>(target: T): Tween<T> {

@@ -137,14 +137,12 @@ export class InputSystem {
                 });
             });
         }
-        this._globalPointerEvents.length = 0;
 
         this._pointerEvents.forEach((pointerEvent) => {
             if (pointerEvent.target) {
                 pointerEvent.target.dispatchPointerEvent(pointerEvent);
             }
         });
-        this._pointerEvents.length = 0;
     }
 
     private _getPointerEventTypeByNativeEventType(nativePointerEvent: NATIVE_POINTER_EVENT): POINTER_EVENT_TYPE {
@@ -215,6 +213,9 @@ export class InputSystem {
         this._isGlobalPointerDown = false;
         this._isGlobalPointerMove = false;
         this._isGlobalPointerUp = false;
+
+        this._globalPointerEvents.length = 0;
+        this._pointerEvents.length = 0;
 
         this._keyboardCodeDownSet.clear();
         this._keyboardCodeUpSet.clear();

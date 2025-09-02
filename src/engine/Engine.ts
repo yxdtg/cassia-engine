@@ -8,7 +8,7 @@ import { ResourceSystem } from "cassia-engine/resource";
 import { SceneManager } from "cassia-engine/scene";
 import { StorageSystem } from "cassia-engine/storage";
 import { TimeSystem } from "cassia-engine/time";
-import { updateTweens } from "cassia-engine/tween";
+import { updateAllTweens } from "cassia-engine/tween";
 
 export class Engine {
     private _storageSystem: StorageSystem;
@@ -149,7 +149,7 @@ export class Engine {
 
         this._componentManager.callLateUpdateComponents(this._deltaTime);
 
-        updateTweens(this._now);
+        updateAllTweens(this._now);
 
         this._physicsSystem.update();
 
