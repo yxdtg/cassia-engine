@@ -4,6 +4,7 @@ import { ComponentManager } from "./ComponentManager";
 import type { ColliderComponent } from "./components";
 import { defineObjectGetter } from "cassia-engine/utils";
 import { EventObject } from "cassia-engine/event";
+import type { ITrackEntry } from "cassia-engine/render";
 
 export class Component<M extends Record<keyof M, any> = any> extends EventObject<M> {
     private _node: Node;
@@ -67,46 +68,68 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
      * defineComponent useOnPointerDown: true
      * @param event
      */
-    protected onPointerDown(event: IPointerEvent): void {}
+    protected onPointerDown?(event: IPointerEvent): void;
     /**
      * defineComponent useOnPointerMove: true
      * @param event
      */
-    protected onPointerMove(event: IPointerEvent): void {}
+    protected onPointerMove?(event: IPointerEvent): void;
     /**
      * defineComponent useOnPointerUp: true
      * @param event
      */
-    protected onPointerUp(event: IPointerEvent): void {}
+    protected onPointerUp?(event: IPointerEvent): void;
 
     /**
      * defineComponent useOnGlobalPointerDown: true
      * @param event
      */
-    protected onGlobalPointerDown(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerDown?(event: IGlobalPointerEvent): void;
     /**
      * defineComponent useOnGlobalPointerMove: true
      * @param event
      */
-    protected onGlobalPointerMove(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerMove?(event: IGlobalPointerEvent): void;
     /**
      * defineComponent useOnGlobalPointerUp: true
      * @param event
      */
-    protected onGlobalPointerUp(event: IGlobalPointerEvent): void {}
+    protected onGlobalPointerUp?(event: IGlobalPointerEvent): void;
 
     /**
      * defineComponent useOnCollisionEnter: true
      * @param selfCollider
      * @param otherCollider
      */
-    protected onCollisionEnter(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
+    protected onCollisionEnter?(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void;
     /**
      * defineComponent useOnCollisionExit: true
      * @param selfCollider
      * @param otherCollider
      */
-    protected onCollisionExit(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void {}
+    protected onCollisionExit?(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void;
+
+    /**
+     * defineComponent useOnSpineAnimationStart: true
+     * @param trackEntry
+     * @param trackIndex
+     * @param animationName
+     */
+    protected onSpineAnimationStart?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
+    /**
+     * defineComponent useOnSpineAnimationEnd: true
+     * @param trackEntry
+     * @param trackIndex
+     * @param animationName
+     */
+    protected onSpineAnimationEnd?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
+    /**
+     * defineComponent useOnSpineAnimationComplete: true
+     * @param trackEntry
+     * @param trackIndex
+     * @param animationName
+     */
+    protected onSpineAnimationComplete?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
 }
 
 export interface Component {
@@ -147,6 +170,19 @@ export interface Component {
      */
     readonly useOnCollisionExit?: boolean;
 
+    /**
+     * @internal
+     */
+    readonly useOnSpineAnimationStart?: boolean;
+    /**
+     * @internal
+     */
+    readonly useOnSpineAnimationEnd?: boolean;
+    /**
+     * @internal
+     */
+    readonly useOnSpineAnimationComplete?: boolean;
+
     readonly isRenderComponent?: boolean;
     readonly isColliderComponent?: boolean;
 }
@@ -168,9 +204,13 @@ export interface IDefineComponentOptions {
     useOnGlobalPointerUp?: boolean;
 
     /*************************** useOnCollision ***************************/
-
     useOnCollisionEnter?: boolean;
     useOnCollisionExit?: boolean;
+
+    /*************************** useOnSpineAnimation ***************************/
+    useOnSpineAnimationStart?: boolean;
+    useOnSpineAnimationEnd?: boolean;
+    useOnSpineAnimationComplete?: boolean;
 
     /*************************** isTypeComponent ***************************/
     isRenderComponent?: boolean;

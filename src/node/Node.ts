@@ -4,6 +4,7 @@ import {
     type Component,
     ComponentManager,
     type IComponentConstructor,
+    registerComponentOnUse,
 } from "cassia-engine/component";
 import { EventObject } from "cassia-engine/event";
 import {
@@ -13,6 +14,7 @@ import {
     POINTER_EVENT_TYPE,
 } from "cassia-engine/input";
 import { BooleanPair, Color, type IVec2, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
+import type { ITrackEntry } from "cassia-engine/render";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
 
@@ -21,6 +23,9 @@ export const NODE_EVENT_TYPE = {
     ...GLOBAL_POINTER_EVENT_TYPE,
     CollisionEnter: "collision-enter",
     CollisionExit: "collision-exit",
+    SpineAnimationStart: "spine-animation-start",
+    SpineAnimationEnd: "spine-animation-end",
+    SpineAnimationComplete: "spine-animation-complete",
 } as const;
 export type NODE_EVENT_TYPE = (typeof NODE_EVENT_TYPE)[keyof typeof NODE_EVENT_TYPE];
 
@@ -35,6 +40,14 @@ interface INodeEventTypeMap {
 
     [NODE_EVENT_TYPE.CollisionEnter]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;
     [NODE_EVENT_TYPE.CollisionExit]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;
+
+    [NODE_EVENT_TYPE.SpineAnimationStart]: (trackEntry: ITrackEntry, trackIndex: number, animationName: string) => void;
+    [NODE_EVENT_TYPE.SpineAnimationEnd]: (trackEntry: ITrackEntry, trackIndex: number, animationName: string) => void;
+    [NODE_EVENT_TYPE.SpineAnimationComplete]: (
+        trackEntry: ITrackEntry,
+        trackIndex: number,
+        animationName: string
+    ) => void;
 }
 
 export class Node extends EventObject<INodeEventTypeMap> {
@@ -784,39 +797,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
         (this._comp as any)[component.componentName] = component;
 
-        // on Use onPointerDown, onPointerMove, onPointerUp
-        {
-            if (component.useOnPointerDown) {
-                component.node.on(NODE_EVENT_TYPE.PointerDown, component["onPointerDown"], component);
-            }
-            if (component.useOnPointerMove) {
-                component.node.on(NODE_EVENT_TYPE.PointerMove, component["onPointerMove"], component);
-            }
-            if (component.useOnPointerUp) {
-                component.node.on(NODE_EVENT_TYPE.PointerUp, component["onPointerUp"], component);
-            }
-        }
-        // on Use onGlobalPointerDown, onGlobalPointerMove, onGlobalPointerUp
-        {
-            if (component.useOnGlobalPointerDown) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerDown, component["onGlobalPointerDown"], component);
-            }
-            if (component.useOnGlobalPointerMove) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerMove, component["onGlobalPointerMove"], component);
-            }
-            if (component.useOnGlobalPointerUp) {
-                component.node.on(NODE_EVENT_TYPE.GlobalPointerUp, component["onGlobalPointerUp"], component);
-            }
-        }
-        // on Use onCollisionEnter, onCollisionExit
-        {
-            if (component.useOnCollisionEnter) {
-                component.node.on(NODE_EVENT_TYPE.CollisionEnter, component["onCollisionEnter"], component);
-            }
-            if (component.useOnCollisionExit) {
-                component.node.on(NODE_EVENT_TYPE.CollisionExit, component["onCollisionExit"], component);
-            }
-        }
+        registerComponentOnUse(component);
 
         component["onCreate"]?.();
 

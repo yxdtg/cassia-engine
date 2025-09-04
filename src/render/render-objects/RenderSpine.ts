@@ -1,6 +1,7 @@
 import type { Animation, Bone, SkeletonData, TrackEntry } from "@esotericsoftware/spine-pixi-v8";
 import type { Spine } from "cassia-engine/component";
 import { Size, size, vec2, Vec2 } from "cassia-engine/math";
+import { NODE_EVENT_TYPE } from "cassia-engine/node";
 import { SpineRenderer } from "../define";
 import { RenderObject } from "./RenderObject";
 
@@ -73,18 +74,29 @@ export class RenderSpine extends RenderObject<Spine> {
             this.renderNode.applyColor();
 
             this._spineRenderer.state.addListener({
-                start: (trackEntry: TrackEntry) => {
-                    // this.onSpineAnimationStart?.(trackEntry, trackEntry.trackIndex, trackEntry.animation?.name ?? "");
+                start: (trackEntry: ITrackEntry) => {
+                    this.component.node.emit(
+                        NODE_EVENT_TYPE.SpineAnimationStart,
+                        trackEntry,
+                        trackEntry.trackIndex,
+                        trackEntry.animation?.name ?? ""
+                    );
                 },
-                end: (trackEntry: TrackEntry) => {
-                    // console.log("end", trackEntry);
+                end: (trackEntry: ITrackEntry) => {
+                    this.component.node.emit(
+                        NODE_EVENT_TYPE.SpineAnimationEnd,
+                        trackEntry,
+                        trackEntry.trackIndex,
+                        trackEntry.animation?.name ?? ""
+                    );
                 },
-                complete: (trackEntry: TrackEntry) => {
-                    // this.onSpineAnimationComplete?.(
-                    //     trackEntry,
-                    //     trackEntry.trackIndex,
-                    //     trackEntry.animation?.name ?? ""
-                    // );
+                complete: (trackEntry: ITrackEntry) => {
+                    this.component.node.emit(
+                        NODE_EVENT_TYPE.SpineAnimationComplete,
+                        trackEntry,
+                        trackEntry.trackIndex,
+                        trackEntry.animation?.name ?? ""
+                    );
                 },
             });
             return;
@@ -132,8 +144,8 @@ export class RenderSpine extends RenderObject<Spine> {
         track.alpha = alpha;
     }
 
-    public getTracks(): TrackEntry[] {
-        return (this._spineRenderer?.state.tracks as TrackEntry[]) ?? [];
+    public getTracks(): ITrackEntry[] {
+        return (this._spineRenderer?.state.tracks as ITrackEntry[]) ?? [];
     }
 
     public getMix(from: Animation, to: Animation): number | null {
@@ -161,3 +173,5 @@ export interface ISpineSetAnimationOptions {
 export interface ISpineAddAnimationOptions extends ISpineSetAnimationOptions {
     delay?: number;
 }
+
+export type ITrackEntry = TrackEntry;
