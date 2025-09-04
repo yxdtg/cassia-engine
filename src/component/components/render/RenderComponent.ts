@@ -8,7 +8,7 @@ export class RenderComponent<T extends RenderObject = any> extends Component {
         return this._renderObject;
     }
 
-    protected onInit(): void {
+    protected onCreate(): void {
         this._renderObject = this.onRenderCreate();
     }
     protected onRenderCreate(): T {

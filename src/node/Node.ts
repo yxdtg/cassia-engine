@@ -818,6 +818,8 @@ export class Node extends EventObject<INodeEventTypeMap> {
             }
         }
 
+        component["onCreate"]?.();
+
         if (options) {
             for (const key in options) {
                 (component as any)[key] = (options as any)[key];

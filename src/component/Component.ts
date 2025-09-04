@@ -45,6 +45,11 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
         this._destroyed = true;
     }
 
+    /**
+     * @internal
+     */
+    protected onCreate?(): void;
+
     protected onInit(): void {}
 
     protected onStart(): void {}

@@ -1,5 +1,5 @@
 import { Component, defineComponent } from "cassia-engine/component";
-import { renderSystem } from "cassia-engine/index";
+import { renderSystem } from "cassia-engine";
 import { Vec2 } from "cassia-engine/math";
 
 export const ALIGN_HORIZONTAL_TYPE = {

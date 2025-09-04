@@ -30,7 +30,7 @@ export class RigidBody extends Component {
         return components;
     }
 
-    protected onInit(): void {
+    protected onCreate(): void {
         const bodyDesc = this._getRigidBodyTypeDesc(this._bodyType);
         this._body = physicsSystem.createBody(this, bodyDesc);
 
