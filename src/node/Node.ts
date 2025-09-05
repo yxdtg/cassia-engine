@@ -1,4 +1,4 @@
-import { componentManager, Layer, nodeManager, sceneManager } from "cassia-engine";
+import { componentManager, Layer, nodeManager, renderSystem, sceneManager } from "cassia-engine";
 import {
     type ColliderComponent,
     type Component,
@@ -887,6 +887,10 @@ export class Node extends EventObject<INodeEventTypeMap> {
             layerRotation
         );
         return vertices;
+    }
+
+    public static extractNodeRenderData(node: Node): Promise<string> {
+        return renderSystem.extractRendererData(node.renderNode.renderer);
     }
 }
 

@@ -109,7 +109,9 @@ export class Engine {
 
             this._inputSystem.init();
 
-            await this._physicsSystem.init();
+            if (options.enablePhysics) {
+                await this._physicsSystem.init();
+            }
 
             this._lastTime = performance.now();
             requestAnimationFrame(this.update.bind(this));
@@ -168,4 +170,6 @@ export class Engine {
 
 export interface IEngineStartOptions extends IRenderSystemInitOptions {
     storageId: string;
+
+    enablePhysics: boolean;
 }

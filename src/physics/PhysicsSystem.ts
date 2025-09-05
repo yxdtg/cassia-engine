@@ -191,6 +191,8 @@ export class PhysicsSystem {
      * @internal
      */
     public update(): void {
+        if (!this._world) return;
+
         this._syncNodeToBody();
 
         const eventQueue = new RAPIER.EventQueue(true);

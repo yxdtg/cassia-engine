@@ -2,6 +2,7 @@ import { createBuiltinCanvas } from "cassia-engine/canvas";
 import { type Color, type Size, size, type Vec2, vec2 } from "cassia-engine/math";
 import { Application, Container, Graphics } from "pixi.js";
 import type { RenderScene } from "./RenderScene";
+import type { ContainerRenderer } from "./define";
 
 export class RenderSystem {
     private _app!: Application;
@@ -36,6 +37,10 @@ export class RenderSystem {
 
     public applyDesignSize(): void {
         this._resize();
+    }
+
+    public extractRendererData(renderer: ContainerRenderer): Promise<string> {
+        return this._app.renderer.extract.base64(renderer);
     }
 
     private _resize(): void {
