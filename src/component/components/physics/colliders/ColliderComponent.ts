@@ -133,6 +133,8 @@ export class ColliderComponent extends Component {
         this.applyFriction();
         this.applyRestitution();
         this.applyIsSensor();
+
+        this.node.physicsDirtyFlag = true;
     }
     private _destroyCollider(): void {
         if (!this._collider) return;

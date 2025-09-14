@@ -36,6 +36,8 @@ export class RigidBody extends Component {
 
         // 如果Collider在RigidBody之前创建，那么需要重新创建Collider
         this.colliderComponents.forEach((colliderComponent) => colliderComponent.reCreateCollider());
+
+        this.node.physicsDirtyFlag = true;
     }
 
     protected onDestroy(): void {

@@ -77,7 +77,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     /**
      * @internal
      */
-    public physicsDirtyFlag: boolean = true;
+    public physicsDirtyFlag: boolean = false;
 
     private _name: string = "";
     public get name(): string {

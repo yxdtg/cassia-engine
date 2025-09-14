@@ -108,20 +108,34 @@ export class PhysicsSystem {
     }
 
     private _syncNodeToBody(): void {
-        const nodeSet: Set<Node> = new Set();
+        let syncCount = 0;
 
-        for (const colliderComponent of this._colliderComponents) {
-            const node = colliderComponent.node;
-            nodeSet.add(node);
-            if (!node.physicsDirtyFlag) continue;
+        this._rigidBodyComponents.forEach((rigidBodyComponent) => {
+            const body = rigidBodyComponent.body;
+            if (!body) return;
 
+            const node = rigidBodyComponent.node;
+            if (!node.physicsDirtyFlag) return;
+            syncCount++;
+
+            const nodeLayerPosition = node.getLayerPosition();
+            const nodeLayerRotation = node.getLayerRotation();
+
+            body.setTranslation({ x: nodeLayerPosition.x, y: nodeLayerPosition.y }, true);
+            body.setRotation(nodeLayerRotation, true);
+        });
+
+        this._colliderComponents.forEach((colliderComponent) => {
             const collider = colliderComponent.collider;
-            if (!collider) continue;
-
+            if (!collider) return;
             colliderComponent.updateSize();
 
-            const nodeWorldPosition = node.getLayerPosition();
-            const nodeWorldRotation = node.getLayerRotation();
+            const node = colliderComponent.node;
+            if (!node.physicsDirtyFlag) return;
+            syncCount++;
+
+            const nodeLayerPosition = node.getLayerPosition();
+            const nodeLayerRotation = node.getLayerRotation();
 
             const offset = colliderComponent.offset;
 
@@ -130,39 +144,38 @@ export class PhysicsSystem {
                 collider.setTranslationWrtParent({ x: offset.x, y: offset.y });
             } else {
                 collider.setTranslation({
-                    x: nodeWorldPosition.x + offset.x,
-                    y: nodeWorldPosition.y + offset.y,
+                    x: nodeLayerPosition.x + offset.x,
+                    y: nodeLayerPosition.y + offset.y,
                 });
-                collider.setRotation(nodeWorldRotation);
+                collider.setRotation(nodeLayerRotation);
             }
+        });
+
+        if (syncCount > 0 && this.debug) {
+            console.log(`PhysicsSystem synced ${syncCount} nodes`);
         }
-
-        for (const rigidBodyComponent of this._rigidBodyComponents) {
-            const node = rigidBodyComponent.node;
-            nodeSet.add(node);
-            if (!node.physicsDirtyFlag) continue;
-
-            const body = rigidBodyComponent.body;
-            if (!body) continue;
-
-            const nodeWorldPosition = node.getLayerPosition();
-            const nodeWorldRotation = node.getLayerRotation();
-
-            body.setTranslation({ x: nodeWorldPosition.x, y: nodeWorldPosition.y }, true);
-            body.setRotation(nodeWorldRotation, true);
-        }
-
-        nodeSet.forEach((node) => (node.physicsDirtyFlag = false));
     }
 
     private _syncBodyToNode(): void {
-        for (const colliderComponent of this._colliderComponents) {
+        this._rigidBodyComponents.forEach((rigidBodyComponent) => {
+            const body = rigidBodyComponent.body;
+            if (!body) return;
+
+            const bodyPosition = body.translation();
+            const bodyRotation = body.rotation();
+
+            const node = rigidBodyComponent.node;
+            node.setLayerPosition(bodyPosition.x, bodyPosition.y);
+            node.setLayerRotation(bodyRotation);
+        });
+
+        this._colliderComponents.forEach((colliderComponent) => {
             const node = colliderComponent.node;
 
             const rigidBodyComponent = colliderComponent.getRigidBodyComponent();
             if (!rigidBodyComponent) {
                 const collider = colliderComponent.collider;
-                if (!collider) continue;
+                if (!collider) return;
 
                 const offset = colliderComponent.offset;
 
@@ -172,19 +185,15 @@ export class PhysicsSystem {
                 node.setLayerPosition(colliderPosition.x - offset.x, colliderPosition.y - offset.y);
                 node.setLayerRotation(colliderRotation);
             }
-        }
+        });
+    }
 
-        for (const rigidBodyComponent of this._rigidBodyComponents) {
-            const body = rigidBodyComponent.body;
-            if (!body) continue;
-
-            const bodyPosition = body.translation();
-            const bodyRotation = body.rotation();
-
-            const node = rigidBodyComponent.node;
-            node.setLayerPosition(bodyPosition.x, bodyPosition.y);
-            node.setLayerRotation(bodyRotation);
-        }
+    private _clearPhysicsDirtyFlags(): void {
+        const physicsNodeSet = new Set<Node>([
+            ...this._rigidBodyComponents.map((component) => component.node),
+            ...this._colliderComponents.map((component) => component.node),
+        ]);
+        physicsNodeSet.forEach((node) => (node.physicsDirtyFlag = false));
     }
 
     private _drawDebug(): void {
@@ -234,6 +243,8 @@ export class PhysicsSystem {
         });
 
         this._syncBodyToNode();
+
+        this._clearPhysicsDirtyFlags();
 
         if (this.debug) {
             this._drawDebug();
