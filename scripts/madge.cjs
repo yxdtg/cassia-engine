@@ -11,7 +11,7 @@ if (fs.existsSync(jsOutput)) {
 const input = path.resolve(jsOutput, "index.js");
 const output = path.resolve(__dirname, "../madge/image.svg");
 
-exec("pnpm exec tsc", (error, stdout, stderr) => {
+exec("npx tsc", (error, stdout, stderr) => {
     if (error) {
         console.error(`error: ${error.message}`);
         return;

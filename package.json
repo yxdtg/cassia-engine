@@ -1,6 +1,6 @@
 {
     "name": "cassia-engine",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "A TypeScript game engine focused on 2D, ease of use, and high performance.",
     "main": "./dist/index.js",
     "files": [
@@ -10,10 +10,10 @@
         "LICENSE"
     ],
     "scripts": {
-        "dev": "pnpm exec nodemon --watch src --ext ts --exec pnpm exec tsdown",
-        "build": "pnpm exec tsdown --minify --clean --sourcemap",
+        "dev": "npx nodemon --watch src --ext ts --exec npx tsdown",
+        "build": "npx tsdown --minify --clean --sourcemap",
         "madge": "node ./scripts/madge.cjs",
-        "docs": "pnpm typedoc --options typedoc.json",
+        "docs": "npx typedoc --options typedoc.json",
         "test": "vitest"
     },
     "keywords": [
@@ -26,7 +26,6 @@
     ],
     "author": "yxdtg",
     "license": "MIT",
-    "packageManager": "pnpm@10.13.1",
     "devDependencies": {
         "@types/howler": "^2.2.12",
         "fs-extra": "^11.3.1",

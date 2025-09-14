@@ -2,7 +2,7 @@
 
 目标：一个专注于 2D、易用性和高性能的 TypeScript 游戏引擎。
 
-版本：0.0.18
+版本：0.0.19
 
 # 安装
 
@@ -33,13 +33,13 @@ pnpm add cassia-engine
 ### 开发环境
 
 ```bash
-pnpm run dev
+npm run dev
 ```
 
 ### 生产环境
 
 ```bash
-pnpm run build
+npm run build
 ```
 
 ##
