@@ -74,6 +74,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this.applyColor();
     }
 
+    /**
+     * @internal
+     */
+    public physicsDirtyFlag: boolean = true;
+
     private _name: string = "";
     public get name(): string {
         return this._name;
@@ -159,6 +164,8 @@ export class Node extends EventObject<INodeEventTypeMap> {
      */
     public applyPosition(): void {
         this._renderNode.applyPosition();
+
+        this.physicsDirtyFlag = true;
     }
 
     /*************************** size ***************************/
@@ -300,6 +307,8 @@ export class Node extends EventObject<INodeEventTypeMap> {
      */
     public applyRotation(): void {
         this._renderNode.applyRotation();
+
+        this.physicsDirtyFlag = true;
     }
 
     /*************************** angle ***************************/

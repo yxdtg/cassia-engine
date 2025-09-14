@@ -1,7 +1,8 @@
 import RAPIER from "@dimforge/rapier2d-compat";
-import { NODE_EVENT_TYPE, renderSystem } from "cassia-engine";
+import { renderSystem } from "cassia-engine";
 import { ColliderComponent, RigidBody } from "cassia-engine/component";
 import { color, iVec2, vec2, Vec2 } from "cassia-engine/math";
+import { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 
 export class PhysicsSystem {
     public debug: boolean = false;
@@ -107,13 +108,18 @@ export class PhysicsSystem {
     }
 
     private _syncNodeToBody(): void {
+        const nodeSet: Set<Node> = new Set();
+
         for (const colliderComponent of this._colliderComponents) {
+            const node = colliderComponent.node;
+            nodeSet.add(node);
+            if (!node.physicsDirtyFlag) continue;
+
             const collider = colliderComponent.collider;
             if (!collider) continue;
 
             colliderComponent.updateSize();
 
-            const node = colliderComponent.node;
             const nodeWorldPosition = node.getLayerPosition();
             const nodeWorldRotation = node.getLayerRotation();
 
@@ -132,16 +138,21 @@ export class PhysicsSystem {
         }
 
         for (const rigidBodyComponent of this._rigidBodyComponents) {
+            const node = rigidBodyComponent.node;
+            nodeSet.add(node);
+            if (!node.physicsDirtyFlag) continue;
+
             const body = rigidBodyComponent.body;
             if (!body) continue;
 
-            const node = rigidBodyComponent.node;
             const nodeWorldPosition = node.getLayerPosition();
             const nodeWorldRotation = node.getLayerRotation();
 
             body.setTranslation({ x: nodeWorldPosition.x, y: nodeWorldPosition.y }, true);
             body.setRotation(nodeWorldRotation, true);
         }
+
+        nodeSet.forEach((node) => (node.physicsDirtyFlag = false));
     }
 
     private _syncBodyToNode(): void {
