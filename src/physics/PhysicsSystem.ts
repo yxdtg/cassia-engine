@@ -108,7 +108,7 @@ export class PhysicsSystem {
     }
 
     private _syncNodeToBody(): void {
-        let syncCount = 0;
+        const physicsDirtyFlagNodeSet = new Set<Node>();
 
         this._rigidBodyComponents.forEach((rigidBodyComponent) => {
             const body = rigidBodyComponent.body;
@@ -116,7 +116,7 @@ export class PhysicsSystem {
 
             const node = rigidBodyComponent.node;
             if (!node.physicsDirtyFlag) return;
-            syncCount++;
+            physicsDirtyFlagNodeSet.add(node);
 
             const nodeLayerPosition = node.getLayerPosition();
             const nodeLayerRotation = node.getLayerRotation();
@@ -132,7 +132,7 @@ export class PhysicsSystem {
 
             const node = colliderComponent.node;
             if (!node.physicsDirtyFlag) return;
-            syncCount++;
+            physicsDirtyFlagNodeSet.add(node);
 
             const nodeLayerPosition = node.getLayerPosition();
             const nodeLayerRotation = node.getLayerRotation();
@@ -151,8 +151,8 @@ export class PhysicsSystem {
             }
         });
 
-        if (syncCount > 0 && this.debug) {
-            console.log(`PhysicsSystem synced ${syncCount} nodes`);
+        if (physicsDirtyFlagNodeSet.size > 0 && this.debug) {
+            console.log(`PhysicsSystem physicsDirtyFlag ${physicsDirtyFlagNodeSet.size} nodes`);
         }
     }
 
@@ -188,10 +188,36 @@ export class PhysicsSystem {
         });
     }
 
+    private _dispatchCollisionEvents(eventQueue: RAPIER.EventQueue): void {
+        eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+            const colliderAId = handle1;
+            const colliderBId = handle2;
+
+            const colliderA = this._world.getCollider(colliderAId);
+            const colliderB = this._world.getCollider(colliderBId);
+
+            const colliderComponentA = this._colliderToColliderComponentMap.get(colliderA);
+            const colliderComponentB = this._colliderToColliderComponentMap.get(colliderB);
+
+            if (!colliderComponentA || !colliderComponentB || colliderComponentA === colliderComponentB) return;
+
+            const nodeA = colliderComponentA.node;
+            const nodeB = colliderComponentB.node;
+
+            if (started) {
+                nodeA.emit(NODE_EVENT_TYPE.CollisionEnter, colliderComponentA, colliderComponentB);
+                nodeB.emit(NODE_EVENT_TYPE.CollisionEnter, colliderComponentB, colliderComponentA);
+            } else {
+                nodeA.emit(NODE_EVENT_TYPE.CollisionExit, colliderComponentA, colliderComponentB);
+                nodeB.emit(NODE_EVENT_TYPE.CollisionExit, colliderComponentB, colliderComponentA);
+            }
+        });
+    }
+
     private _clearPhysicsDirtyFlags(): void {
         const physicsNodeSet = new Set<Node>([
-            ...this._rigidBodyComponents.map((component) => component.node),
-            ...this._colliderComponents.map((component) => component.node),
+            ...this._rigidBodyComponents.map((rigidBodyComponent) => rigidBodyComponent.node),
+            ...this._colliderComponents.map((colliderComponent) => colliderComponent.node),
         ]);
         physicsNodeSet.forEach((node) => (node.physicsDirtyFlag = false));
     }
@@ -218,29 +244,7 @@ export class PhysicsSystem {
         const eventQueue = new RAPIER.EventQueue(true);
         this._world.step(eventQueue);
 
-        eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-            const colliderAId = handle1;
-            const colliderBId = handle2;
-
-            const colliderA = this._world.getCollider(colliderAId);
-            const colliderB = this._world.getCollider(colliderBId);
-
-            const colliderComponentA = this._colliderToColliderComponentMap.get(colliderA);
-            const colliderComponentB = this._colliderToColliderComponentMap.get(colliderB);
-
-            if (!colliderComponentA || !colliderComponentB || colliderComponentA === colliderComponentB) return;
-
-            const nodeA = colliderComponentA.node;
-            const nodeB = colliderComponentB.node;
-
-            if (started) {
-                nodeA.emit(NODE_EVENT_TYPE.CollisionEnter, colliderComponentA, colliderComponentB);
-                nodeB.emit(NODE_EVENT_TYPE.CollisionEnter, colliderComponentB, colliderComponentA);
-            } else {
-                nodeA.emit(NODE_EVENT_TYPE.CollisionExit, colliderComponentA, colliderComponentB);
-                nodeB.emit(NODE_EVENT_TYPE.CollisionExit, colliderComponentB, colliderComponentA);
-            }
-        });
+        this._dispatchCollisionEvents(eventQueue);
 
         this._syncBodyToNode();
 
