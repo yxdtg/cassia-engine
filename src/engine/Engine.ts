@@ -9,6 +9,7 @@ import { SceneManager } from "cassia-engine/scene";
 import { StorageSystem } from "cassia-engine/storage";
 import { TimeSystem } from "cassia-engine/time";
 import { updateAllTweens } from "cassia-engine/tween";
+import { msToSeconds } from "cassia-engine/utils";
 
 export class Engine {
     private _storageSystem: StorageSystem;
@@ -83,13 +84,25 @@ export class Engine {
     private _now: number = 0;
     private _lastTime: number = 0;
     private _deltaTime: number = 0;
+    /**
+     * ms/毫秒
+     */
     public get deltaTime(): number {
         return this._deltaTime;
+    }
+    /**
+     * s/秒
+     */
+    public get dt(): number {
+        return msToSeconds(this._deltaTime);
     }
 
     private _fixedTime: number = 0;
 
     private _fixedTimeStep: number = 1000 / 50;
+    /**
+     * ms/毫秒
+     */
     public get fixedTimeStep(): number {
         return this._fixedTimeStep;
     }
@@ -130,13 +143,13 @@ export class Engine {
 
         this._sceneManager.createNextScene();
 
-        this._timeSystem.updateTimers(this._deltaTime);
+        this._timeSystem.updateTimers(this.dt);
 
         this._inputSystem.dispatchEvents();
 
         this._componentManager.callStartComponents();
 
-        this._componentManager.callUpdateComponents(this._deltaTime);
+        this._componentManager.callUpdateComponents(this.dt);
 
         {
             this._fixedTime += this._deltaTime;
@@ -149,7 +162,7 @@ export class Engine {
             this._fixedTime -= count * this._fixedTimeStep;
         }
 
-        this._componentManager.callLateUpdateComponents(this._deltaTime);
+        this._componentManager.callLateUpdateComponents(this.dt);
 
         updateAllTweens(this._now);
 
