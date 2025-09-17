@@ -1,6 +1,7 @@
 import { Mathf, Vec2 } from "cassia-engine/math";
 import type { Node } from "cassia-engine/node";
 import { RenderLayer } from "cassia-engine/render";
+import type { Scene } from "cassia-engine/scene";
 
 export class Layer {
     private _renderLayer: RenderLayer;
@@ -22,7 +23,7 @@ export class Layer {
         this._renderLayer = new RenderLayer(this);
     }
 
-    protected onInit(): void {}
+    public scene: Scene | null = null;
 
     private _nodes: Node[] = [];
     public get nodes(): Node[] {
@@ -178,10 +179,28 @@ export class Layer {
         this._renderLayer.setRenderNodeIndex(renderNode, index);
     }
 
-    public destroyAllNodes(): void {
+    private _destroyed: boolean = false;
+    public get destroyed(): boolean {
+        return this._destroyed;
+    }
+
+    public destroy(): void {
+        if (this._destroyed) return;
+        this._destroyed = true;
+
         for (let i = this._nodes.length - 1; i >= 0; i--) {
             const node = this._nodes[i];
             node.destroy();
         }
+
+        this.scene?.addDestroyedLayer(this);
+    }
+
+    /**
+     * @internal
+     */
+    public destroyRenderer(): void {
+        if (!this._destroyed) return;
+        this._renderLayer.destroy();
     }
 }

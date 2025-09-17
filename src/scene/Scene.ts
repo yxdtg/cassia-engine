@@ -29,6 +29,8 @@ export class Scene {
 
         const renderLayer = layer.renderLayer;
         this._renderScene.addRenderLayer(renderLayer);
+
+        layer.scene = this;
     }
 
     public removeLayer(layer: Layer): void {
@@ -38,6 +40,8 @@ export class Scene {
 
         const renderLayer = layer.renderLayer;
         this._renderScene.removeRenderLayer(renderLayer);
+
+        layer.scene = null;
     }
 
     public getLayer(layerName: string): Layer | null;
@@ -69,11 +73,48 @@ export class Scene {
         this._renderScene.setRenderLayerIndex(renderLayer, index);
     }
 
-    public destroyAllLayers(): void {
+    private _destroyed: boolean = false;
+    public get destroyed(): boolean {
+        return this._destroyed;
+    }
+
+    public destroy(): void {
+        if (this._destroyed) return;
+        this._destroyed = true;
+
         for (let i = this._layers.length - 1; i >= 0; i--) {
             const layer = this._layers[i];
-            layer.destroyAllNodes();
+            layer.destroy();
         }
+    }
+
+    /**
+     * @internal
+     */
+    public destroyRenderer(): void {
+        if (!this._destroyed) return;
+        this._renderScene.destroy();
+    }
+
+    private _destroyedLayers: Layer[] = [];
+
+    /**
+     * @internal
+     */
+    public addDestroyedLayer(layer: Layer): void {
+        if (this._destroyedLayers.includes(layer)) return;
+        this._destroyedLayers.push(layer);
+    }
+    /**
+     * @internal
+     */
+    public clearDestroyedLayers(): void {
+        this._destroyedLayers.forEach((layer) => {
+            this.removeLayer(layer);
+
+            layer.destroyRenderer();
+        });
+        this._destroyedLayers.length = 0;
     }
 }
 

@@ -130,7 +130,6 @@ export class RenderSystem {
         return this._renderScene;
     }
     public setRenderScene(renderScene: RenderScene): void {
-        this._renderScene?.destroy();
         this._renderScene = renderScene;
 
         const sceneRenderer = this._renderScene.renderer;

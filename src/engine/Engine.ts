@@ -172,6 +172,10 @@ export class Engine {
 
         this._nodeManager.clearDestroyedNodes();
 
+        this._sceneManager.currentScene?.clearDestroyedLayers();
+
+        this._sceneManager.clearDestroyedScene();
+
         this._inputSystem.clearCache();
 
         this._renderSystem.render();

@@ -35,6 +35,8 @@ export class NodeManager {
 
         const index = this._nodes.indexOf(node);
         this._nodes.splice(index, 1);
+
+        node.destroyRenderer();
     }
 
     /**

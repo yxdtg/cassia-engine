@@ -458,6 +458,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         nodeManager.addDestroyedNode(this);
     }
 
+    /**
+     * @internal
+     */
+    public destroyRenderer(): void {
+        if (!this._destroyed) return;
+        this._renderNode.destroy();
+    }
+
     private _layer: Layer | null = null;
     public get layer(): Layer | null {
         return this._layer;
@@ -851,7 +859,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
     ): void {
         const component = this.getComponent(componentClassOrNameOrIndex);
-        if (!component) return;
+        if (!component || component.destroyed) return;
 
         componentManager.addDestroyedComponent(component);
     }

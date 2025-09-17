@@ -1,4 +1,4 @@
-import { renderSystem } from "cassia-engine";
+import { clearAllTweens, renderSystem } from "cassia-engine";
 import type { Scene, ISceneConstructor } from "./Scene";
 
 export class SceneManager {
@@ -39,7 +39,7 @@ export class SceneManager {
             return console.error(`Scene "${sceneClassOrName}" is not defined.`);
         this._nextSceneClass = sceneClass;
 
-        this._currentScene?.destroyAllLayers();
+        this._currentScene?.destroy();
     }
 
     /**
@@ -57,5 +57,12 @@ export class SceneManager {
         this._currentScene["onInit"]();
 
         this._nextSceneClass = null;
+    }
+
+    public clearDestroyedScene(): void {
+        if (!this._currentScene?.destroyed) return;
+        this._currentScene.destroyRenderer();
+
+        clearAllTweens();
     }
 }
