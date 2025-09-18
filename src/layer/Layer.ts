@@ -2,6 +2,7 @@ import { Mathf, Vec2 } from "cassia-engine/math";
 import type { Node } from "cassia-engine/node";
 import { RenderLayer } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
+import { sceneManager } from "cassia-engine";
 
 export class Layer {
     private _renderLayer: RenderLayer;
@@ -23,7 +24,9 @@ export class Layer {
         this._renderLayer = new RenderLayer(this);
     }
 
-    public scene: Scene | null = null;
+    public get scene(): Scene | null {
+        return sceneManager.currentScene;
+    }
 
     private _nodes: Node[] = [];
     public get nodes(): Node[] {

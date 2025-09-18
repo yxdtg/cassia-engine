@@ -46,7 +46,7 @@ export class SceneManager {
      * @internal
      */
     public createNextScene(): void {
-        if (!this._nextSceneClass) return;
+        if (!this._nextSceneClass || this._currentScene) return;
 
         const scene = new this._nextSceneClass();
         this._currentScene = scene;
@@ -64,5 +64,7 @@ export class SceneManager {
         this._currentScene.destroyRenderer();
 
         clearAllTweens();
+
+        this._currentScene = null;
     }
 }

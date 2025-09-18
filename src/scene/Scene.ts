@@ -29,8 +29,6 @@ export class Scene {
 
         const renderLayer = layer.renderLayer;
         this._renderScene.addRenderLayer(renderLayer);
-
-        layer.scene = this;
     }
 
     public removeLayer(layer: Layer): void {
@@ -40,8 +38,6 @@ export class Scene {
 
         const renderLayer = layer.renderLayer;
         this._renderScene.removeRenderLayer(renderLayer);
-
-        layer.scene = null;
     }
 
     public getLayer(layerName: string): Layer | null;
