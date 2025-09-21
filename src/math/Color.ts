@@ -99,6 +99,13 @@ export class Color {
         return `#${_helperToHex(this.r)}${_helperToHex(this.g)}${_helperToHex(this.b)}`;
     }
 
+    public toRGB(): string {
+        return `rgb(${this.r}, ${this.g}, ${this.b})`;
+    }
+    public toRGBA(): string {
+        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
+    }
+
     public static hexToColor(hex: string): Color {
         hex = hex.replace("#", "");
 

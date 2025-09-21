@@ -96,3 +96,16 @@ export function isPointInElement(x: number, y: number, element: Element): boolea
         y <= rect.bottom + window.scrollY
     );
 }
+
+export function isMobile(): boolean {
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobileUA = /android|iphone|ipad|ipod|blackberry|windows phone/i.test(ua);
+    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth <= 768;
+    return isMobileUA && (isTouchDevice || isSmallScreen);
+}
+
+export function isBottomInput(): boolean {
+    if (isMobile() && window.visualViewport) return true;
+    return false;
+}

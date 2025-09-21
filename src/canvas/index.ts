@@ -6,9 +6,11 @@ export function createBuiltinCanvas(): HTMLCanvasElement {
     bodyStyle.margin = "0";
     bodyStyle.padding = "0";
     bodyStyle.overflow = "hidden";
+    bodyStyle.touchAction = "none";
 
     const canvasContainer = document.createElement("div");
     canvasContainer.id = "canvas-container";
+    canvasContainer.style.position = "relative";
 
     const canvasContainerStyle = canvasContainer.style;
     canvasContainerStyle.width = "100vw";

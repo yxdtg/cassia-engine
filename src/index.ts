@@ -1,4 +1,5 @@
 import { Engine } from "./engine";
+import { isBottomInput, isMobile } from "./utils";
 
 export const engine = new Engine();
 
@@ -13,6 +14,9 @@ export const storageSystem = engine.storageSystem;
 export const sceneManager = engine.sceneManager;
 export const nodeManager = engine.nodeManager;
 export const componentManager = engine.componentManager;
+
+export const IS_MOBILE = isMobile();
+export const IS_BOTTOM_INPUT = isBottomInput();
 
 export * from "./math";
 export * from "./utils";
