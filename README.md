@@ -1,34 +1,16 @@
 # Cassia Engine
 
-目标：一个专注于 2D、易用性和高性能的 TypeScript 游戏引擎。
+一个专注于 2D、易用性和高性能的游戏引擎。
 
-版本：0.0.19
+# 文档
 
-# 安装
+# [cassia-engine-docs](https://yxdtg.github.io/cassia-engine-docs/zh/)
 
-npm
-
-```bash
-npm install cassia-engine
-```
-
-yarn
-
-```bash
-yarn add cassia-engine
-```
-
-pnpm
-
-```bash
-pnpm add cassia-engine
-```
-
-## 使用 create-cassia-engine 创建项目
+# 使用 create-cassia-engine 创建项目
 
 # [create-cassia-engine](https://www.npmjs.com/package/create-cassia-engine)
 
-## 引擎打包
+## 引擎构建
 
 ### 开发环境
 
@@ -41,12 +23,6 @@ npm run dev
 ```bash
 npm run build
 ```
-
-##
-
-## 等等等
-
-### 文档正在编写中，请先自行探索...
 
 ### -------------------------------------------------
 
