@@ -5,6 +5,7 @@ import type { ColliderComponent } from "./components";
 import { defineObjectGetter } from "cassia-engine/utils";
 import { EventObject } from "cassia-engine/event";
 import type { ITrackEntry } from "cassia-engine/render";
+import { TimeObject } from "cassia-engine/time";
 
 export class Component<M extends Record<keyof M, any> = any> extends EventObject<M> {
     private _node: Node;
@@ -130,6 +131,30 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
      * @param animationName
      */
     protected onSpineAnimationComplete?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
+
+    private _timeObject: TimeObject = new TimeObject();
+    /**
+     * @internal
+     */
+    public get timeObject(): TimeObject {
+        return this._timeObject;
+    }
+
+    public addTimer(...args: Parameters<TimeObject["addTimer"]>): ReturnType<TimeObject["addTimer"]> {
+        return this._timeObject.addTimer(...args);
+    }
+    public addTimerOnce(...args: Parameters<TimeObject["addTimerOnce"]>): ReturnType<TimeObject["addTimerOnce"]> {
+        return this._timeObject.addTimerOnce(...args);
+    }
+
+    public removeTimer(...args: Parameters<TimeObject["removeTimer"]>): ReturnType<TimeObject["removeTimer"]> {
+        return this._timeObject.removeTimer(...args);
+    }
+    public removeAllTimers(
+        ...args: Parameters<TimeObject["removeAllTimers"]>
+    ): ReturnType<TimeObject["removeAllTimers"]> {
+        return this._timeObject.removeAllTimers(...args);
+    }
 }
 
 export interface Component {

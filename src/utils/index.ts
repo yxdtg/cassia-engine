@@ -1,26 +1,3 @@
-export function getOs(): OS_TYPE {
-    if (!navigator) return OS_TYPE.Unknown;
-
-    const userAgent = navigator.userAgent;
-    if (userAgent.includes("Win")) return OS_TYPE.Windows;
-    if (userAgent.includes("Mac")) return OS_TYPE.MacOS;
-    if (userAgent.includes("Linux")) return OS_TYPE.Linux;
-    if (userAgent.includes("Android")) return OS_TYPE.Android;
-    if (userAgent.includes("iPhone")) return OS_TYPE.iOS;
-
-    return OS_TYPE.Unknown;
-}
-
-export const OS_TYPE = {
-    Windows: "windows",
-    MacOS: "macos",
-    Linux: "linux",
-    Android: "android",
-    iOS: "ios",
-    Unknown: "unknown",
-} as const;
-export type OS_TYPE = (typeof OS_TYPE)[keyof typeof OS_TYPE];
-
 /**
  * 克隆纯数据 (深拷贝纯数据 不包含函数和引用)
  * @param data 纯数据
@@ -62,14 +39,31 @@ export function secondsToMs(seconds: number): number {
     return seconds * 1000;
 }
 
-export function formatMsToTime(ms: number): string {
-    const pad = (num: number) => num.toString().padStart(2, "0");
+function pad(num: number, size: number): string {
+    return num.toString().padStart(size, "0");
+}
 
+export function formatMsToHours(ms: number): string {
     const hours = Math.floor(ms / (1000 * 60 * 60));
+    return pad(hours, 2);
+}
+export function formatMsToMinutes(ms: number): string {
     const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    return pad(minutes, 2);
+}
+export function formatMsToSeconds(ms: number): string {
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    return pad(seconds, 2);
+}
 
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+export function formatMsToHoursMinutesSeconds(ms: number): string {
+    return `${formatMsToHours(ms)}:${formatMsToMinutes(ms)}:${formatMsToSeconds(ms)}`;
+}
+export function formatMsToHoursMinutes(ms: number): string {
+    return `${formatMsToHours(ms)}:${formatMsToMinutes(ms)}`;
+}
+export function formatMsToMinutesSeconds(ms: number): string {
+    return `${formatMsToMinutes(ms)}:${formatMsToSeconds(ms)}`;
 }
 
 export function callAnyMethod(obj: any, method: string, ...args: any[]): any {
@@ -97,12 +91,39 @@ export function isPointInElement(x: number, y: number, element: Element): boolea
     );
 }
 
+export const OS_TYPE = {
+    Windows: "windows",
+    MacOS: "macos",
+    Linux: "linux",
+    Android: "android",
+    iOS: "ios",
+    Unknown: "unknown",
+} as const;
+
+export type OS_TYPE = (typeof OS_TYPE)[keyof typeof OS_TYPE];
+
+export function getOs(): OS_TYPE {
+    if (typeof navigator === "undefined") return OS_TYPE.Unknown;
+
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    if (/win(dows )?/i.test(userAgent)) return OS_TYPE.Windows;
+    if (/macintosh|mac os x/i.test(userAgent)) return OS_TYPE.MacOS;
+    if (/linux/i.test(userAgent)) return OS_TYPE.Linux;
+    if (/android/i.test(userAgent)) return OS_TYPE.Android;
+    if (/iphone|ipad|ipod/i.test(userAgent)) return OS_TYPE.iOS;
+
+    return OS_TYPE.Unknown;
+}
+
 export function isMobile(): boolean {
+    if (typeof navigator === "undefined") return false;
+
     const ua = navigator.userAgent.toLowerCase();
-    const isMobileUA = /android|iphone|ipad|ipod|blackberry|windows phone/i.test(ua);
-    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    const isSmallScreen = window.innerWidth <= 768;
-    return isMobileUA && (isTouchDevice || isSmallScreen);
+    const isMobileUA = /android|iphone|ipod|blackberry|windows phone/i.test(ua);
+    const isIPad = /macintosh/.test(ua) && "ontouchend" in document && navigator.maxTouchPoints > 0;
+
+    return isMobileUA || isIPad;
 }
 
 export function isBottomInput(): boolean {

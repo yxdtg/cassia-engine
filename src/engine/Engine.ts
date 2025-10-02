@@ -143,9 +143,11 @@ export class Engine {
 
         this._sceneManager.createNextScene();
 
-        this._timeSystem.updateTimers(this.dt);
+        this._timeSystem.updateAllTimers(this.dt);
 
         this._inputSystem.dispatchEvents();
+
+        this._componentManager.callUpdateAllTimersComponents(this.dt);
 
         this._componentManager.callStartComponents();
 

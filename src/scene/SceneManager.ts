@@ -1,4 +1,4 @@
-import { clearAllTweens, renderSystem } from "cassia-engine";
+import { clearAllTweens, renderSystem, timeSystem } from "cassia-engine";
 import type { Scene, ISceneConstructor } from "./Scene";
 
 export class SceneManager {
@@ -59,11 +59,19 @@ export class SceneManager {
         this._nextSceneClass = null;
     }
 
-    public clearDestroyedScene(): void {
+    /**
+     *
+     * @param clean default:false removeAllTimers and clearAllTweens
+     * @returns
+     */
+    public clearDestroyedScene(clean: boolean = false): void {
         if (!this._currentScene?.destroyed) return;
         this._currentScene.destroyRenderer();
 
-        clearAllTweens();
+        if (clean) {
+            timeSystem.removeAllTimers();
+            clearAllTweens();
+        }
 
         this._currentScene = null;
     }

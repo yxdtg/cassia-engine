@@ -58,10 +58,21 @@ export class ComponentManager {
     /**
      * @internal
      */
-    public callUpdateComponents(deltaTime: number): void {
+    public callUpdateAllTimersComponents(dt: number): void {
         this._components.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component["onUpdate"](deltaTime);
+                component.timeObject.updateAllTimers(dt);
+            }
+        });
+    }
+
+    /**
+     * @internal
+     */
+    public callUpdateComponents(dt: number): void {
+        this._components.forEach((component) => {
+            if (canExecuteComponent(component)) {
+                component["onUpdate"](dt);
             }
         });
     }
@@ -80,10 +91,10 @@ export class ComponentManager {
     /**
      * @internal
      */
-    public callLateUpdateComponents(deltaTime: number): void {
+    public callLateUpdateComponents(dt: number): void {
         this._components.forEach((component) => {
             if (canExecuteComponent(component)) {
-                component["onLateUpdate"](deltaTime);
+                component["onLateUpdate"](dt);
             }
         });
     }
