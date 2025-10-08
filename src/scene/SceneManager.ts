@@ -29,15 +29,20 @@ export class SceneManager {
 
     private _nextSceneClass: ISceneConstructor | null = null;
 
-    public loadScene(sceneClass: ISceneConstructor): void;
-    public loadScene(sceneName: string): void;
-    public loadScene(sceneClassOrName: ISceneConstructor | string): void;
-    public loadScene(sceneClassOrName: ISceneConstructor | string): void {
+    public loadScene(sceneClass: ISceneConstructor, clean?: boolean): void;
+    public loadScene(sceneName: string, clean?: boolean): void;
+    public loadScene(sceneClassOrName: ISceneConstructor | string, clean?: boolean): void;
+    public loadScene(sceneClassOrName: ISceneConstructor | string, clean: boolean = false): void {
         const sceneClass =
             typeof sceneClassOrName === "string" ? SceneManager.getSceneClass(sceneClassOrName) : sceneClassOrName;
         if (!sceneClass || !(sceneClass.prototype as Scene | null)?.sceneName)
             return console.error(`Scene "${sceneClassOrName}" is not defined.`);
         this._nextSceneClass = sceneClass;
+
+        if (clean) {
+            timeSystem.removeAllTimers();
+            clearAllTweens();
+        }
 
         this._currentScene?.destroy();
     }
@@ -60,18 +65,11 @@ export class SceneManager {
     }
 
     /**
-     *
-     * @param clean default:false removeAllTimers and clearAllTweens
-     * @returns
+     * @internal
      */
-    public clearDestroyedScene(clean: boolean = false): void {
+    public clearDestroyedScene(): void {
         if (!this._currentScene?.destroyed) return;
         this._currentScene.destroyRenderer();
-
-        if (clean) {
-            timeSystem.removeAllTimers();
-            clearAllTweens();
-        }
 
         this._currentScene = null;
     }
