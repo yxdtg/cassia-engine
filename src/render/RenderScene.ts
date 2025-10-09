@@ -26,6 +26,7 @@ export class RenderScene {
 
     public addRenderLayer(renderLayer: RenderLayer): void {
         if (this._renderLayers.includes(renderLayer)) return;
+
         this._renderLayers.push(renderLayer);
 
         const layerRenderer = renderLayer.renderer;
@@ -34,6 +35,7 @@ export class RenderScene {
     public removeRenderLayer(renderLayer: RenderLayer): void {
         const index = this._renderLayers.indexOf(renderLayer);
         if (index === -1) return;
+
         this._renderLayers.splice(index, 1);
 
         const layerRenderer = renderLayer.renderer;

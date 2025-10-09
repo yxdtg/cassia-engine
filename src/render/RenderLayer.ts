@@ -58,6 +58,7 @@ export class RenderLayer {
 
     public addRenderNode(renderNode: RenderNode): void {
         if (this._renderNodes.includes(renderNode)) return;
+
         this._renderNodes.push(renderNode);
 
         const nodeRenderer = renderNode.renderer;
@@ -66,6 +67,7 @@ export class RenderLayer {
     public removeRenderNode(renderNode: RenderNode): void {
         const index = this._renderNodes.indexOf(renderNode);
         if (index === -1) return;
+
         this._renderNodes.splice(index, 1);
 
         const nodeRenderer = renderNode.renderer;

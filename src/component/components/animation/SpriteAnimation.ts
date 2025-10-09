@@ -19,6 +19,7 @@ export class SpriteAnimation extends Component {
     }
     public setAnimations(animations: ISpriteAnimationData[]): void {
         if (this._currentAnimation) return console.warn("Cannot set animations while an animation is playing");
+
         this._animations = animations;
     }
 

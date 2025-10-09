@@ -8,6 +8,7 @@ export class Bounds {
     public static from(iBoundsOrArray: IBounds | [number, number, number, number]): Bounds;
     public static from(iBoundsOrArray: IBounds | [number, number, number, number]): Bounds {
         if (Array.isArray(iBoundsOrArray)) return new Bounds(...iBoundsOrArray);
+
         return new Bounds(iBoundsOrArray.top, iBoundsOrArray.bottom, iBoundsOrArray.left, iBoundsOrArray.right);
     }
 
@@ -27,7 +28,7 @@ export class Bounds {
     public set(top?: number, bottom?: number, left?: number, right?: number): void;
     public set(boundsOrTop?: Bounds | number, bottom?: number, left?: number, right?: number): void;
     public set(boundsOrTop?: Bounds | number, bottom?: number, left?: number, right?: number): void {
-        if (boundsOrTop != null && typeof boundsOrTop === "object") {
+        if (boundsOrTop && typeof boundsOrTop === "object") {
             this.top = boundsOrTop.top;
             this.bottom = boundsOrTop.bottom;
             this.left = boundsOrTop.left;

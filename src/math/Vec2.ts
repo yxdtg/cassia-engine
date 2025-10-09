@@ -30,6 +30,7 @@ export class Vec2 {
     public static from(iVec2OrArray: IVec2 | [number, number]): Vec2;
     public static from(iVec2OrArray: IVec2 | [number, number]): Vec2 {
         if (Array.isArray(iVec2OrArray)) return new Vec2(...iVec2OrArray);
+
         return new Vec2(iVec2OrArray.x, iVec2OrArray.y);
     }
 

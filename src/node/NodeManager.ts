@@ -15,6 +15,7 @@ export class NodeManager {
      */
     public addNode(node: Node): void {
         if (this._nodes.includes(node)) return;
+
         this._nodes.push(node);
     }
 
@@ -24,6 +25,7 @@ export class NodeManager {
      */
     public addDestroyedNode(node: Node): void {
         if (this._destroyedNodes.includes(node)) return;
+
         this._destroyedNodes.push(node);
     }
 

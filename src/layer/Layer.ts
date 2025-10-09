@@ -136,6 +136,7 @@ export class Layer {
      */
     public addNode(node: Node): void {
         if (this._nodes.includes(node)) return;
+
         this._nodes.push(node);
 
         const renderNode = node.renderNode;
@@ -149,6 +150,7 @@ export class Layer {
     public removeNode(node: Node): void {
         const index = this._nodes.indexOf(node);
         if (index === -1) return;
+
         this._nodes.splice(index, 1);
 
         const renderNode = node.renderNode;
@@ -189,6 +191,7 @@ export class Layer {
 
     public destroy(): void {
         if (this._destroyed) return;
+
         this._destroyed = true;
 
         for (let i = this._nodes.length - 1; i >= 0; i--) {
@@ -204,6 +207,7 @@ export class Layer {
      */
     public destroyRenderer(): void {
         if (!this._destroyed) return;
+
         this._renderLayer.destroy();
     }
 }

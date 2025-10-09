@@ -48,6 +48,7 @@ export class InputField extends Component {
 
     protected onPointerDown(event: IPointerEvent): void {
         if (!this._textNode) return console.error("textNode not found");
+
         const text = this._textNode.getComponent(Text);
         if (!text) return console.error("text component not found");
 
@@ -70,6 +71,7 @@ export class InputField extends Component {
 
         const updateInputPosition = (): void => {
             if (!window.visualViewport) return;
+
             const viewportHeight = window.visualViewport.height;
             const keyboardHeight = window.innerHeight - viewportHeight;
             this._el!.style.bottom = `${keyboardHeight}px`;
@@ -113,6 +115,7 @@ export class InputField extends Component {
 
         timeSystem.addTimerOnce(() => {
             if (!this._el) return;
+
             this._el.focus();
         });
     }
@@ -120,6 +123,7 @@ export class InputField extends Component {
     protected onLateUpdate(dt: number): void {
         if (!this._el) return;
         if (!this._textNode) return console.error("textNode not found");
+
         const text = this._textNode.getComponent(Text);
         if (!text) return console.error("text component not found");
 

@@ -17,7 +17,6 @@ const tweenGroup = new Group();
 
 /**
  * @internal
- * @param time
  */
 export function updateAllTweens(time: number): void {
     tweenGroup.update(time);

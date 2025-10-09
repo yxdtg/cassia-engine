@@ -122,6 +122,7 @@ export class RenderSystem {
     }
     public clearDraw(): void {
         if (!this._drawGraphics) return;
+
         this._drawGraphics.clear();
     }
 

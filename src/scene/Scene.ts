@@ -25,6 +25,7 @@ export class Scene {
 
     public addLayer(layer: Layer): void {
         if (this._layers.includes(layer)) return;
+
         this._layers.push(layer);
 
         const renderLayer = layer.renderLayer;
@@ -34,6 +35,7 @@ export class Scene {
     public removeLayer(layer: Layer): void {
         const index = this._layers.indexOf(layer);
         if (index === -1) return;
+
         this._layers.splice(index, 1);
 
         const renderLayer = layer.renderLayer;
@@ -76,6 +78,7 @@ export class Scene {
 
     public destroy(): void {
         if (this._destroyed) return;
+
         this._destroyed = true;
 
         for (let i = this._layers.length - 1; i >= 0; i--) {
@@ -89,6 +92,7 @@ export class Scene {
      */
     public destroyRenderer(): void {
         if (!this._destroyed) return;
+
         this._renderScene.destroy();
     }
 
@@ -99,6 +103,7 @@ export class Scene {
      */
     public addDestroyedLayer(layer: Layer): void {
         if (this._destroyedLayers.includes(layer)) return;
+
         this._destroyedLayers.push(layer);
     }
     /**

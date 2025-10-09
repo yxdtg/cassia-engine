@@ -130,3 +130,46 @@ export function isBottomInput(): boolean {
     if (isMobile() && window.visualViewport) return true;
     return false;
 }
+
+// 检查属性是否为只读
+type IsReadonly<T, K extends keyof T> = (<P>() => P extends {
+    [Q in K]: T[K];
+}
+    ? 1
+    : 2) extends <P>() => P extends {
+    -readonly [Q in K]: T[K];
+}
+    ? 1
+    : 2
+    ? false
+    : true;
+
+// 检查属性是否只有 getter
+type HasOnlyGetter<T, K extends keyof T> =
+    // 如果是函数，直接返回false
+    T[K] extends (...args: any[]) => any
+        ? false
+        : {
+              get(): T[K];
+              set(value: T[K]): any;
+          } extends Pick<T, K>
+        ? false
+        : {
+              get(): T[K];
+          } extends Pick<T, K>
+        ? true
+        : false;
+
+// 过滤掉函数、只读属性和只有 getter 的属性
+export type IWritablePropertiesOnly<T> = Pick<
+    T,
+    {
+        [K in keyof T]: T[K] extends Function
+            ? never
+            : IsReadonly<T, K> extends true
+            ? never
+            : HasOnlyGetter<T, K> extends true
+            ? never
+            : K;
+    }[keyof T]
+>;

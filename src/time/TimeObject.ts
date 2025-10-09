@@ -81,6 +81,7 @@ export class TimeObject {
         removeTimerDatas.forEach((timerData) => {
             const index = this._timerDatas.indexOf(timerData);
             if (index === -1) return;
+
             this._timerDatas.splice(index, 1);
         });
     }

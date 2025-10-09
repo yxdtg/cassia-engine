@@ -24,6 +24,7 @@ export class Draggable extends Component {
 
     protected onPointerDown(event: IPointerEvent): void {
         if (!this.node.currentLayer) return;
+
         this._isDown = true;
 
         this._lastPointerId = event.pointerId;
@@ -33,6 +34,7 @@ export class Draggable extends Component {
     protected onGlobalPointerMove(event: IGlobalPointerEvent): void {
         if (!this.node.currentLayer) return;
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
+
         this._isDragging = true;
 
         const offset = this.node.currentLayer.screenToLayer(event.screenPoint).subtract(this._lastDragPoint);

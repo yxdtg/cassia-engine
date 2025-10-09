@@ -109,6 +109,7 @@ export class Engine {
 
     public async start(options: Partial<IEngineStartOptions> = {}): Promise<void> {
         if (this._started) return;
+
         this._started = true;
 
         try {

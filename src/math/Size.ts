@@ -17,6 +17,7 @@ export class Size {
     public static from(iSizeOrArray: ISize | [number, number]): Size;
     public static from(iSizeOrArray: ISize | [number, number]): Size {
         if (Array.isArray(iSizeOrArray)) return new Size(...iSizeOrArray);
+
         return new Size(iSizeOrArray.width, iSizeOrArray.height);
     }
 

@@ -37,6 +37,7 @@ export class ComponentManager {
      */
     public addUnStartedComponent(component: Component): void {
         if (this._unStartedComponents.includes(component)) return;
+
         this._unStartedComponents.push(component);
     }
 
@@ -105,6 +106,7 @@ export class ComponentManager {
      */
     public addDestroyedComponent(component: Component): void {
         if (this._destroyedComponents.includes(component)) return;
+
         this._destroyedComponents.push(component);
 
         component.destroy();

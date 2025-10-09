@@ -22,15 +22,13 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
     public get rockerNode(): Node | null {
         return this._rockerNode;
     }
-    public setRockerNode(node: Node): void {
+    public set rockerNode(node: Node | null) {
         this._rockerNode = node;
-        this._rockerNode.on(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
+        this._rockerNode?.on(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
     }
 
     protected onDestroy(): void {
-        if (this._rockerNode) {
-            this._rockerNode.off(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
-        }
+        this._rockerNode?.off(NODE_EVENT_TYPE.PointerDown, this._onRockerPointerDown, this);
     }
 
     public horizontalEnabled: boolean = true;
@@ -59,7 +57,6 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
         if (!this._rockerNode) return;
 
         this._isDown = true;
-
         this._lastPointerId = event.pointerId;
 
         this.emit(JOYSTICK_EVENT_TYPE.Down);
@@ -70,6 +67,7 @@ export class Joystick extends Component<IJoystickEventTypeMap> {
         if (!this.node.currentLayer) return;
 
         if (event.pointerId !== this._lastPointerId || !this._isDown) return;
+
         this._isDragging = true;
 
         const nodeLayerPosition = this.node.getLayerPosition();

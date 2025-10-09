@@ -71,6 +71,7 @@ export class RenderNode {
 
     public setSiblingIndex(index: number): void {
         if (!this._parent) return;
+
         this._parent._childrenContainer.setChildIndex(this._renderer, index);
     }
 

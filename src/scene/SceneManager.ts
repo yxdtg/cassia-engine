@@ -37,6 +37,7 @@ export class SceneManager {
             typeof sceneClassOrName === "string" ? SceneManager.getSceneClass(sceneClassOrName) : sceneClassOrName;
         if (!sceneClass || !(sceneClass.prototype as Scene | null)?.sceneName)
             return console.error(`Scene "${sceneClassOrName}" is not defined.`);
+
         this._nextSceneClass = sceneClass;
 
         if (clean) {
@@ -53,14 +54,10 @@ export class SceneManager {
     public createNextScene(): void {
         if (!this._nextSceneClass || this._currentScene) return;
 
-        const scene = new this._nextSceneClass();
-        this._currentScene = scene;
-
-        const renderScene = this._currentScene.renderScene;
-        renderSystem.setRenderScene(renderScene);
+        this._currentScene = new this._nextSceneClass();
+        renderSystem.setRenderScene(this._currentScene.renderScene);
 
         this._currentScene["onInit"]();
-
         this._nextSceneClass = null;
     }
 
@@ -69,8 +66,8 @@ export class SceneManager {
      */
     public clearDestroyedScene(): void {
         if (!this._currentScene?.destroyed) return;
-        this._currentScene.destroyRenderer();
 
+        this._currentScene.destroyRenderer();
         this._currentScene = null;
     }
 }

@@ -370,6 +370,7 @@ function parseSkeletonData(
     options?: SpineOptions
 ): SkeletonData {
     let skeleton: SkeletonData = null!;
+
     atlasData.pages.forEach((page, index) => {
         const texture = textures[index];
         if (texture) {
@@ -381,11 +382,11 @@ function parseSkeletonData(
     });
 
     const attachmentLoader = new AtlasAttachmentLoader(atlasData);
+
     let parser =
         skelData instanceof Uint8Array ? new SkeletonBinary(attachmentLoader) : new SkeletonJson(attachmentLoader);
-
     parser.scale = (options?.scale as number) ?? 1;
-    skeleton = parser.readSkeletonData(skelData);
 
+    skeleton = parser.readSkeletonData(skelData);
     return skeleton;
 }

@@ -101,6 +101,7 @@ export class RenderMask extends RenderObject<Mask> {
     public clearMask(): void {
         const nodeRenderer = this.renderNode.renderer;
         if (!nodeRenderer) return;
+
         nodeRenderer.mask = null;
     }
 }

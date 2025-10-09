@@ -17,6 +17,7 @@ import { BooleanPair, Color, type IVec2, Mathf, Size, vec2, Vec2 } from "cassia-
 import type { ITrackEntry } from "cassia-engine/render";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
+import type { IWritablePropertiesOnly } from "cassia-engine/utils";
 
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
@@ -59,7 +60,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._renderNode;
     }
 
-    constructor(options?: Partial<WritablePropertiesOnly<Node>>) {
+    constructor(options?: Partial<IWritablePropertiesOnly<Node>>) {
         super();
 
         this._renderNode = new RenderNode(this);
@@ -444,6 +445,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
     public destroy(): void {
         if (this._destroyed) return;
+
         this._destroyed = true;
 
         for (let i = this._children.length - 1; i >= 0; i--) {
@@ -771,19 +773,19 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
     public addComponent<T extends Component>(
         componentClass: IComponentConstructor<T>,
-        options?: Partial<WritablePropertiesOnly<T>>
+        options?: Partial<IWritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
         componentName: string,
-        options?: Partial<WritablePropertiesOnly<T>>
+        options?: Partial<IWritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
         componentClassOrName: IComponentConstructor<T> | string,
-        options?: Partial<WritablePropertiesOnly<T>>
+        options?: Partial<IWritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
         componentClassOrName: IComponentConstructor<T> | string,
-        options?: Partial<WritablePropertiesOnly<T>>
+        options?: Partial<IWritablePropertiesOnly<T>>
     ): T | null {
         const componentClass =
             typeof componentClassOrName === "string"
@@ -825,7 +827,6 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
 
         component["onInit"]();
-
         return component as T;
     }
 
@@ -910,44 +911,3 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return renderSystem.extractRendererData(node.renderNode.renderer);
     }
 }
-
-// 辅助类型：检查属性是否为只读
-type IsReadonly<T, K extends keyof T> = (<P>() => P extends { [Q in K]: T[K] } ? 1 : 2) extends <P>() => P extends {
-    -readonly [Q in K]: T[K];
-}
-    ? 1
-    : 2
-    ? false
-    : true;
-
-// 辅助类型：检查属性是否只有 getter（没有 setter）
-type HasOnlyGetter<T, K extends keyof T> =
-    // 如果是函数，直接返回false（因为函数不是访问器属性）
-    T[K] extends (...args: any[]) => any
-        ? false
-        : // 检查类型是否同时包含getter和setter
-        {
-              get(): T[K];
-              set(value: T[K]): any;
-          } extends Pick<T, K>
-        ? false
-        : // 检查类型是否只有getter
-        {
-              get(): T[K];
-          } extends Pick<T, K>
-        ? true
-        : false;
-
-// 最终类型：过滤掉函数、只读属性和只有 getter 的属性
-type WritablePropertiesOnly<T> = Pick<
-    T,
-    {
-        [K in keyof T]: T[K] extends Function
-            ? never
-            : IsReadonly<T, K> extends true
-            ? never
-            : HasOnlyGetter<T, K> extends true
-            ? never
-            : K;
-    }[keyof T]
->;

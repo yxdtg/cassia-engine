@@ -12,6 +12,7 @@ export class ColliderComponent extends Component {
     public getRigidBodyComponent(): RigidBody | null {
         const rigidBody = this.node.getComponent<RigidBody>("RigidBody");
         if (rigidBody && rigidBody.body && !rigidBody.destroyed) return rigidBody;
+
         return null;
     }
 
@@ -50,6 +51,7 @@ export class ColliderComponent extends Component {
      */
     public applyDensity(): void {
         if (!this._collider) return;
+
         this._collider.setDensity(this._density);
     }
 
@@ -67,6 +69,7 @@ export class ColliderComponent extends Component {
      */
     public applyFriction(): void {
         if (!this._collider) return;
+
         this._collider.setFriction(this._friction);
     }
 
@@ -84,6 +87,7 @@ export class ColliderComponent extends Component {
      */
     public applyRestitution(): void {
         if (!this._collider) return;
+
         this._collider.setRestitution(this._restitution);
     }
 
@@ -101,6 +105,7 @@ export class ColliderComponent extends Component {
      */
     public applyIsSensor(): void {
         if (!this._collider) return;
+
         this._collider.setSensor(this._isSensor);
     }
 

@@ -65,6 +65,7 @@ export class RigidBody extends Component {
      */
     public applyBodyType(): void {
         if (!this._body) return console.warn("Body not found");
+
         const bodyType = this._getRigidBodyType(this._bodyType);
         this._body.setBodyType(bodyType, true);
     }
@@ -83,6 +84,7 @@ export class RigidBody extends Component {
      */
     public applyGravityScale(): void {
         if (!this._body) return;
+
         this._body.setGravityScale(this._gravityScale, true);
     }
 
@@ -100,6 +102,7 @@ export class RigidBody extends Component {
      */
     public applyLineDamping(): void {
         if (!this._body) return;
+
         this._body.setLinearDamping(this._linearDamping);
     }
 
@@ -117,6 +120,7 @@ export class RigidBody extends Component {
      */
     public applyAngularDamping(): void {
         if (!this._body) return;
+
         this._body.setAngularDamping(this._angularDamping);
     }
 
@@ -128,6 +132,7 @@ export class RigidBody extends Component {
     }
     public set linvel(value: Vec2) {
         if (!this._body) return;
+
         this._body.setLinvel({ x: value.x, y: value.y }, true);
     }
 
@@ -147,10 +152,12 @@ export class RigidBody extends Component {
 
     public get angvel(): number {
         if (!this._body) return 0;
+
         return this._body.angvel();
     }
     public set angvel(value: number) {
         if (!this._body) return;
+
         this._body.setAngvel(value, true);
     }
 
@@ -168,6 +175,7 @@ export class RigidBody extends Component {
      */
     public applyLockRotations(): void {
         if (!this._body) return;
+
         this._body.lockRotations(this._lockRotations, true);
     }
 
@@ -185,35 +193,43 @@ export class RigidBody extends Component {
      */
     public applyCcdEnabled(): void {
         if (!this._body) return;
+
         this._body.enableCcd(this._ccdEnabled);
     }
 
     public resetForces(wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.resetForces(wakeUp);
     }
     public addForce(force: Vec2, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.addForce({ x: force.x, y: force.y }, wakeUp);
     }
     public addTorque(torque: number, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.addTorque(torque, wakeUp);
     }
     public addForceAtPoint(force: Vec2, point: Vec2, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.addForceAtPoint({ x: force.x, y: force.y }, { x: point.x, y: point.y }, wakeUp);
     }
     public applyImpulse(impulse: Vec2, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.applyImpulse({ x: impulse.x, y: impulse.y }, wakeUp);
     }
     public applyTorqueImpulse(torque: number, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.applyTorqueImpulse(torque, wakeUp);
     }
     public applyImpulseAtPoint(impulse: Vec2, point: Vec2, wakeUp: boolean = true): void {
         if (!this._body) return;
+
         this._body.applyImpulseAtPoint({ x: impulse.x, y: impulse.y }, { x: point.x, y: point.y }, wakeUp);
     }
 
@@ -222,6 +238,7 @@ export class RigidBody extends Component {
         if (bodyType === RIGID_BODY_TYPE.Fixed) return RAPIER.RigidBodyType.Fixed;
         if (bodyType === RIGID_BODY_TYPE.KinematicPositionBased) return RAPIER.RigidBodyType.KinematicPositionBased;
         if (bodyType === RIGID_BODY_TYPE.KinematicVelocityBased) return RAPIER.RigidBodyType.KinematicVelocityBased;
+
         throw new Error(`Invalid body type ${bodyType}`);
     }
     private _getRigidBodyTypeDesc(bodyType: RIGID_BODY_TYPE): RAPIER.RigidBodyDesc {
@@ -229,6 +246,7 @@ export class RigidBody extends Component {
         if (bodyType === RIGID_BODY_TYPE.Fixed) return RAPIER.RigidBodyDesc.fixed();
         if (bodyType === RIGID_BODY_TYPE.KinematicPositionBased) return RAPIER.RigidBodyDesc.kinematicPositionBased();
         if (bodyType === RIGID_BODY_TYPE.KinematicVelocityBased) return RAPIER.RigidBodyDesc.kinematicVelocityBased();
+
         throw new Error(`Invalid body type ${bodyType}`);
     }
 }
