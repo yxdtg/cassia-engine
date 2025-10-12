@@ -4,7 +4,7 @@ import { type IPointerEvent, KEYBOARD_CODE } from "cassia-engine/input";
 import { Node } from "cassia-engine/node";
 import { TEXT_ALIGN_HORIZONTAL_TYPE, TEXT_OVER_FLOW_TYPE } from "cassia-engine/render";
 
-@defineComponent({ componentName: "InputField", useOnPointerDown: true })
+@defineComponent({ componentName: "InputField", useOnPointerUp: true })
 export class InputField extends Component {
     private _el: HTMLInputElement | null = null;
 
@@ -46,7 +46,7 @@ export class InputField extends Component {
         }
     }
 
-    protected onPointerDown(event: IPointerEvent): void {
+    protected onPointerUp(event: IPointerEvent): void {
         if (!this._textNode) return console.error("textNode not found");
 
         const text = this._textNode.getComponent(Text);
@@ -100,7 +100,8 @@ export class InputField extends Component {
                 }
             }
 
-            text.text = this._el!.value;
+            this._text = this._el!.value;
+            text.text = this._text;
 
             this._el?.remove();
             this._el = null;

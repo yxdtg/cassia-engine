@@ -22,13 +22,13 @@ function instantiateNode(prefabNodeData: IPrefabNodeData): Node {
 }
 
 export function $node(prefabData: IPrefabData): Node {
-    return instantiateNode(prefabData.prefabNodeData);
+    return instantiateNode(prefabData.node);
 }
 
-export function $prefab(name: string, data: IPrefabNodeData): IPrefabData {
+export function $prefab(name: string, prefabNodeData: IPrefabNodeData): IPrefabData {
     const prefabData: IPrefabData = {
         name,
-        prefabNodeData: data,
+        node: prefabNodeData,
     };
     return prefabData;
 }
@@ -61,18 +61,18 @@ export function $component<T extends Component>(
 
 export interface IPrefabData {
     name: string;
-    prefabNodeData: IPrefabNodeData;
+    node: IPrefabNodeData;
 }
 
 export interface IPrefabNodeData {
-    options?: any;
+    options?: Partial<IWritablePropertiesOnly<Node>>;
     components?: IPrefabComponentData[];
     children?: IPrefabNodeData[];
 }
 
-export interface IPrefabComponentData {
+export interface IPrefabComponentData<T extends Component = Component> {
     componentName: string;
-    options?: any;
+    options?: Partial<IWritablePropertiesOnly<T>>;
 }
 
 /* 实验 */

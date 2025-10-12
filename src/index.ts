@@ -36,3 +36,5 @@ export * from "./scene";
 export * from "./layer";
 export * from "./node";
 export * from "./component";
+
+export * from "./prefab";

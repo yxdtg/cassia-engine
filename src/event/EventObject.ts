@@ -65,6 +65,13 @@ export class EventObject<M extends Record<keyof M, any> = any> {
         }
     }
 
+    public offEvents(type: keyof M): void {
+        const events = this._eventsMap.get(type);
+        if (!events) return;
+
+        events.length = 0;
+    }
+
     /**
      * 获取指定事件类型的所有事件
      * @param type 事件类型
