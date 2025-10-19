@@ -1,5 +1,5 @@
-import type { IGlobalPointerEvent, IPointerEvent } from "cassia-engine/input";
-import type { Node } from "cassia-engine/node";
+import type { IGlobalPointerEvent, ILastGlobalPointerEvent, IPointerEvent, IUIEvent } from "cassia-engine/input";
+import type { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
 import type { ColliderComponent } from "./components";
 import { defineObjectGetter } from "cassia-engine/utils";
@@ -66,66 +66,93 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
     protected onLateUpdate(dt: number): void {}
 
     /**
-     * defineComponent useOnPointerDown: true
+     *
      * @param event
      */
     protected onPointerDown?(event: IPointerEvent): void;
     /**
-     * defineComponent useOnPointerMove: true
+     *
      * @param event
      */
     protected onPointerMove?(event: IPointerEvent): void;
     /**
-     * defineComponent useOnPointerUp: true
+     *
      * @param event
      */
     protected onPointerUp?(event: IPointerEvent): void;
 
     /**
-     * defineComponent useOnGlobalPointerDown: true
+     *
      * @param event
      */
     protected onGlobalPointerDown?(event: IGlobalPointerEvent): void;
     /**
-     * defineComponent useOnGlobalPointerMove: true
+     *
      * @param event
      */
     protected onGlobalPointerMove?(event: IGlobalPointerEvent): void;
     /**
-     * defineComponent useOnGlobalPointerUp: true
+     *
      * @param event
      */
     protected onGlobalPointerUp?(event: IGlobalPointerEvent): void;
 
     /**
-     * defineComponent useOnCollisionEnter: true
+     *
+     * @param event
+     */
+    protected onLastGlobalPointerDown?(event: ILastGlobalPointerEvent): void;
+    /**
+     *
+     * @param event
+     */
+    protected onLastGlobalPointerMove?(event: ILastGlobalPointerEvent): void;
+    /**
+     *
+     * @param event
+     */
+    protected onLastGlobalPointerUp?(event: ILastGlobalPointerEvent): void;
+
+    /**
+     *
+     * @param event
+     */
+    protected onClick?(event: IUIEvent): void;
+    /**
+     *
+     * @param event
+     */
+    protected onDoubleClick?(event: IUIEvent): void;
+
+    /**
+     *
      * @param selfCollider
      * @param otherCollider
      */
     protected onCollisionEnter?(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void;
     /**
-     * defineComponent useOnCollisionExit: true
+     *
      * @param selfCollider
      * @param otherCollider
      */
     protected onCollisionExit?(selfCollider: ColliderComponent, otherCollider: ColliderComponent): void;
 
     /**
-     * defineComponent useOnSpineAnimationStart: true
+     *
      * @param trackEntry
      * @param trackIndex
      * @param animationName
      */
     protected onSpineAnimationStart?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
     /**
-     * defineComponent useOnSpineAnimationEnd: true
+     *
      * @param trackEntry
      * @param trackIndex
      * @param animationName
      */
     protected onSpineAnimationEnd?(trackEntry: ITrackEntry, trackIndex: number, animationName: string): void;
     /**
-     * defineComponent useOnSpineAnimationComplete: true
+     *
      * @param trackEntry
      * @param trackIndex
      * @param animationName
@@ -163,50 +190,7 @@ export interface Component {
     /**
      * @internal
      */
-    readonly useOnPointerDown?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnPointerMove?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnPointerUp?: boolean;
-
-    /**
-     * @internal
-     */
-    readonly useOnGlobalPointerDown?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnGlobalPointerMove?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnGlobalPointerUp?: boolean;
-
-    /**
-     * @internal
-     */
-    readonly useOnCollisionEnter?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnCollisionExit?: boolean;
-
-    /**
-     * @internal
-     */
-    readonly useOnSpineAnimationStart?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnSpineAnimationEnd?: boolean;
-    /**
-     * @internal
-     */
-    readonly useOnSpineAnimationComplete?: boolean;
+    readonly useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
 
     readonly isRenderComponent?: boolean;
     readonly isColliderComponent?: boolean;
@@ -215,29 +199,12 @@ export interface Component {
 export type IComponentConstructor<T extends Component = Component> = new (node: Node) => T;
 
 export interface IDefineComponentOptions {
-    /*************************** componentName ***************************/
+    /** componentName */
     componentName: string;
 
-    /*************************** useOnPointer ***************************/
-    useOnPointerDown?: boolean;
-    useOnPointerMove?: boolean;
-    useOnPointerUp?: boolean;
+    useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
 
-    /*************************** useOnGlobalPointer ***************************/
-    useOnGlobalPointerDown?: boolean;
-    useOnGlobalPointerMove?: boolean;
-    useOnGlobalPointerUp?: boolean;
-
-    /*************************** useOnCollision ***************************/
-    useOnCollisionEnter?: boolean;
-    useOnCollisionExit?: boolean;
-
-    /*************************** useOnSpineAnimation ***************************/
-    useOnSpineAnimationStart?: boolean;
-    useOnSpineAnimationEnd?: boolean;
-    useOnSpineAnimationComplete?: boolean;
-
-    /*************************** isTypeComponent ***************************/
+    // isTypeComponent
     isRenderComponent?: boolean;
     isColliderComponent?: boolean;
 }
@@ -245,9 +212,8 @@ export interface IDefineComponentOptions {
 export function defineComponent<T extends Component>(options: IDefineComponentOptions): Function {
     return function (constructor: IComponentConstructor<T>) {
         const componentClassPrototype = constructor.prototype as Component;
-        const componentName = options.componentName;
 
-        if (componentName.length === 0) throw new Error("componentName is empty");
+        if (options.componentName.length === 0) throw new Error("defineComponent error: componentName is empty");
 
         for (const key in options) {
             const value = (options as any)[key];

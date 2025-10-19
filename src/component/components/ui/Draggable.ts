@@ -4,9 +4,7 @@ import { Vec2 } from "cassia-engine/math";
 
 @defineComponent({
     componentName: "Draggable",
-    useOnPointerDown: true,
-    useOnGlobalPointerMove: true,
-    useOnGlobalPointerUp: true,
+    useEvents: ["PointerDown", "GlobalPointerMove", "GlobalPointerUp"],
 })
 export class Draggable extends Component {
     public horizontalEnabled: boolean = true;

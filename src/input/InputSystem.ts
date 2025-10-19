@@ -32,6 +32,8 @@ export class InputSystem {
         return this._globalPointerEvents;
     }
 
+    private _lastGlobalPointerEvents: ILastGlobalPointerEvent[] = [];
+
     private _isGlobalPointerDown: boolean = false;
     public get isGlobalPointerDown(): boolean {
         return this._isGlobalPointerDown;
@@ -70,10 +72,12 @@ export class InputSystem {
 
         const eventPoint = this.getEventPointByNativeEvent(event);
 
-        const pointerEventType = this._getPointerEventTypeByNativeEventType(event.type as NATIVE_POINTER_EVENT);
-        const globalPointerEventType = this._getGlobalPointerEventTypeByNativeEventType(
-            event.type as NATIVE_POINTER_EVENT
-        );
+        const nativePointerEventType = event.type as NATIVE_POINTER_EVENT;
+        const pointerEventType = this._getPointerEventTypeByNativeEventType(nativePointerEventType);
+        const globalPointerEventType = this._getGlobalPointerEventTypeByNativeEventType(nativePointerEventType);
+        const lastGlobalPointerEventType = this._getLastGlobalPointerEventTypeByNativeEventType(nativePointerEventType);
+
+        this._setGlobalPointerState(globalPointerEventType);
 
         const hitNode = this.getHitNode(eventPoint.screenPoint);
 
@@ -90,17 +94,18 @@ export class InputSystem {
         };
         this._globalPointerEvents.push(globalPointerEvent);
 
-        if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerDown) {
-            this._isGlobalPointerDown = true;
-        } else {
-            if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerMove) {
-                this._isGlobalPointerMove = true;
-            } else {
-                if (globalPointerEvent.type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerUp) {
-                    this._isGlobalPointerUp = true;
-                }
-            }
-        }
+        const lastGlobalPointerEvent: ILastGlobalPointerEvent = {
+            pointerId: event.pointerId,
+            type: lastGlobalPointerEventType,
+            target: hitNode,
+
+            ...eventPoint,
+
+            button: event.button,
+
+            source: event,
+        };
+        this._lastGlobalPointerEvents.push(lastGlobalPointerEvent);
 
         if (hitNode) {
             const pointerEvent: IPointerEvent = {
@@ -120,6 +125,23 @@ export class InputSystem {
                 source: event,
             };
             this._pointerEvents.push(pointerEvent);
+        }
+    }
+
+    private _setGlobalPointerState(type: GLOBAL_POINTER_EVENT_TYPE): void {
+        if (type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerDown) {
+            this._isGlobalPointerDown = true;
+            return;
+        }
+
+        if (type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerMove) {
+            this._isGlobalPointerMove = true;
+            return;
+        }
+
+        if (type === GLOBAL_POINTER_EVENT_TYPE.GlobalPointerUp) {
+            this._isGlobalPointerUp = true;
+            return;
         }
     }
 
@@ -145,18 +167,56 @@ export class InputSystem {
         });
     }
 
+    /**
+     * @internal
+     */
+    public dispatchLastEvents(): void {
+        const currentScene = sceneManager.currentScene;
+
+        if (currentScene) {
+            this._lastGlobalPointerEvents.forEach((lastGlobalPointerEvent) => {
+                currentScene.layers.forEach((layer) => {
+                    const layerFlatNodes = layer.getFlatNodes();
+                    layerFlatNodes.forEach((node) => node.emit(lastGlobalPointerEvent.type, lastGlobalPointerEvent));
+                });
+            });
+        }
+    }
+
     private _getPointerEventTypeByNativeEventType(nativePointerEvent: NATIVE_POINTER_EVENT): POINTER_EVENT_TYPE {
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerDown) return POINTER_EVENT_TYPE.PointerDown;
+
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerMove) return POINTER_EVENT_TYPE.PointerMove;
+
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerUp) return POINTER_EVENT_TYPE.PointerUp;
+
         throw new Error(`${nativePointerEvent} unknown native pointer event`);
     }
+
     private _getGlobalPointerEventTypeByNativeEventType(
         nativePointerEvent: NATIVE_POINTER_EVENT
     ): GLOBAL_POINTER_EVENT_TYPE {
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerDown) return GLOBAL_POINTER_EVENT_TYPE.GlobalPointerDown;
+
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerMove) return GLOBAL_POINTER_EVENT_TYPE.GlobalPointerMove;
+
         if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerUp) return GLOBAL_POINTER_EVENT_TYPE.GlobalPointerUp;
+
+        throw new Error(`${nativePointerEvent} unknown native pointer event`);
+    }
+
+    private _getLastGlobalPointerEventTypeByNativeEventType(
+        nativePointerEvent: NATIVE_POINTER_EVENT
+    ): LAST_GLOBAL_POINTER_EVENT_TYPE {
+        if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerDown)
+            return LAST_GLOBAL_POINTER_EVENT_TYPE.LastGlobalPointerDown;
+
+        if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerMove)
+            return LAST_GLOBAL_POINTER_EVENT_TYPE.LastGlobalPointerMove;
+
+        if (nativePointerEvent === NATIVE_POINTER_EVENT.PointerUp)
+            return LAST_GLOBAL_POINTER_EVENT_TYPE.LastGlobalPointerUp;
+
         throw new Error(`${nativePointerEvent} unknown native pointer event`);
     }
 
@@ -215,6 +275,7 @@ export class InputSystem {
         this._isGlobalPointerUp = false;
 
         this._globalPointerEvents.length = 0;
+        this._lastGlobalPointerEvents.length = 0;
         this._pointerEvents.length = 0;
 
         this._keyboardCodeDownSet.clear();
@@ -292,6 +353,24 @@ export const GLOBAL_POINTER_EVENT_TYPE = {
 } as const;
 export type GLOBAL_POINTER_EVENT_TYPE = (typeof GLOBAL_POINTER_EVENT_TYPE)[keyof typeof GLOBAL_POINTER_EVENT_TYPE];
 
+export const LAST_GLOBAL_POINTER_EVENT_TYPE = {
+    LastGlobalPointerDown: "last-global-pointer-down",
+    LastGlobalPointerMove: "last-global-pointer-move",
+    LastGlobalPointerUp: "last-global-pointer-up",
+} as const;
+export type LAST_GLOBAL_POINTER_EVENT_TYPE =
+    (typeof LAST_GLOBAL_POINTER_EVENT_TYPE)[keyof typeof LAST_GLOBAL_POINTER_EVENT_TYPE];
+
+export const UI_EVENT_TYPE = {
+    Click: "click",
+    DoubleClick: "double-click",
+} as const;
+export type UI_EVENT_TYPE = (typeof UI_EVENT_TYPE)[keyof typeof UI_EVENT_TYPE];
+
+export interface IUIEvent extends Omit<IPointerEvent, "type"> {
+    type: UI_EVENT_TYPE;
+}
+
 export interface IEventPoint {
     screenPoint: Vec2;
     screenX: number;
@@ -319,6 +398,10 @@ export interface IGlobalPointerEvent extends IEventPoint {
     button: MOUSE_BUTTON | number;
 
     source: PointerEvent;
+}
+
+export interface ILastGlobalPointerEvent extends Omit<IGlobalPointerEvent, "type"> {
+    type: LAST_GLOBAL_POINTER_EVENT_TYPE;
 }
 
 /**

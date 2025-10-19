@@ -15,7 +15,13 @@ export const sceneManager = engine.sceneManager;
 export const nodeManager = engine.nodeManager;
 export const componentManager = engine.componentManager;
 
+/**
+ * return isMobile()
+ */
 export const IS_MOBILE = isMobile();
+/**
+ * return isBottomInput()
+ */
 export const IS_BOTTOM_INPUT = isBottomInput();
 
 export * from "./math";

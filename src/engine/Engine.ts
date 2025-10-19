@@ -171,6 +171,8 @@ export class Engine {
 
         this._physicsSystem.update();
 
+        this._inputSystem.dispatchLastEvents();
+
         this._componentManager.clearDestroyedComponents();
 
         this._nodeManager.clearDestroyedNodes();

@@ -10,23 +10,28 @@ import { EventObject } from "cassia-engine/event";
 import {
     GLOBAL_POINTER_EVENT_TYPE,
     type IGlobalPointerEvent,
+    type ILastGlobalPointerEvent,
     type IPointerEvent,
+    type IUIEvent,
+    LAST_GLOBAL_POINTER_EVENT_TYPE,
     POINTER_EVENT_TYPE,
+    UI_EVENT_TYPE,
 } from "cassia-engine/input";
 import { BooleanPair, Color, type IVec2, Mathf, Size, vec2, Vec2 } from "cassia-engine/math";
+import { COLLISION_EVENT_TYPE } from "cassia-engine/physics";
 import type { ITrackEntry } from "cassia-engine/render";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
+import { SPINE_ANIMATION_EVENT_TYPE } from "cassia-engine/spine";
 import type { IWritablePropertiesOnly } from "cassia-engine/utils";
 
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
     ...GLOBAL_POINTER_EVENT_TYPE,
-    CollisionEnter: "collision-enter",
-    CollisionExit: "collision-exit",
-    SpineAnimationStart: "spine-animation-start",
-    SpineAnimationEnd: "spine-animation-end",
-    SpineAnimationComplete: "spine-animation-complete",
+    ...LAST_GLOBAL_POINTER_EVENT_TYPE,
+    ...UI_EVENT_TYPE,
+    ...COLLISION_EVENT_TYPE,
+    ...SPINE_ANIMATION_EVENT_TYPE,
 } as const;
 export type NODE_EVENT_TYPE = (typeof NODE_EVENT_TYPE)[keyof typeof NODE_EVENT_TYPE];
 
@@ -38,6 +43,13 @@ interface INodeEventTypeMap {
     [NODE_EVENT_TYPE.GlobalPointerDown]: (event: IGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.GlobalPointerMove]: (event: IGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.GlobalPointerUp]: (event: IGlobalPointerEvent) => void;
+
+    [NODE_EVENT_TYPE.LastGlobalPointerDown]: (event: ILastGlobalPointerEvent) => void;
+    [NODE_EVENT_TYPE.LastGlobalPointerMove]: (event: ILastGlobalPointerEvent) => void;
+    [NODE_EVENT_TYPE.LastGlobalPointerUp]: (event: ILastGlobalPointerEvent) => void;
+
+    [NODE_EVENT_TYPE.Click]: (event: IUIEvent) => void;
+    [NODE_EVENT_TYPE.DoubleClick]: (event: IUIEvent) => void;
 
     [NODE_EVENT_TYPE.CollisionEnter]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;
     [NODE_EVENT_TYPE.CollisionExit]: (selfCollider: ColliderComponent, otherCollider: ColliderComponent) => void;

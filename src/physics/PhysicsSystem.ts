@@ -255,3 +255,9 @@ export class PhysicsSystem {
         }
     }
 }
+
+export const COLLISION_EVENT_TYPE = {
+    CollisionEnter: "collision-enter",
+    CollisionExit: "collision-exit",
+} as const;
+export type COLLISION_EVENT_TYPE = (typeof COLLISION_EVENT_TYPE)[keyof typeof COLLISION_EVENT_TYPE];

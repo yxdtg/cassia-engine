@@ -4,7 +4,7 @@ import { type IPointerEvent, KEYBOARD_CODE } from "cassia-engine/input";
 import { Node } from "cassia-engine/node";
 import { TEXT_ALIGN_HORIZONTAL_TYPE, TEXT_OVER_FLOW_TYPE } from "cassia-engine/render";
 
-@defineComponent({ componentName: "InputField", useOnPointerUp: true })
+@defineComponent({ componentName: "InputField", useEvents: ["PointerUp"] })
 export class InputField extends Component {
     private _el: HTMLInputElement | null = null;
 
