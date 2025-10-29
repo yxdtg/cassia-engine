@@ -192,17 +192,26 @@ export interface Component {
      */
     readonly useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
 
+    /**
+     * @internal
+     */
+    readonly requireComponents?: (IComponentConstructor | string)[];
+
     readonly isRenderComponent?: boolean;
     readonly isColliderComponent?: boolean;
 }
 
 export type IComponentConstructor<T extends Component = Component> = new (node: Node) => T;
 
+export type IRequireComponent = IComponentConstructor | string;
+
 export interface IDefineComponentOptions {
     /** componentName */
     componentName: string;
 
     useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
+
+    requireComponents?: IRequireComponent[];
 
     // isTypeComponent
     isRenderComponent?: boolean;

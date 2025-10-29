@@ -122,8 +122,6 @@ export class ComponentManager {
 
                 component["onDestroy"]();
 
-                delete (component.node.comp as any)[component.componentName];
-
                 const nodeComponentIndex = component.node.components.indexOf(component);
                 component.node.components.splice(nodeComponentIndex, 1);
 

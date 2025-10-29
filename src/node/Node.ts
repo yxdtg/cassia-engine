@@ -778,11 +778,6 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._components;
     }
 
-    private _comp: any = {};
-    public get comp(): any {
-        return this._comp;
-    }
-
     public addComponent<T extends Component>(
         componentClass: IComponentConstructor<T>,
         options?: Partial<IWritablePropertiesOnly<T>>
@@ -812,21 +807,28 @@ export class Node extends EventObject<INodeEventTypeMap> {
             for (const component of this._components) {
                 if (component.isRenderComponent) {
                     console.error(
-                        `添加组件 ${
+                        `AddComponent <${
                             (componentClass.prototype as T).componentName
-                        } 失败，每个节点只可以拥有一个渲染组件.`
+                        }> failed, each node may have at most one renderer component.`
                     );
                     return null;
                 }
             }
         }
 
+        const requireComponents = (componentClass.prototype as T).requireComponents;
+        if (requireComponents) {
+            requireComponents.forEach((requiredComponent) => {
+                if (!this.getComponent(requiredComponent)) {
+                    this.addComponent(requiredComponent);
+                }
+            });
+        }
+
         const component = new componentClass(this);
         this._components.push(component);
 
         componentManager.addUnStartedComponent(component);
-
-        (this._comp as any)[component.componentName] = component;
 
         registerComponentOnUse(component);
 
