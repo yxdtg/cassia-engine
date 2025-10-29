@@ -8,21 +8,21 @@ export class RenderComponent<T extends RenderObject = any> extends Component {
         return this._renderObject;
     }
 
-    protected onCreate(): void {
+    protected override onCreate(): void {
         this._renderObject = this.onRenderCreate();
     }
     protected onRenderCreate(): T {
         throw new Error("onRenderCreate method not implemented");
     }
 
-    protected onDestroy(): void {
+    protected override onDestroy(): void {
         this._renderObject.destroy();
     }
 
-    protected onEnable(): void {
+    protected override onEnable(): void {
         this._renderObject.applyEnabled();
     }
-    protected onDisable(): void {
+    protected override onDisable(): void {
         this._renderObject.applyEnabled();
     }
 }

@@ -30,7 +30,7 @@ export class RigidBody extends Component {
         return components;
     }
 
-    protected onCreate(): void {
+    protected override onCreate(): void {
         const bodyDesc = this._getRigidBodyTypeDesc(this._bodyType);
         this._body = physicsSystem.createBody(this, bodyDesc);
 
@@ -40,7 +40,7 @@ export class RigidBody extends Component {
         this.node.physicsDirtyFlag = true;
     }
 
-    protected onDestroy(): void {
+    protected override onDestroy(): void {
         if (!this._body) return;
 
         // 刚体准备销毁了，重新创建Collider

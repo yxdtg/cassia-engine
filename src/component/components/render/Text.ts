@@ -10,7 +10,7 @@ import { RenderComponent } from "./RenderComponent";
 
 @defineComponent({ componentName: "Text" })
 export class Text extends RenderComponent<RenderText> {
-    protected onRenderCreate(): RenderText {
+    protected override onRenderCreate(): RenderText {
         return new RenderText(this);
     }
 

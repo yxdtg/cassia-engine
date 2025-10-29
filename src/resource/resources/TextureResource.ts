@@ -2,7 +2,7 @@ import { DEPRECATED_SCALE_MODES, type Texture } from "pixi.js";
 import { Resource } from "./Resource";
 
 export class TextureResource extends Resource<Texture> {
-    protected onInit(): void {
+    protected override onInit(): void {
         const options = this.resourceInfo.options;
         const pixelStyle = options?.pixelStyle ?? false;
 

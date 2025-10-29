@@ -35,7 +35,7 @@ export interface RenderText {
 }
 
 export class RenderText extends RenderObject<Text> {
-    protected onRenderCreate(): void {
+    protected override onRenderCreate(): void {
         this._textRenderer = new TextRenderer();
         this.renderContainer.addChild(this._textRenderer);
 

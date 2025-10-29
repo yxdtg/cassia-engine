@@ -24,7 +24,7 @@ export interface RenderSprite {
 }
 
 export class RenderSprite extends RenderObject<Sprite> {
-    protected onRenderCreate(): void {
+    protected override onRenderCreate(): void {
         this._spriteRenderer = new SpriteRenderer();
         this.renderContainer.addChild(this._spriteRenderer);
 

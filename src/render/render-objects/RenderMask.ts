@@ -18,7 +18,7 @@ export interface RenderMask {
 }
 
 export class RenderMask extends RenderObject<Mask> {
-    protected onRenderCreate(): void {
+    protected override onRenderCreate(): void {
         this._maskRenderer = new GraphicsRenderer();
         this.renderContainer.addChild(this._maskRenderer);
 

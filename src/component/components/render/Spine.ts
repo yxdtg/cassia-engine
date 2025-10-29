@@ -6,7 +6,7 @@ import { resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Spine" })
 export class Spine extends RenderComponent<RenderSpine> {
-    protected onRenderCreate(): RenderSpine {
+    protected override onRenderCreate(): RenderSpine {
         return new RenderSpine(this);
     }
 

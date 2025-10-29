@@ -7,7 +7,7 @@ import { resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Sprite" })
 export class Sprite extends RenderComponent<RenderSprite> {
-    protected onRenderCreate(): RenderSprite {
+    protected override onRenderCreate(): RenderSprite {
         return new RenderSprite(this);
     }
 

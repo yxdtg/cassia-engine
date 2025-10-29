@@ -195,7 +195,7 @@ export interface Component {
     /**
      * @internal
      */
-    readonly requireComponents?: (IComponentConstructor | string)[];
+    readonly requireComponents?: IRequireComponent[];
 
     readonly isRenderComponent?: boolean;
     readonly isColliderComponent?: boolean;

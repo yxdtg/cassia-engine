@@ -11,6 +11,7 @@
     ],
     "scripts": {
         "dev": "npx nodemon --watch src --ext ts --exec npx tsdown",
+        "tsc": "npx tsc --watch",
         "build": "npx tsdown --minify --clean --sourcemap",
         "madge": "node ./scripts/madge.cjs",
         "docs": "npx typedoc --options typedoc.json",

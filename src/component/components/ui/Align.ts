@@ -37,7 +37,7 @@ export class Align extends Component {
         this.offset.y = value;
     }
 
-    protected onLateUpdate(dt: number): void {
+    protected override onLateUpdate(dt: number): void {
         this.applyAlign();
     }
 

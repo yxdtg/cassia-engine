@@ -32,11 +32,11 @@ export class CircleCollider extends ColliderComponent {
     /**
      * @internal
      */
-    public updateSize(): void {
+    public override updateSize(): void {
         this.applyRadius();
     }
 
-    protected onCreateCollider(): RAPIER.Collider | null {
+    protected override onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.ball(this._radius);
         return physicsSystem.createCollider(this, colliderDesc);
     }

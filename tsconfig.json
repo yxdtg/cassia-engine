@@ -2,13 +2,18 @@
     "include": ["./src/**/*"],
     "exclude": [],
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
+        "target": "esnext",
+        "module": "esnext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
 
-        "moduleResolution": "node10",
+        "moduleResolution": "bundler",
 
         "verbatimModuleSyntax": true,
         "stripInternal": true,
+
+        "noImplicitOverride": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
 
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
@@ -17,7 +22,7 @@
         "strictNullChecks": true,
         "skipLibCheck": true,
 
-        "outDir": "./js",
+        "noEmit": true,
 
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

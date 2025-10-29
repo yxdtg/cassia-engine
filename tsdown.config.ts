@@ -8,6 +8,6 @@ export default defineConfig({
             js: ".js",
         };
     },
-    clean: false,
-    minify: false,
+    clean: true,
+    target: "esnext",
 });

@@ -13,7 +13,7 @@ export interface RenderSpine {
 }
 
 export class RenderSpine extends RenderObject<Spine> {
-    protected onRenderCreate(): void {
+    protected override onRenderCreate(): void {
         this.renderNode.applySize = (): void => {
             if (!this._spineRenderer) return;
 

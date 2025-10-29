@@ -6,7 +6,7 @@ import { resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Mask" })
 export class Mask extends RenderComponent<RenderMask> {
-    protected onRenderCreate(): RenderMask {
+    protected override onRenderCreate(): RenderMask {
         return new RenderMask(this);
     }
 

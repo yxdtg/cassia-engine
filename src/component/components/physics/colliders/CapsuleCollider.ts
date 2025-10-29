@@ -46,11 +46,11 @@ export class CapsuleCollider extends ColliderComponent {
     /**
      * @internal
      */
-    public updateSize(): void {
+    public override updateSize(): void {
         this.applySize();
     }
 
-    protected onCreateCollider(): RAPIER.Collider | null {
+    protected override onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.capsule(0, 0);
         return physicsSystem.createCollider(this, colliderDesc);
     }

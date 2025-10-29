@@ -46,7 +46,7 @@ export class InputField extends Component {
         }
     }
 
-    protected onPointerUp(event: IPointerEvent): void {
+    protected override onPointerUp(event: IPointerEvent): void {
         if (!this._textNode) return console.error("textNode not found");
 
         const text = this._textNode.getComponent(Text);
@@ -121,7 +121,7 @@ export class InputField extends Component {
         });
     }
 
-    protected onLateUpdate(dt: number): void {
+    protected override onLateUpdate(dt: number): void {
         if (!this._el) return;
         if (!this._textNode) return console.error("textNode not found");
 

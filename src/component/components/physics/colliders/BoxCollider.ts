@@ -59,11 +59,11 @@ export class BoxCollider extends ColliderComponent {
     /**
      * @internal
      */
-    public updateSize(): void {
+    public override updateSize(): void {
         this.applySize();
     }
 
-    protected onCreateCollider(): RAPIER.Collider | null {
+    protected override onCreateCollider(): RAPIER.Collider | null {
         const colliderDesc = RAPIER.ColliderDesc.cuboid(0, 0);
         return physicsSystem.createCollider(this, colliderDesc);
     }
