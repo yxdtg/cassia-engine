@@ -3,7 +3,7 @@ import {
     type ColliderComponent,
     type Component,
     ComponentManager,
-    type IComponentConstructor,
+    type ComponentConstructor,
     registerComponentOnUse,
 } from "cassia-engine/component";
 import { EventObject } from "cassia-engine/event";
@@ -23,7 +23,7 @@ import type { ITrackEntry } from "cassia-engine/render";
 import { RenderNode } from "cassia-engine/render";
 import type { Scene } from "cassia-engine/scene";
 import { SPINE_ANIMATION_EVENT_TYPE } from "cassia-engine/spine";
-import type { IWritablePropertiesOnly } from "cassia-engine/utils";
+import type { WritablePropertiesOnly } from "cassia-engine/utils";
 
 export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
@@ -72,7 +72,7 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return this._renderNode;
     }
 
-    constructor(options?: Partial<IWritablePropertiesOnly<Node>>) {
+    constructor(options?: Partial<WritablePropertiesOnly<Node>>) {
         super();
 
         this._renderNode = new RenderNode(this);
@@ -779,20 +779,20 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     public addComponent<T extends Component>(
-        componentClass: IComponentConstructor<T>,
-        options?: Partial<IWritablePropertiesOnly<T>>
+        componentClass: ComponentConstructor<T>,
+        options?: Partial<WritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
         componentName: string,
-        options?: Partial<IWritablePropertiesOnly<T>>
+        options?: Partial<WritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
-        componentClassOrName: IComponentConstructor<T> | string,
-        options?: Partial<IWritablePropertiesOnly<T>>
+        componentClassOrName: ComponentConstructor<T> | string,
+        options?: Partial<WritablePropertiesOnly<T>>
     ): T | null;
     public addComponent<T extends Component>(
-        componentClassOrName: IComponentConstructor<T> | string,
-        options?: Partial<IWritablePropertiesOnly<T>>
+        componentClassOrName: ComponentConstructor<T> | string,
+        options?: Partial<WritablePropertiesOnly<T>>
     ): T | null {
         const componentClass =
             typeof componentClassOrName === "string"
@@ -844,14 +844,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return component as T;
     }
 
-    public getComponent<T extends Component>(componentClass: IComponentConstructor<T>): T | null;
+    public getComponent<T extends Component>(componentClass: ComponentConstructor<T>): T | null;
     public getComponent<T extends Component>(componentName: string): T | null;
     public getComponent<T extends Component>(componentIndex: number): T | null;
     public getComponent<T extends Component>(
-        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+        componentClassOrNameOrIndex: ComponentConstructor<T> | string | number
     ): T | null;
     public getComponent<T extends Component>(
-        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+        componentClassOrNameOrIndex: ComponentConstructor<T> | string | number
     ): T | null {
         if (typeof componentClassOrNameOrIndex === "number")
             return (this._components[componentClassOrNameOrIndex] as T) ?? null;
@@ -864,14 +864,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return (this._components.findLast((component) => component.componentName === componentName) as T) ?? null;
     }
 
-    public removeComponent<T extends Component>(componentClass: IComponentConstructor<T>): void;
+    public removeComponent<T extends Component>(componentClass: ComponentConstructor<T>): void;
     public removeComponent<T extends Component>(componentName: string): void;
     public removeComponent<T extends Component>(componentIndex: number): void;
     public removeComponent<T extends Component>(
-        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+        componentClassOrNameOrIndex: ComponentConstructor<T> | string | number
     ): void;
     public removeComponent<T extends Component>(
-        componentClassOrNameOrIndex: IComponentConstructor<T> | string | number
+        componentClassOrNameOrIndex: ComponentConstructor<T> | string | number
     ): void {
         const component = this.getComponent(componentClassOrNameOrIndex);
         if (!component || component.destroyed) return;

@@ -1,10 +1,10 @@
-import { resourceSystem } from "cassia-engine";
+import { RESOURCE_TYPE, resourceSystem } from "cassia-engine";
 
 export class AudioSystem {
     constructor() {}
 
     public playSound(soundName: string, volume: number = 1, loop: boolean = false): void {
-        const resource = resourceSystem.getAudio(soundName);
+        const resource = resourceSystem.getResource(RESOURCE_TYPE.Audio, soundName);
         if (!resource) return console.error(`Audio resource ${soundName} not found`);
 
         const audio = resource.data;
@@ -13,7 +13,7 @@ export class AudioSystem {
         audio.play();
     }
     public stopSound(soundName: string): void {
-        const resource = resourceSystem.getAudio(soundName);
+        const resource = resourceSystem.getResource(RESOURCE_TYPE.Audio, soundName);
         if (!resource) return console.error(`Audio resource ${soundName} not found`);
 
         const audio = resource.data;
@@ -21,14 +21,14 @@ export class AudioSystem {
     }
 
     public pauseSound(soundName: string): void {
-        const resource = resourceSystem.getAudio(soundName);
+        const resource = resourceSystem.getResource(RESOURCE_TYPE.Audio, soundName);
         if (!resource) return console.error(`Audio resource ${soundName} not found`);
 
         const audio = resource.data;
         audio.pause();
     }
     public resumeSound(soundName: string): void {
-        const resource = resourceSystem.getAudio(soundName);
+        const resource = resourceSystem.getResource(RESOURCE_TYPE.Audio, soundName);
         if (!resource) return console.error(`Audio resource ${soundName} not found`);
 
         const audio = resource.data;

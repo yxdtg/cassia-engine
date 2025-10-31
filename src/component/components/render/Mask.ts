@@ -1,7 +1,7 @@
 import { defineComponent } from "cassia-engine/component";
 import { MASK_TYPE, RenderMask } from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
-import { TextureResource } from "cassia-engine/resource";
+import { RESOURCE_TYPE, TextureResource } from "cassia-engine/resource";
 import { resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Mask" })
@@ -41,7 +41,7 @@ export class Mask extends RenderComponent<RenderMask> {
         return this._maskTexture?.name ?? "";
     }
     public set maskTextureName(value: string) {
-        const texture = resourceSystem.getTexture(value);
+        const texture = resourceSystem.getResource(RESOURCE_TYPE.Texture, value);
         this.maskTexture = texture;
     }
 

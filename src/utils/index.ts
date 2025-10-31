@@ -161,7 +161,7 @@ type HasOnlyGetter<T, K extends keyof T> =
         : false;
 
 // 过滤掉函数、只读属性和只有 getter 的属性
-export type IWritablePropertiesOnly<T> = Pick<
+export type WritablePropertiesOnly<T> = Pick<
     T,
     {
         [K in keyof T]: T[K] extends Function

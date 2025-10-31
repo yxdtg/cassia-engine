@@ -3,7 +3,7 @@ import { Bounds } from "cassia-engine/math";
 import { RenderSprite, SPRITE_RENDER_TYPE } from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
 import type { TextureResource } from "cassia-engine/resource";
-import { resourceSystem } from "cassia-engine";
+import { RESOURCE_TYPE, resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Sprite" })
 export class Sprite extends RenderComponent<RenderSprite> {
@@ -47,7 +47,7 @@ export class Sprite extends RenderComponent<RenderSprite> {
         return this._texture?.name ?? "";
     }
     public set textureName(value: string) {
-        const texture = resourceSystem.getTexture(value);
+        const texture = resourceSystem.getResource(RESOURCE_TYPE.Texture, value);
         this.texture = texture;
     }
 

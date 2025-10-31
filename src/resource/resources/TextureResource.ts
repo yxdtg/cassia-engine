@@ -1,16 +1,15 @@
-import { DEPRECATED_SCALE_MODES, type Texture } from "pixi.js";
 import { Resource } from "./Resource";
+import type { RESOURCE_TYPE } from "../define";
 
-export class TextureResource extends Resource<Texture> {
+export class TextureResource extends Resource<typeof RESOURCE_TYPE.Texture> {
     protected override onInit(): void {
         const options = this.resourceInfo.options;
-        const pixelStyle = options?.pixelStyle ?? false;
+        if (!options) return;
 
-        const texture = this.data;
-        const source = texture.source;
+        const source = this.data.source;
 
-        if (pixelStyle) {
-            source.scaleMode = DEPRECATED_SCALE_MODES.NEAREST;
+        if (options.scaleMode) {
+            source.scaleMode = options.scaleMode;
         }
     }
 }

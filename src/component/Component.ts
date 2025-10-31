@@ -201,9 +201,9 @@ export interface Component {
     readonly isColliderComponent?: boolean;
 }
 
-export type IComponentConstructor<T extends Component = Component> = new (node: Node) => T;
+export type ComponentConstructor<T extends Component = Component> = new (node: Node) => T;
 
-export type IRequireComponent = IComponentConstructor | string;
+export type IRequireComponent = ComponentConstructor | string;
 
 export interface IDefineComponentOptions {
     /** componentName */
@@ -219,7 +219,7 @@ export interface IDefineComponentOptions {
 }
 
 export function defineComponent<T extends Component>(options: IDefineComponentOptions): Function {
-    return function (constructor: IComponentConstructor<T>) {
+    return function (constructor: ComponentConstructor<T>) {
         const componentClassPrototype = constructor.prototype as Component;
 
         if (options.componentName.length === 0) throw new Error("defineComponent error: componentName is empty");

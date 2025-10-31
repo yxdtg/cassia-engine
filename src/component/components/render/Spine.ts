@@ -2,7 +2,7 @@ import { defineComponent } from "cassia-engine/component";
 import { RenderSpine, type ISpineAddAnimationOptions, type ISpineSetAnimationOptions } from "cassia-engine/render";
 import { RenderComponent } from "./RenderComponent";
 import type { SpineSkeletonResource } from "cassia-engine/resource";
-import { resourceSystem } from "cassia-engine";
+import { RESOURCE_TYPE, resourceSystem } from "cassia-engine";
 
 @defineComponent({ componentName: "Spine" })
 export class Spine extends RenderComponent<RenderSpine> {
@@ -30,7 +30,7 @@ export class Spine extends RenderComponent<RenderSpine> {
         return this._spineSkeleton?.name ?? "";
     }
     public set spineSkeletonName(value: string) {
-        const spineSkeleton = resourceSystem.getSpineSkeleton(value);
+        const spineSkeleton = resourceSystem.getResource(RESOURCE_TYPE.SpineSkeleton, value);
         this.spineSkeleton = spineSkeleton;
     }
 

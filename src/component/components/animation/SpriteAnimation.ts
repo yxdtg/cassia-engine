@@ -1,5 +1,5 @@
 import { Component, defineComponent, Sprite } from "cassia-engine/component";
-import { resourceSystem } from "cassia-engine";
+import { RESOURCE_TYPE, resourceSystem } from "cassia-engine";
 
 export interface ISpriteAnimationData {
     name: string;
@@ -99,7 +99,7 @@ export class SpriteAnimation extends Component {
             return;
         }
 
-        const texture = resourceSystem.getTexture(frame.textureName);
+        const texture = resourceSystem.getResource(RESOURCE_TYPE.Texture, frame.textureName);
         if (texture) {
             sprite.texture = texture;
         } else {

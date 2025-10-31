@@ -1,24 +1,24 @@
 import { type Node, NODE_EVENT_TYPE } from "cassia-engine/node";
-import type { Component, IComponentConstructor } from "./Component";
+import type { Component, ComponentConstructor } from "./Component";
 
 export class ComponentManager {
-    private static _nameToComponentClassMap: Map<string, IComponentConstructor> = new Map();
+    private static _nameToComponentClassMap: Map<string, ComponentConstructor> = new Map();
 
     /**
      * @internal
      * @param componentClass
      */
-    public static defineComponent(componentClass: IComponentConstructor): void {
+    public static defineComponent(componentClass: ComponentConstructor): void {
         const componentClassPrototype = componentClass.prototype as Component;
         const componentName = componentClassPrototype.componentName;
 
         this._nameToComponentClassMap.set(componentName, componentClass);
     }
 
-    public static getComponentClass(componentName: string): IComponentConstructor | null {
+    public static getComponentClass(componentName: string): ComponentConstructor | null {
         return this._nameToComponentClassMap.get(componentName) ?? null;
     }
-    public static getComponentClasses(): IComponentConstructor[] {
+    public static getComponentClasses(): ComponentConstructor[] {
         return Array.from(this._nameToComponentClassMap.values());
     }
 

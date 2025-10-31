@@ -10,29 +10,34 @@ import {
 import { resourceSystem } from "cassia-engine";
 import { Howl } from "howler";
 import { Assets, Texture } from "pixi.js";
+import { RESOURCE_TYPE, type ILoadResourceInfo, type ResourceTypeOptionsMap } from "./define";
 import {
-    RESOURCE_TYPE,
-    type ILoadResourceInfo,
-    type ILoadResourceInfoOptions,
-    type ILoadTargetTypeResourceInfo,
-    type IUnloadResourceInfo,
-} from "./define";
-import { AudioResource, Resource, SpineSkeletonResource, TextureResource } from "./resources";
+    AudioResource,
+    Resource,
+    SpineSkeletonResource,
+    TextureResource,
+    TextResource,
+    JsonResource,
+    BinaryResource,
+} from "./resources";
 
 export class ResourceSystem {
-    constructor() {}
+    private _typeToNameToResourceMap: Map<RESOURCE_TYPE, Map<string, Resource<any>>> = new Map();
 
-    private _typeToNameToResourceMap: Map<RESOURCE_TYPE, Map<string, Resource>> = new Map();
-
-    public async loadResource(loadResourceInfo: ILoadResourceInfo): Promise<void> {
+    private async _loadResource<T extends RESOURCE_TYPE>(
+        type: T,
+        loadResourceInfo: ILoadResourceInfo<T>
+    ): Promise<void> {
         try {
-            const { name, type, src, options } = loadResourceInfo;
+            const { name } = loadResourceInfo;
 
             const fnMap = {
                 [RESOURCE_TYPE.Texture]: async (): Promise<TextureResource> => {
                     try {
-                        const texture = await loadTexture(src);
-                        const resource = new TextureResource(loadResourceInfo, texture);
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.Texture>;
+                        const texture = await loadTexture(info.src);
+
+                        const resource = new TextureResource(RESOURCE_TYPE.Texture, info, texture);
                         return resource;
                     } catch (e) {
                         throw e;
@@ -40,8 +45,10 @@ export class ResourceSystem {
                 },
                 [RESOURCE_TYPE.Audio]: async (): Promise<AudioResource> => {
                     try {
-                        const audio = await loadAudio(src);
-                        const resource = new AudioResource(loadResourceInfo, audio);
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.Audio>;
+                        const audio = await loadAudio(info.src);
+
+                        const resource = new AudioResource(RESOURCE_TYPE.Audio, info, audio);
                         return resource;
                     } catch (e) {
                         throw e;
@@ -49,13 +56,47 @@ export class ResourceSystem {
                 },
                 [RESOURCE_TYPE.SpineSkeleton]: async (): Promise<SpineSkeletonResource> => {
                     try {
-                        const atlasSrc = options?.atlasSrc;
-                        const textureNames = options?.textureNames;
-                        if (!atlasSrc || !textureNames || textureNames.length === 0)
-                            throw new Error("Invalid options for SpineSkeletonResource");
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.SpineSkeleton>;
+                        const spineSkeleton = await loadSpineSkeleton(
+                            info.src.skelSrc,
+                            info.src.atlasSrc,
+                            info.src.textureNames
+                        );
 
-                        const spineSkeleton = await loadSpineSkeleton(src, atlasSrc, textureNames);
-                        const resource = new SpineSkeletonResource(loadResourceInfo, spineSkeleton);
+                        const resource = new SpineSkeletonResource(RESOURCE_TYPE.SpineSkeleton, info, spineSkeleton);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.Text]: async (): Promise<TextResource> => {
+                    try {
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.Text>;
+                        const text = await loadText(info.src);
+
+                        const resource = new TextResource(RESOURCE_TYPE.Text, info, text);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.Json]: async (): Promise<JsonResource> => {
+                    try {
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.Json>;
+                        const json = await loadJson(info.src);
+
+                        const resource = new JsonResource(RESOURCE_TYPE.Json, info, json);
+                        return resource;
+                    } catch (e) {
+                        throw e;
+                    }
+                },
+                [RESOURCE_TYPE.Binary]: async (): Promise<BinaryResource> => {
+                    try {
+                        const info = loadResourceInfo as ILoadResourceInfo<typeof RESOURCE_TYPE.Binary>;
+                        const binary = await loadBinary(info.src);
+
+                        const resource = new BinaryResource(RESOURCE_TYPE.Binary, info, binary);
                         return resource;
                     } catch (e) {
                         throw e;
@@ -82,80 +123,32 @@ export class ResourceSystem {
             throw e;
         }
     }
-    public async loadResources(loadResourceInfos: ILoadResourceInfo[]): Promise<void> {
+    public async loadResources<T extends RESOURCE_TYPE>(
+        type: T,
+        loadResourceInfos: ILoadResourceInfo<T>[],
+        options?: Partial<ResourceTypeOptionsMap[T]>
+    ): Promise<void> {
         try {
             for (const loadResourceInfo of loadResourceInfos) {
-                await this.loadResource(loadResourceInfo);
+                if (options) {
+                    if (!loadResourceInfo.options) {
+                        loadResourceInfo.options = {} as any;
+                    }
+
+                    const loadResourceInfoOptions = { ...loadResourceInfo.options };
+
+                    loadResourceInfo.options = { ...options, ...loadResourceInfoOptions };
+                }
+
+                await this._loadResource(type, loadResourceInfo);
             }
         } catch (e) {
             throw e;
         }
     }
 
-    public async loadTypeResources(
-        type: RESOURCE_TYPE,
-        loadTargetTypeResourceInfos: ILoadTargetTypeResourceInfo[],
-        options: ILoadResourceInfoOptions = {}
-    ): Promise<void> {
+    private async _unloadResource<T extends RESOURCE_TYPE>(type: T, name: string): Promise<void> {
         try {
-            const loadResourceInfos = loadTargetTypeResourceInfos.map((loadTargetTypeResourceInfo) => {
-                const { options: loadTargetTypeResourceInfoOptions, ...loadTargetTypeResourceInfoArgs } =
-                    loadTargetTypeResourceInfo;
-
-                const loadResourceInfo: ILoadResourceInfo = {
-                    type: type,
-                    options: {
-                        ...options,
-                        ...loadTargetTypeResourceInfoOptions,
-                    },
-                    ...loadTargetTypeResourceInfoArgs,
-                };
-                return loadResourceInfo;
-            });
-
-            await this.loadResources(loadResourceInfos);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public async loadTextures(
-        loadTextureResourceInfos: ILoadTargetTypeResourceInfo[],
-        options: ILoadResourceInfoOptions = {}
-    ): Promise<void> {
-        try {
-            await this.loadTypeResources(RESOURCE_TYPE.Texture, loadTextureResourceInfos, options);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public async loadAudios(
-        loadAudioResourceInfos: ILoadTargetTypeResourceInfo[],
-        options: ILoadResourceInfoOptions = {}
-    ): Promise<void> {
-        try {
-            await this.loadTypeResources(RESOURCE_TYPE.Audio, loadAudioResourceInfos, options);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public async loadSpineSkeletons(
-        loadSpineSkeletonResourceInfos: ILoadTargetTypeResourceInfo[],
-        options: ILoadResourceInfoOptions = {}
-    ): Promise<void> {
-        try {
-            await this.loadTypeResources(RESOURCE_TYPE.SpineSkeleton, loadSpineSkeletonResourceInfos, options);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public async unloadResource(unloadResourceInfo: IUnloadResourceInfo): Promise<void> {
-        try {
-            const { name, type } = unloadResourceInfo;
-
             const nameToResourceMap = this._typeToNameToResourceMap.get(type);
             if (!nameToResourceMap) return;
 
@@ -165,25 +158,31 @@ export class ResourceSystem {
             const fnMap = {
                 [RESOURCE_TYPE.Texture]: async (): Promise<void> => {
                     try {
-                        await unloadTexture(resource.src);
+                        const src = (resource as TextureResource).src;
+                        await unloadTexture(src);
                     } catch (e) {
                         throw e;
                     }
                 },
                 [RESOURCE_TYPE.Audio]: async (): Promise<void> => {
                     try {
-                        await unloadAudio(resource.data);
+                        const data = (resource as AudioResource).data;
+                        await unloadAudio(data);
                     } catch (e) {
                         throw e;
                     }
                 },
                 [RESOURCE_TYPE.SpineSkeleton]: async (): Promise<void> => {
                     try {
-                        await unloadSpineSkeleton(resource.src, resource.options!.atlasSrc!);
+                        const src = (resource as SpineSkeletonResource).src;
+                        await unloadSpineSkeleton(src.skelSrc, src.atlasSrc);
                     } catch (e) {
                         throw e;
                     }
                 },
+                [RESOURCE_TYPE.Text]: async (): Promise<void> => {},
+                [RESOURCE_TYPE.Json]: async (): Promise<void> => {},
+                [RESOURCE_TYPE.Binary]: async (): Promise<void> => {},
             } as const;
 
             if (fnMap[type]) {
@@ -197,97 +196,46 @@ export class ResourceSystem {
             throw e;
         }
     }
-
-    public async unloadResources(unloadResourceInfos: IUnloadResourceInfo[]): Promise<void> {
+    public async unloadResources<T extends RESOURCE_TYPE>(type: T, names: string[]): Promise<void> {
         try {
-            for (const unloadResourceInfo of unloadResourceInfos) {
-                await this.unloadResource(unloadResourceInfo);
+            for (const name of names) {
+                await this._unloadResource(type, name);
             }
         } catch (e) {
             throw e;
         }
     }
 
-    public async unloadTypeResources(type: RESOURCE_TYPE, names: string[]): Promise<void> {
-        try {
-            const unloadResourceInfos = names.map((name) => {
-                const unloadResourceInfo: IUnloadResourceInfo = {
-                    type: type,
-                    name: name,
-                };
-                return unloadResourceInfo;
-            });
-
-            await this.unloadResources(unloadResourceInfos);
-        } catch (e) {
-            throw e;
-        }
+    public getResource<T extends RESOURCE_TYPE>(type: T, name: string): ResourceTypeMap[T] | null {
+        return (this._typeToNameToResourceMap.get(type)?.get(name) as ResourceTypeMap[T]) ?? null;
     }
+    public getResources<T extends RESOURCE_TYPE>(type: T, names: string[]): ResourceTypeMap[T][] {
+        const resources: ResourceTypeMap[T][] = [];
 
-    public async unloadTextures(names: string[]): Promise<void> {
-        try {
-            await this.unloadTypeResources(RESOURCE_TYPE.Texture, names);
-        } catch (e) {
-            throw e;
-        }
+        names.forEach((name) => {
+            const resource = this.getResource(type, name);
+            if (resource) {
+                resources.push(resource);
+            }
+        });
+
+        return resources;
     }
-
-    public async unloadAudios(names: string[]): Promise<void> {
-        try {
-            await this.unloadTypeResources(RESOURCE_TYPE.Audio, names);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public async unloadSpineSkeletons(names: string[]): Promise<void> {
-        try {
-            await this.unloadTypeResources(RESOURCE_TYPE.SpineSkeleton, names);
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    public getResource<T extends RESOURCE_TYPE>(type: T, name: string): IResourceTypeMap[T] | null {
-        return (this._typeToNameToResourceMap.get(type)?.get(name) as IResourceTypeMap[T]) ?? null;
-    }
-
-    public getTexture(name: string): TextureResource | null {
-        return this.getResource(RESOURCE_TYPE.Texture, name);
-    }
-
-    public getAudio(name: string): AudioResource | null {
-        return this.getResource(RESOURCE_TYPE.Audio, name);
-    }
-
-    public getSpineSkeleton(name: string): SpineSkeletonResource | null {
-        return this.getResource(RESOURCE_TYPE.SpineSkeleton, name);
-    }
-
-    public getTypeAllResources<T extends RESOURCE_TYPE>(type: T): IResourceTypeMap[T][] {
+    public getAllResources<T extends RESOURCE_TYPE>(type: T): ResourceTypeMap[T][] {
         const nameToResourceMap = this._typeToNameToResourceMap.get(type);
         if (!nameToResourceMap) return [];
 
-        return Array.from(nameToResourceMap.values()) as IResourceTypeMap[T][];
-    }
-
-    public getAllTextures(): TextureResource[] {
-        return this.getTypeAllResources(RESOURCE_TYPE.Texture);
-    }
-
-    public getAllAudios(): AudioResource[] {
-        return this.getTypeAllResources(RESOURCE_TYPE.Audio);
-    }
-
-    public getAllSpineSkeletons(): SpineSkeletonResource[] {
-        return this.getTypeAllResources(RESOURCE_TYPE.SpineSkeleton);
+        return Array.from(nameToResourceMap.values()) as ResourceTypeMap[T][];
     }
 }
 
-interface IResourceTypeMap {
+interface ResourceTypeMap {
     [RESOURCE_TYPE.Texture]: TextureResource;
     [RESOURCE_TYPE.Audio]: AudioResource;
     [RESOURCE_TYPE.SpineSkeleton]: SpineSkeletonResource;
+    [RESOURCE_TYPE.Text]: TextResource;
+    [RESOURCE_TYPE.Json]: JsonResource;
+    [RESOURCE_TYPE.Binary]: BinaryResource;
 }
 
 async function loadTexture(url: string): Promise<Texture> {
@@ -313,9 +261,11 @@ function loadAudio(url: string): Promise<Howl> {
             const audio = new Howl({
                 src: [url],
             });
+
             audio.on("load", () => {
                 resolve(audio);
             });
+
             audio.on("loaderror", (id, error) => {
                 reject(error);
             });
@@ -341,7 +291,7 @@ async function loadSpineSkeleton(skelUrl: string, atlasUrl: string, textureNames
         const textures: Texture[] = [];
 
         textureNames.forEach((textureName) => {
-            const textureResource = resourceSystem.getTexture(textureName);
+            const textureResource = resourceSystem.getResource(RESOURCE_TYPE.Texture, textureName);
             if (textureResource) {
                 textures.push(textureResource.data);
             }
@@ -389,4 +339,35 @@ function parseSkeletonData(
 
     skeleton = parser.readSkeletonData(skelData);
     return skeleton;
+}
+
+async function loadText(url: string): Promise<string> {
+    try {
+        const response = await fetch(url);
+        const text = await response.text();
+        return text;
+    } catch (e) {
+        throw e;
+    }
+}
+
+async function loadJson(url: string): Promise<any> {
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+        return json;
+    } catch (e) {
+        throw e;
+    }
+}
+
+async function loadBinary(url: string): Promise<Uint8Array> {
+    try {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        return data;
+    } catch (e) {
+        throw e;
+    }
 }

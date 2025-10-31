@@ -11,7 +11,9 @@ if (fs.existsSync(jsOutput)) {
 const input = path.resolve(jsOutput, "index.js");
 const output = path.resolve(__dirname, "../madge/image.svg");
 
-exec("npx tsc", (error, stdout, stderr) => {
+const tsconfig = path.resolve(__dirname, "../tsconfig.madge.json");
+
+exec(`npx tsc --project ${tsconfig}`, (error, stdout, stderr) => {
     if (error) {
         console.error(`error: ${error.message}`);
         return;
@@ -23,7 +25,9 @@ exec("npx tsc", (error, stdout, stderr) => {
     console.log(`stdout: ${stdout}`);
 
     madge(input)
-        .then((res) => res.image(output))
+        .then((res) => {
+            // res.image(output);
+        })
         .then((writtenImagePath) => {
             console.log("Image written to " + writtenImagePath);
         });
@@ -38,5 +42,12 @@ exec("npx tsc", (error, stdout, stderr) => {
 
         console.log("---------------- circular dependencies graph ----------------");
         console.log(res.circularGraph());
+
+        if (fs.existsSync(jsOutput)) {
+            fs.removeSync(jsOutput);
+
+            console.log("js cache cleared");
+            console.log("done");
+        }
     });
 });

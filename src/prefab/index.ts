@@ -1,6 +1,6 @@
-import { Sprite, Text, type Component, type IComponentConstructor } from "cassia-engine/component";
+import { Sprite, Text, type Component, type ComponentConstructor } from "cassia-engine/component";
 import { Node } from "cassia-engine/node";
-import type { IWritablePropertiesOnly } from "cassia-engine/utils";
+import type { WritablePropertiesOnly } from "cassia-engine/utils";
 
 function instantiateNode(prefabNodeData: IPrefabNodeData): Node {
     const node = new Node(prefabNodeData.options);
@@ -34,18 +34,18 @@ export function $prefab(name: string, prefabNodeData: IPrefabNodeData): IPrefabD
 }
 
 export function $component<T extends Component>(
-    componentClass: IComponentConstructor<T>,
-    options?: Partial<IWritablePropertiesOnly<T>>
+    componentClass: ComponentConstructor<T>,
+    options?: Partial<WritablePropertiesOnly<T>>
 ): IPrefabComponentData;
 
 export function $component<T extends Component>(
     componentName: string,
-    options?: Partial<IWritablePropertiesOnly<T>>
+    options?: Partial<WritablePropertiesOnly<T>>
 ): IPrefabComponentData;
 
 export function $component<T extends Component>(
-    componentClassOrName: IComponentConstructor<T> | string,
-    options?: Partial<IWritablePropertiesOnly<T>>
+    componentClassOrName: ComponentConstructor<T> | string,
+    options?: Partial<WritablePropertiesOnly<T>>
 ): IPrefabComponentData {
     const componentName =
         typeof componentClassOrName === "string"
@@ -65,14 +65,14 @@ export interface IPrefabData {
 }
 
 export interface IPrefabNodeData {
-    options?: Partial<IWritablePropertiesOnly<Node>>;
+    options?: Partial<WritablePropertiesOnly<Node>>;
     components?: IPrefabComponentData[];
     children?: IPrefabNodeData[];
 }
 
 export interface IPrefabComponentData<T extends Component = Component> {
     componentName: string;
-    options?: Partial<IWritablePropertiesOnly<T>>;
+    options?: Partial<WritablePropertiesOnly<T>>;
 }
 
 /* 实验 */
