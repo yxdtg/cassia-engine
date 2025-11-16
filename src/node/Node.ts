@@ -494,6 +494,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         this._layer?.addNode(this);
     }
 
+    public get layerName(): string | null {
+        return this.layer ? this.layer.layerName : null;
+    }
+    public set layerName(value: string | null) {
+        const layer = value ? sceneManager.currentScene?.getLayer(value) ?? null : null;
+        this.layer = layer;
+    }
+
     public get currentLayer(): Layer | null {
         if (this._layer) return this._layer;
 
@@ -503,6 +511,10 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
 
         return node._layer;
+    }
+
+    public get currentLayerName(): string | null {
+        return this.currentLayer ? this.currentLayer.layerName : null;
     }
 
     /*************************** parent ***************************/

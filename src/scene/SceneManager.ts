@@ -1,24 +1,24 @@
-import { clearAllTweens, renderSystem, timeSystem } from "cassia-engine";
-import type { Scene, ISceneConstructor } from "./Scene";
+import { clearAllTweens, Layer, renderSystem, timeSystem } from "cassia-engine";
+import type { Scene, SceneConstructor } from "./Scene";
 
 export class SceneManager {
-    private static _nameToSceneClassMap: Map<string, ISceneConstructor> = new Map();
+    private static _nameToSceneClassMap: Map<string, SceneConstructor> = new Map();
 
     /**
      * @internal
      * @param sceneClass
      */
-    public static defineScene(sceneClass: ISceneConstructor): void {
+    public static defineScene(sceneClass: SceneConstructor): void {
         const sceneClassPrototype = sceneClass.prototype as Scene;
         const sceneName = sceneClassPrototype.sceneName;
 
         this._nameToSceneClassMap.set(sceneName, sceneClass);
     }
 
-    public static getSceneClass(sceneName: string): ISceneConstructor | null {
+    public static getSceneClass(sceneName: string): SceneConstructor | null {
         return this._nameToSceneClassMap.get(sceneName) ?? null;
     }
-    public static getSceneClasses(): ISceneConstructor[] {
+    public static getSceneClasses(): SceneConstructor[] {
         return Array.from(this._nameToSceneClassMap.values());
     }
 
@@ -27,12 +27,12 @@ export class SceneManager {
         return this._currentScene;
     }
 
-    private _nextSceneClass: ISceneConstructor | null = null;
+    private _nextSceneClass: SceneConstructor | null = null;
 
-    public loadScene(sceneClass: ISceneConstructor, clean?: boolean): void;
+    public loadScene(sceneClass: SceneConstructor, clean?: boolean): void;
     public loadScene(sceneName: string, clean?: boolean): void;
-    public loadScene(sceneClassOrName: ISceneConstructor | string, clean?: boolean): void;
-    public loadScene(sceneClassOrName: ISceneConstructor | string, clean: boolean = false): void {
+    public loadScene(sceneClassOrName: SceneConstructor | string, clean?: boolean): void;
+    public loadScene(sceneClassOrName: SceneConstructor | string, clean: boolean = false): void {
         const sceneClass =
             typeof sceneClassOrName === "string" ? SceneManager.getSceneClass(sceneClassOrName) : sceneClassOrName;
         if (!sceneClass || !(sceneClass.prototype as Scene | null)?.sceneName)
@@ -56,6 +56,13 @@ export class SceneManager {
 
         this._currentScene = new this._nextSceneClass();
         renderSystem.setRenderScene(this._currentScene.renderScene);
+
+        if (this._currentScene.presetLayerNames) {
+            this._currentScene.presetLayerNames.forEach((name) => {
+                const layer = new Layer(name);
+                this._currentScene?.addLayer(layer);
+            });
+        }
 
         this._currentScene["onInit"]();
         this._nextSceneClass = null;

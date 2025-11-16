@@ -26,6 +26,9 @@ export class Scene {
     public addLayer(layer: Layer): void {
         if (this._layers.includes(layer)) return;
 
+        if (this._layers.some((item) => item.layerName === layer.layerName))
+            return console.warn(`Layer with name ${layer.layerName} already exists`);
+
         this._layers.push(layer);
 
         const renderLayer = layer.renderLayer;
@@ -121,22 +124,28 @@ export class Scene {
 
 export interface Scene {
     readonly sceneName: string;
+    readonly presetLayerNames?: string[];
 }
 
 export interface IDefineSceneOptions {
     sceneName: string;
+    presetLayerNames?: string[];
 }
 
-export type ISceneConstructor<T extends Scene = Scene> = new () => T;
+export type SceneConstructor<T extends Scene = Scene> = new () => T;
 
 export function defineScene<T extends Scene>(options: IDefineSceneOptions): Function {
-    return function (constructor: ISceneConstructor<T>) {
+    return function (constructor: SceneConstructor<T>) {
         const sceneClassPrototype = constructor.prototype as T;
-        const sceneName = options.sceneName;
 
-        if (sceneName.length === 0) throw new Error("sceneName is empty");
+        if (options.sceneName.length === 0) throw new Error("sceneName is empty");
 
-        defineObjectGetter(sceneClassPrototype, "sceneName", sceneName);
+        for (const key in options) {
+            const value = (options as any)[key];
+            if (value !== undefined) {
+                defineObjectGetter(sceneClassPrototype, key, value);
+            }
+        }
 
         SceneManager.defineScene(constructor);
     };
