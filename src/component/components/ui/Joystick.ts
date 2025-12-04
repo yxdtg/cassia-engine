@@ -18,7 +18,7 @@ interface IJoystickEventTypeMap {
 
 @defineComponent({
     componentName: "Joystick",
-    useEvents: ["GlobalPointerMove", "GlobalPointerUp"],
+    useEvents: [NODE_EVENT_TYPE.GlobalPointerMove, NODE_EVENT_TYPE.GlobalPointerUp],
 })
 export class Joystick extends Component<IJoystickEventTypeMap> {
     private _rockerNode: Node | null = null;

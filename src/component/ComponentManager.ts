@@ -155,15 +155,21 @@ export function canExecuteComponent(component: Component): boolean {
 
 export function registerComponentOnUse(component: Component): void {
     if (component.useEvents) {
-        component.useEvents.forEach((use) => {
-            const nodeEventKey = use;
-            const nodeEventValue = NODE_EVENT_TYPE[nodeEventKey];
+        component.useEvents.forEach((event) => {
+            for (const key in NODE_EVENT_TYPE) {
+                const nodeEventKey = key as keyof typeof NODE_EVENT_TYPE;
+                const nodeEventValue = NODE_EVENT_TYPE[nodeEventKey];
 
-            const componentMethodName = `on${nodeEventKey}` as const;
-            const componentMethod = component[componentMethodName];
+                if (nodeEventValue === event) {
+                    const componentMethodName = `on${nodeEventKey}` as const;
+                    const componentMethod = component[componentMethodName];
 
-            if (nodeEventValue && componentMethod) {
-                component.node.on(nodeEventValue, componentMethod, component);
+                    if (nodeEventValue && componentMethod) {
+                        component.node.on(nodeEventValue, componentMethod, component);
+                    }
+
+                    break;
+                }
             }
         });
     }
@@ -171,15 +177,21 @@ export function registerComponentOnUse(component: Component): void {
 
 function unregisterComponentOnUse(component: Component): void {
     if (component.useEvents) {
-        component.useEvents.forEach((use) => {
-            const nodeEventKey = use;
-            const nodeEventValue = NODE_EVENT_TYPE[nodeEventKey];
+        component.useEvents.forEach((event) => {
+            for (const key in NODE_EVENT_TYPE) {
+                const nodeEventKey = key as keyof typeof NODE_EVENT_TYPE;
+                const nodeEventValue = NODE_EVENT_TYPE[nodeEventKey];
 
-            const componentMethodName = `on${nodeEventKey}` as const;
-            const componentMethod = component[componentMethodName];
+                if (nodeEventValue === event) {
+                    const componentMethodName = `on${nodeEventKey}` as const;
+                    const componentMethod = component[componentMethodName];
 
-            if (nodeEventValue && componentMethod) {
-                component.node.off(nodeEventValue, componentMethod, component);
+                    if (nodeEventValue && componentMethod) {
+                        component.node.off(nodeEventValue, componentMethod, component);
+                    }
+
+                    break;
+                }
             }
         });
     }

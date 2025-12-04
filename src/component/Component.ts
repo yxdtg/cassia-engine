@@ -2,7 +2,7 @@ import type { IGlobalPointerEvent, ILastGlobalPointerEvent, IPointerEvent, IUIEv
 import type { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
 import type { ColliderComponent } from "./components";
-import { defineObjectGetter } from "cassia-engine/utils";
+import { defineObjectGetter, type ValueOf } from "cassia-engine/utils";
 import { EventObject } from "cassia-engine/event";
 import type { ITrackEntry } from "cassia-engine/render";
 import { TimeObject } from "cassia-engine/time";
@@ -190,7 +190,7 @@ export interface Component {
     /**
      * @internal
      */
-    readonly useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
+    readonly useEvents?: ValueOf<typeof NODE_EVENT_TYPE>[];
 
     /**
      * @internal
@@ -209,7 +209,7 @@ export interface IDefineComponentOptions {
     /** componentName */
     componentName: string;
 
-    useEvents?: (keyof typeof NODE_EVENT_TYPE)[];
+    useEvents?: ValueOf<typeof NODE_EVENT_TYPE>[];
 
     requireComponents?: IRequireComponent[];
 

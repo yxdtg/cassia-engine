@@ -2,7 +2,10 @@ import { defineComponent, Component } from "cassia-engine/component";
 import type { ILastGlobalPointerEvent, IPointerEvent, IUIEvent } from "cassia-engine/input";
 import { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 
-@defineComponent({ componentName: "UIEvent", useEvents: ["PointerDown", "PointerUp", "LastGlobalPointerUp"] })
+@defineComponent({
+    componentName: "UIEvent",
+    useEvents: [NODE_EVENT_TYPE.PointerDown, NODE_EVENT_TYPE.PointerUp, NODE_EVENT_TYPE.LastGlobalPointerUp],
+})
 export class UIEvent extends Component {
     private _isPointerDown: boolean = false;
     private _lastPointerId: number = -1;

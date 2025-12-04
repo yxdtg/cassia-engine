@@ -173,3 +173,5 @@ export type WritablePropertiesOnly<T> = Pick<
             : K;
     }[keyof T]
 >;
+
+export type ValueOf<T> = T[keyof T];

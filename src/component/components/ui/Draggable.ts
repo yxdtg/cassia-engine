@@ -1,10 +1,11 @@
 import { Component, defineComponent } from "cassia-engine/component";
 import type { IGlobalPointerEvent, IPointerEvent } from "cassia-engine/input";
 import { Vec2 } from "cassia-engine/math";
+import { NODE_EVENT_TYPE } from "cassia-engine/node";
 
 @defineComponent({
     componentName: "Draggable",
-    useEvents: ["PointerDown", "GlobalPointerMove", "GlobalPointerUp"],
+    useEvents: [NODE_EVENT_TYPE.PointerDown, NODE_EVENT_TYPE.GlobalPointerMove, NODE_EVENT_TYPE.GlobalPointerUp],
 })
 export class Draggable extends Component {
     public horizontalEnabled: boolean = true;

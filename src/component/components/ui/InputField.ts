@@ -1,10 +1,10 @@
 import { renderSystem, timeSystem, IS_BOTTOM_INPUT } from "cassia-engine";
 import { Component, defineComponent, Text } from "cassia-engine/component";
 import { type IPointerEvent, KEYBOARD_CODE } from "cassia-engine/input";
-import { Node } from "cassia-engine/node";
+import { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { TEXT_ALIGN_HORIZONTAL_TYPE, TEXT_OVER_FLOW_TYPE } from "cassia-engine/render";
 
-@defineComponent({ componentName: "InputField", useEvents: ["PointerUp"] })
+@defineComponent({ componentName: "InputField", useEvents: [NODE_EVENT_TYPE.PointerUp] })
 export class InputField extends Component {
     private _el: HTMLInputElement | null = null;
 
