@@ -614,27 +614,21 @@ export class Node extends EventObject<INodeEventTypeMap> {
         const localPosition =
             typeof layerPositionOrX === "object" ? layerPositionOrX.clone() : vec2(layerPositionOrX, y);
 
-        const parents: Node[] = [];
-        let parent = this._parent;
+        const nodes: Node[] = [];
 
-        while (parent) {
-            parents.push(parent);
-            parent = parent._parent;
+        let node: Node | null = this;
+        while (node) {
+            nodes.push(node);
+            node = node._parent;
         }
 
-        for (let i = parents.length - 1; i >= 0; i--) {
-            parent = parents[i];
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            const node = nodes[i];
 
-            localPosition.subtractSelf(parent._position);
-            localPosition.rotateSelf(-parent._rotation);
-
-            const inverseScale = vec2(1 / parent._scale.x, 1 / parent._scale.y);
-            localPosition.multiplySelf(inverseScale);
+            localPosition.subtractSelf(node._position);
+            localPosition.rotateSelf(-node._rotation);
+            localPosition.multiplySelf(vec2(1 / node._scale.x, 1 / node._scale.y));
         }
-
-        localPosition.subtractSelf(this._position);
-        localPosition.rotateSelf(-this._rotation);
-        localPosition.multiplySelf(vec2(1 / this._scale.x, 1 / this._scale.y));
 
         return localPosition;
     }
@@ -649,17 +643,14 @@ export class Node extends EventObject<INodeEventTypeMap> {
         const layerPosition =
             typeof localPositionOrX === "object" ? localPositionOrX.clone() : vec2(localPositionOrX, y);
 
-        layerPosition.multiplySelf(this._scale);
-        layerPosition.rotateSelf(this._rotation);
-        layerPosition.addSelf(this._position);
+        let node: Node | null = this;
 
-        let parent = this._parent;
-        while (parent) {
-            layerPosition.multiplySelf(parent._scale);
-            layerPosition.rotateSelf(parent._rotation);
-            layerPosition.addSelf(parent._position);
+        while (node) {
+            layerPosition.multiplySelf(node._scale);
+            layerPosition.rotateSelf(node._rotation);
+            layerPosition.addSelf(node._position);
 
-            parent = parent._parent;
+            node = node._parent;
         }
 
         return layerPosition;
@@ -670,18 +661,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
      * @returns
      */
     public getLayerPosition(): Vec2 {
-        const layerPosition = this._position.clone();
+        if (this._parent) return this._parent.toLayerPosition(this._position);
 
-        let parent = this._parent;
-
-        while (parent) {
-            layerPosition.multiplySelf(parent._scale);
-            layerPosition.rotateSelf(parent._rotation);
-            layerPosition.addSelf(parent._position);
-
-            parent = parent._parent;
-        }
-        return layerPosition;
+        return this._position.clone();
     }
 
     /**
@@ -710,19 +692,19 @@ export class Node extends EventObject<INodeEventTypeMap> {
     public toLocalRotation(layerRotation: number): number {
         let localRotation = layerRotation;
 
-        const parents: Node[] = [];
-        let parent = this._parent;
-        while (parent) {
-            parents.push(parent);
-            parent = parent._parent;
+        const nodes: Node[] = [];
+
+        let node: Node | null = this;
+        while (node) {
+            nodes.push(node);
+            node = node._parent;
         }
 
-        for (let i = parents.length - 1; i >= 0; i--) {
-            parent = parents[i];
-            localRotation -= parent._rotation;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            const node = nodes[i];
+            localRotation -= node._rotation;
         }
 
-        localRotation -= this._rotation;
         return localRotation;
     }
 
@@ -733,12 +715,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
      */
     public toLayerRotation(localRotation: number): number {
         let layerRotation = localRotation;
-        layerRotation += this._rotation;
 
-        let parent = this._parent;
-        while (parent) {
-            layerRotation += parent._rotation;
-            parent = parent._parent;
+        let node: Node | null = this;
+        while (node) {
+            layerRotation += node._rotation;
+            node = node._parent;
         }
 
         return layerRotation;
@@ -749,15 +730,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
      * @returns
      */
     public getLayerRotation(): number {
-        let layerRotation = this._rotation;
+        if (this._parent) return this._parent.toLayerRotation(this._rotation);
 
-        let parent = this._parent;
-        while (parent) {
-            layerRotation += parent._rotation;
-            parent = parent._parent;
-        }
-
-        return layerRotation;
+        return this._rotation;
     }
 
     /**
@@ -799,19 +774,19 @@ export class Node extends EventObject<INodeEventTypeMap> {
     public toLocalScale(layerScaleOrX: Vec2 | number, y?: number): Vec2 {
         const localScale = typeof layerScaleOrX === "object" ? layerScaleOrX.clone() : vec2(layerScaleOrX, y);
 
-        const parents: Node[] = [];
-        let parent = this._parent;
-        while (parent) {
-            parents.push(parent);
-            parent = parent._parent;
+        const nodes: Node[] = [];
+
+        let node: Node | null = this;
+        while (node) {
+            nodes.push(node);
+            node = node._parent;
         }
 
-        for (let i = parents.length - 1; i >= 0; i--) {
-            parent = parents[i];
-            localScale.divideSelf(parent._scale);
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            const node = nodes[i];
+            localScale.divideSelf(node._scale);
         }
 
-        localScale.divideSelf(this._scale);
         return localScale;
     }
 
@@ -824,12 +799,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
     public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2;
     public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2 {
         const layerScale = typeof localScaleOrX === "object" ? localScaleOrX.clone() : vec2(localScaleOrX, y);
-        layerScale.multiplySelf(this._scale);
 
-        let parent = this._parent;
-        while (parent) {
-            layerScale.multiplySelf(parent._scale);
-            parent = parent._parent;
+        let node: Node | null = this;
+        while (node) {
+            layerScale.multiplySelf(node._scale);
+            node = node._parent;
         }
 
         return layerScale;
@@ -840,15 +814,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
      * @returns
      */
     public getLayerScale(): Vec2 {
-        const layerScale = this._scale.clone();
+        if (this._parent) return this._parent.toLayerScale(this._scale);
 
-        let parent = this._parent;
-        while (parent) {
-            layerScale.multiplySelf(parent._scale);
-            parent = parent._parent;
-        }
-
-        return layerScale;
+        return this._scale.clone();
     }
 
     /**
