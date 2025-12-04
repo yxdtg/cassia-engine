@@ -603,6 +603,10 @@ export class Node extends EventObject<INodeEventTypeMap> {
     }
 
     /*************************** transform ***************************/
+
+    /**
+     * 将layer坐标系下的坐标转换为本地坐标系下的坐标
+     */
     public toLocalPosition(layerPosition: Vec2): Vec2;
     public toLocalPosition(layerX: number, layerY: number): Vec2;
     public toLocalPosition(layerPositionOrX: Vec2 | number, y?: number): Vec2;
@@ -635,6 +639,9 @@ export class Node extends EventObject<INodeEventTypeMap> {
         return localPosition;
     }
 
+    /**
+     * 将本地坐标系下的坐标转换为layer坐标系下的坐标
+     */
     public toLayerPosition(localPosition: Vec2): Vec2;
     public toLayerPosition(localX: number, localY: number): Vec2;
     public toLayerPosition(localPositionOrX: Vec2 | number, y?: number): Vec2;
@@ -646,9 +653,22 @@ export class Node extends EventObject<INodeEventTypeMap> {
         layerPosition.rotateSelf(this._rotation);
         layerPosition.addSelf(this._position);
 
+        let parent = this._parent;
+        while (parent) {
+            layerPosition.multiplySelf(parent._scale);
+            layerPosition.rotateSelf(parent._rotation);
+            layerPosition.addSelf(parent._position);
+
+            parent = parent._parent;
+        }
+
         return layerPosition;
     }
 
+    /**
+     * 获取layer坐标系下的位置
+     * @returns
+     */
     public getLayerPosition(): Vec2 {
         const layerPosition = this._position.clone();
 
@@ -663,6 +683,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
         return layerPosition;
     }
+
+    /**
+     * 设置layer坐标系下的位置
+     * @param layerPosition
+     */
     public setLayerPosition(layerPosition?: Vec2): void;
     public setLayerPosition(layerX: number, layerY: number): void;
     public setLayerPosition(layerPositionOrX?: Vec2 | number, y?: number): void;
@@ -677,6 +702,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
     }
 
+    /**
+     * 将layer坐标系下的旋转(弧度)转换为本地坐标系下的旋转(弧度)
+     * @param layerRotation
+     * @returns
+     */
     public toLocalRotation(layerRotation: number): number {
         let localRotation = layerRotation;
 
@@ -695,13 +725,29 @@ export class Node extends EventObject<INodeEventTypeMap> {
         localRotation -= this._rotation;
         return localRotation;
     }
+
+    /**
+     * 将本地坐标系下的旋转(弧度)转换为layer坐标系下的旋转(弧度)
+     * @param localRotation
+     * @returns
+     */
     public toLayerRotation(localRotation: number): number {
         let layerRotation = localRotation;
         layerRotation += this._rotation;
 
+        let parent = this._parent;
+        while (parent) {
+            layerRotation += parent._rotation;
+            parent = parent._parent;
+        }
+
         return layerRotation;
     }
 
+    /**
+     * 获取layer坐标系下的旋转(弧度)
+     * @returns
+     */
     public getLayerRotation(): number {
         let layerRotation = this._rotation;
 
@@ -713,6 +759,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
         return layerRotation;
     }
+
+    /**
+     * 设置layer坐标系下的旋转(弧度)
+     * @param layerRotation
+     */
     public setLayerRotation(layerRotation: number): void {
         if (this._parent) {
             const localRotation = this._parent.toLocalRotation(layerRotation);
@@ -722,13 +773,26 @@ export class Node extends EventObject<INodeEventTypeMap> {
         }
     }
 
+    /**
+     * 获取layer坐标系下的旋转角度
+     * @returns
+     */
     public getLayerAngle(): number {
         return Mathf.radiansToDegrees(this.getLayerRotation());
     }
+
+    /**
+     * 设置layer坐标系下的旋转角度
+     * @param layerAngle
+     */
     public setLayerAngle(layerAngle: number): void {
         this.setLayerRotation(Mathf.degreesToRadians(layerAngle));
     }
 
+    /**
+     * 将layer坐标系下的缩放转换为本地坐标系下的缩放
+     * @param layerScale
+     */
     public toLocalScale(layerScale: Vec2): Vec2;
     public toLocalScale(layerScaleX: number, layerScaleY: number): Vec2;
     public toLocalScale(layerScaleOrX: Vec2 | number, y?: number): Vec2;
@@ -750,15 +814,31 @@ export class Node extends EventObject<INodeEventTypeMap> {
         localScale.divideSelf(this._scale);
         return localScale;
     }
+
+    /**
+     * 将本地坐标系下的缩放转换为layer坐标系下的缩放
+     * @param localScale
+     */
     public toLayerScale(localScale: Vec2): Vec2;
     public toLayerScale(localScaleX: number, localScaleY: number): Vec2;
     public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2;
     public toLayerScale(localScaleOrX: Vec2 | number, y?: number): Vec2 {
         const layerScale = typeof localScaleOrX === "object" ? localScaleOrX.clone() : vec2(localScaleOrX, y);
         layerScale.multiplySelf(this._scale);
+
+        let parent = this._parent;
+        while (parent) {
+            layerScale.multiplySelf(parent._scale);
+            parent = parent._parent;
+        }
+
         return layerScale;
     }
 
+    /**
+     * 获取layer坐标系下的缩放
+     * @returns
+     */
     public getLayerScale(): Vec2 {
         const layerScale = this._scale.clone();
 
@@ -770,6 +850,11 @@ export class Node extends EventObject<INodeEventTypeMap> {
 
         return layerScale;
     }
+
+    /**
+     * 设置layer坐标系下的缩放
+     * @param layerScale
+     */
     public setLayerScale(layerScale: Vec2): void;
     public setLayerScale(layerScaleX: number, layerScaleY: number): void;
     public setLayerScale(layerScaleOrX: Vec2 | number, y?: number): void;
