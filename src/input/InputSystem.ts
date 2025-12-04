@@ -59,16 +59,8 @@ export class InputSystem {
     }
     private _onNativePointerEvent(event: PointerEvent): void {
         const canvasParent = renderSystem.canvasParent;
-
-        if (event.type === NATIVE_POINTER_EVENT.PointerDown) {
-            if (!isPointInElement(event.x, event.y, canvasParent)) return;
-        }
-
-        const clientX = event.clientX - canvasParent.getClientRects()[0].x;
-        const clientY = event.clientY - canvasParent.getClientRects()[0].y;
-
-        Object.defineProperty(event, "clientX", { value: clientX });
-        Object.defineProperty(event, "clientY", { value: clientY });
+        if (event.type === NATIVE_POINTER_EVENT.PointerDown && !isPointInElement(event.x, event.y, canvasParent))
+            return;
 
         const eventPoint = this.getEventPointByNativeEvent(event);
 
@@ -335,7 +327,12 @@ export class InputSystem {
      * @returns
      */
     public getScreenPointByNativeEvent(event: PointerEvent): Vec2 {
-        return vec2(event.clientX, event.clientY);
+        const canvasParent = renderSystem.canvasParent;
+
+        const clientX = event.clientX - canvasParent.getClientRects()[0].x;
+        const clientY = event.clientY - canvasParent.getClientRects()[0].y;
+
+        return vec2(clientX, clientY);
     }
 }
 
