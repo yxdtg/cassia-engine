@@ -1,4 +1,4 @@
-# Cassia Engine
+# Cassia Engine (目前处于开发阶段)
 
 一个专注于 2D、易用性和高性能的游戏引擎。
 
