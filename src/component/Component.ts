@@ -1,4 +1,10 @@
-import type { IGlobalPointerEvent, ILastGlobalPointerEvent, IPointerEvent, IUIEvent } from "cassia-engine/input";
+import type {
+    IGlobalPointerEvent,
+    ILastGlobalPointerEvent,
+    IPointerEvent,
+    IUIEvent,
+    KEYBOARD_CODE,
+} from "cassia-engine/input";
 import type { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
 import type { ColliderComponent } from "./components";
@@ -112,6 +118,10 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
      * @param event
      */
     protected onLastGlobalPointerUp?(event: ILastGlobalPointerEvent): void;
+
+    protected onKeyDown?(code: KEYBOARD_CODE): void;
+    protected onKeyHold?(code: KEYBOARD_CODE): void;
+    protected onKeyUp?(code: KEYBOARD_CODE): void;
 
     /**
      *

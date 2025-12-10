@@ -1,6 +1,6 @@
 import { renderSystem, sceneManager } from "cassia-engine";
 import { vec2, Vec2 } from "cassia-engine/math";
-import type { Node } from "cassia-engine/node";
+import type { INodeEventTypeMap, Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { isPointInElement } from "cassia-engine/utils";
 
 /**
@@ -137,6 +137,19 @@ export class InputSystem {
         }
     }
 
+    public dispatchFlatNodeEvents<T extends NODE_EVENT_TYPE>(
+        nodeEventType: T,
+        ...data: Parameters<INodeEventTypeMap[T]>
+    ): void {
+        const currentScene = sceneManager.currentScene;
+        if (!currentScene) return;
+
+        currentScene.layers.forEach((layer) => {
+            const layerFlatNodes = layer.getFlatNodes();
+            layerFlatNodes.forEach((node) => node.emit(nodeEventType, ...data));
+        });
+    }
+
     /**
      * @internal
      */
@@ -144,12 +157,15 @@ export class InputSystem {
         const currentScene = sceneManager.currentScene;
 
         if (currentScene) {
-            this._globalPointerEvents.forEach((globalPointerEvent) => {
-                currentScene.layers.forEach((layer) => {
-                    const layerFlatNodes = layer.getFlatNodes();
-                    layerFlatNodes.forEach((node) => node.emit(globalPointerEvent.type, globalPointerEvent));
-                });
-            });
+            this._keyboardCodeDownSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyDown, code));
+
+            this._keyboardCodeHoldSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyHold, code));
+
+            this._keyboardCodeUpSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyUp, code));
+
+            this._globalPointerEvents.forEach((globalPointerEvent) =>
+                this.dispatchFlatNodeEvents(globalPointerEvent.type, globalPointerEvent)
+            );
         }
 
         this._pointerEvents.forEach((pointerEvent) => {
@@ -163,16 +179,9 @@ export class InputSystem {
      * @internal
      */
     public dispatchLastEvents(): void {
-        const currentScene = sceneManager.currentScene;
-
-        if (currentScene) {
-            this._lastGlobalPointerEvents.forEach((lastGlobalPointerEvent) => {
-                currentScene.layers.forEach((layer) => {
-                    const layerFlatNodes = layer.getFlatNodes();
-                    layerFlatNodes.forEach((node) => node.emit(lastGlobalPointerEvent.type, lastGlobalPointerEvent));
-                });
-            });
-        }
+        this._lastGlobalPointerEvents.forEach((lastGlobalPointerEvent) =>
+            this.dispatchFlatNodeEvents(lastGlobalPointerEvent.type, lastGlobalPointerEvent)
+        );
     }
 
     private _getPointerEventTypeByNativeEventType(nativePointerEvent: NATIVE_POINTER_EVENT): POINTER_EVENT_TYPE {
@@ -357,6 +366,13 @@ export const LAST_GLOBAL_POINTER_EVENT_TYPE = {
 } as const;
 export type LAST_GLOBAL_POINTER_EVENT_TYPE =
     (typeof LAST_GLOBAL_POINTER_EVENT_TYPE)[keyof typeof LAST_GLOBAL_POINTER_EVENT_TYPE];
+
+export const KEYBOARD_EVENT_TYPE = {
+    KeyDown: "key-down",
+    KeyHold: "key-hold",
+    KeyUp: "key-up",
+} as const;
+export type KEYBOARD_EVENT_TYPE = (typeof KEYBOARD_EVENT_TYPE)[keyof typeof KEYBOARD_EVENT_TYPE];
 
 export const UI_EVENT_TYPE = {
     Click: "click",
