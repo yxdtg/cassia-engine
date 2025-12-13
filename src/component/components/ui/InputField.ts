@@ -1,6 +1,6 @@
 import { renderSystem, timeSystem, IS_BOTTOM_INPUT } from "cassia-engine";
 import { Component, defineComponent, Text } from "cassia-engine/component";
-import { type IPointerEvent, KEYBOARD_CODE } from "cassia-engine/input";
+import { type IPointerEvent, KEY_CODE } from "cassia-engine/input";
 import { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { TEXT_ALIGN_HORIZONTAL_TYPE, TEXT_OVER_FLOW_TYPE } from "cassia-engine/render";
 
@@ -109,7 +109,7 @@ export class InputField extends Component {
         this._el.addEventListener("keydown", (e: KeyboardEvent) => {
             e.stopPropagation();
 
-            if (e.code === KEYBOARD_CODE.Enter || e.key === "Enter" || e.keyCode === 13 || e.which === 13) {
+            if (e.code === KEY_CODE.Enter || e.key === "Enter" || e.keyCode === 13 || e.which === 13) {
                 this._el?.blur();
             }
         });

@@ -13,8 +13,8 @@ import {
     type ILastGlobalPointerEvent,
     type IPointerEvent,
     type IUIEvent,
-    KEYBOARD_CODE,
-    KEYBOARD_EVENT_TYPE,
+    KEY_CODE,
+    KEY_EVENT_TYPE,
     LAST_GLOBAL_POINTER_EVENT_TYPE,
     POINTER_EVENT_TYPE,
     UI_EVENT_TYPE,
@@ -31,7 +31,7 @@ export const NODE_EVENT_TYPE = {
     ...POINTER_EVENT_TYPE,
     ...GLOBAL_POINTER_EVENT_TYPE,
     ...LAST_GLOBAL_POINTER_EVENT_TYPE,
-    ...KEYBOARD_EVENT_TYPE,
+    ...KEY_EVENT_TYPE,
     ...UI_EVENT_TYPE,
     ...COLLISION_EVENT_TYPE,
     ...SPINE_ANIMATION_EVENT_TYPE,
@@ -51,9 +51,9 @@ export interface INodeEventTypeMap {
     [NODE_EVENT_TYPE.LastGlobalPointerMove]: (event: ILastGlobalPointerEvent) => void;
     [NODE_EVENT_TYPE.LastGlobalPointerUp]: (event: ILastGlobalPointerEvent) => void;
 
-    [NODE_EVENT_TYPE.KeyDown]: (code: KEYBOARD_CODE) => void;
-    [NODE_EVENT_TYPE.KeyHold]: (code: KEYBOARD_CODE) => void;
-    [NODE_EVENT_TYPE.KeyUp]: (code: KEYBOARD_CODE) => void;
+    [NODE_EVENT_TYPE.KeyDown]: (code: KEY_CODE) => void;
+    [NODE_EVENT_TYPE.KeyHold]: (code: KEY_CODE) => void;
+    [NODE_EVENT_TYPE.KeyUp]: (code: KEY_CODE) => void;
 
     [NODE_EVENT_TYPE.Click]: (event: IUIEvent) => void;
     [NODE_EVENT_TYPE.DoubleClick]: (event: IUIEvent) => void;

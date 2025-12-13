@@ -19,7 +19,7 @@ export class InputSystem {
      */
     public init(): void {
         this._initPointerEvent();
-        this._initKeyboardEvent();
+        this._initKeyEvent();
     }
 
     private _pointerEvents: IPointerEvent[] = [];
@@ -157,11 +157,11 @@ export class InputSystem {
         const currentScene = sceneManager.currentScene;
 
         if (currentScene) {
-            this._keyboardCodeDownSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyDown, code));
+            this._keyCodeDownSet.forEach((code) => this.dispatchFlatNodeEvents(KEY_EVENT_TYPE.KeyDown, code));
 
-            this._keyboardCodeHoldSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyHold, code));
+            this._keyCodeHoldSet.forEach((code) => this.dispatchFlatNodeEvents(KEY_EVENT_TYPE.KeyHold, code));
 
-            this._keyboardCodeUpSet.forEach((code) => this.dispatchFlatNodeEvents(KEYBOARD_EVENT_TYPE.KeyUp, code));
+            this._keyCodeUpSet.forEach((code) => this.dispatchFlatNodeEvents(KEY_EVENT_TYPE.KeyUp, code));
 
             this._globalPointerEvents.forEach((globalPointerEvent) =>
                 this.dispatchFlatNodeEvents(globalPointerEvent.type, globalPointerEvent)
@@ -221,23 +221,23 @@ export class InputSystem {
         throw new Error(`${nativePointerEvent} unknown native pointer event`);
     }
 
-    private _keyboardCodeDownSet: Set<KEYBOARD_CODE> = new Set();
-    private _keyboardCodeHoldSet: Set<KEYBOARD_CODE> = new Set();
-    private _keyboardCodeUpSet: Set<KEYBOARD_CODE> = new Set();
+    private _keyCodeDownSet: Set<KEY_CODE> = new Set();
+    private _keyCodeHoldSet: Set<KEY_CODE> = new Set();
+    private _keyCodeUpSet: Set<KEY_CODE> = new Set();
 
-    public isKeyboardDown(code: KEYBOARD_CODE): boolean {
-        return this._keyboardCodeDownSet.has(code);
+    public isKeyDown(code: KEY_CODE): boolean {
+        return this._keyCodeDownSet.has(code);
     }
-    public isKeyboardHold(code: KEYBOARD_CODE): boolean {
-        return this._keyboardCodeHoldSet.has(code);
+    public isKeyHold(code: KEY_CODE): boolean {
+        return this._keyCodeHoldSet.has(code);
     }
-    public isKeyboardUp(code: KEYBOARD_CODE): boolean {
-        return this._keyboardCodeUpSet.has(code);
+    public isKeyUp(code: KEY_CODE): boolean {
+        return this._keyCodeUpSet.has(code);
     }
 
-    private _initKeyboardEvent(): void {
+    private _initKeyEvent(): void {
         window.addEventListener("blur", () => {
-            this._keyboardCodeHoldSet.clear();
+            this._keyCodeHoldSet.clear();
         });
 
         window.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -245,24 +245,24 @@ export class InputSystem {
 
             if (event.repeat) return;
 
-            if (!this._keyboardCodeDownSet.has(code)) {
-                this._keyboardCodeDownSet.add(code);
+            if (!this._keyCodeDownSet.has(code)) {
+                this._keyCodeDownSet.add(code);
             }
 
-            if (!this._keyboardCodeHoldSet.has(code)) {
-                this._keyboardCodeHoldSet.add(code);
+            if (!this._keyCodeHoldSet.has(code)) {
+                this._keyCodeHoldSet.add(code);
             }
         });
 
         window.addEventListener("keyup", (event: KeyboardEvent) => {
             const code = event.code as any;
 
-            if (this._keyboardCodeHoldSet.has(code)) {
-                this._keyboardCodeHoldSet.delete(code);
+            if (this._keyCodeHoldSet.has(code)) {
+                this._keyCodeHoldSet.delete(code);
             }
 
-            if (!this._keyboardCodeUpSet.has(code)) {
-                this._keyboardCodeUpSet.add(code);
+            if (!this._keyCodeUpSet.has(code)) {
+                this._keyCodeUpSet.add(code);
             }
         });
     }
@@ -279,8 +279,8 @@ export class InputSystem {
         this._lastGlobalPointerEvents.length = 0;
         this._pointerEvents.length = 0;
 
-        this._keyboardCodeDownSet.clear();
-        this._keyboardCodeUpSet.clear();
+        this._keyCodeDownSet.clear();
+        this._keyCodeUpSet.clear();
     }
 
     public getHitNode(screenPoint: Vec2): Node | null {
@@ -367,12 +367,12 @@ export const LAST_GLOBAL_POINTER_EVENT_TYPE = {
 export type LAST_GLOBAL_POINTER_EVENT_TYPE =
     (typeof LAST_GLOBAL_POINTER_EVENT_TYPE)[keyof typeof LAST_GLOBAL_POINTER_EVENT_TYPE];
 
-export const KEYBOARD_EVENT_TYPE = {
+export const KEY_EVENT_TYPE = {
     KeyDown: "key-down",
     KeyHold: "key-hold",
     KeyUp: "key-up",
 } as const;
-export type KEYBOARD_EVENT_TYPE = (typeof KEYBOARD_EVENT_TYPE)[keyof typeof KEYBOARD_EVENT_TYPE];
+export type KEY_EVENT_TYPE = (typeof KEY_EVENT_TYPE)[keyof typeof KEY_EVENT_TYPE];
 
 export const UI_EVENT_TYPE = {
     Click: "click",
@@ -439,7 +439,7 @@ export type MOUSE_BUTTON = (typeof MOUSE_BUTTON)[keyof typeof MOUSE_BUTTON];
 /**
  * 键盘码枚举
  */
-export const KEYBOARD_CODE = {
+export const KEY_CODE = {
     // 字母键
     KeyA: "KeyA",
     KeyB: "KeyB",
@@ -563,4 +563,4 @@ export const KEYBOARD_CODE = {
     BracketRight: "BracketRight",
     Quote: "Quote",
 } as const;
-export type KEYBOARD_CODE = (typeof KEYBOARD_CODE)[keyof typeof KEYBOARD_CODE];
+export type KEY_CODE = (typeof KEY_CODE)[keyof typeof KEY_CODE];

@@ -3,7 +3,7 @@ import type {
     ILastGlobalPointerEvent,
     IPointerEvent,
     IUIEvent,
-    KEYBOARD_CODE,
+    KEY_CODE,
 } from "cassia-engine/input";
 import type { Node, NODE_EVENT_TYPE } from "cassia-engine/node";
 import { ComponentManager } from "./ComponentManager";
@@ -119,9 +119,9 @@ export class Component<M extends Record<keyof M, any> = any> extends EventObject
      */
     protected onLastGlobalPointerUp?(event: ILastGlobalPointerEvent): void;
 
-    protected onKeyDown?(code: KEYBOARD_CODE): void;
-    protected onKeyHold?(code: KEYBOARD_CODE): void;
-    protected onKeyUp?(code: KEYBOARD_CODE): void;
+    protected onKeyDown?(code: KEY_CODE): void;
+    protected onKeyHold?(code: KEY_CODE): void;
+    protected onKeyUp?(code: KEY_CODE): void;
 
     /**
      *
